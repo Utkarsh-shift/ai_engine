@@ -1,0 +1,6 @@
+--2024-11-07 07:14:00--  https://s3.ap-south-1.amazonaws.com/testengine-dev.placecom.co/result/assessment_449/test_244/candidate_871/vid_res/1788cafc5a171db7049e1b81a0d670ccd5b1f70b0b6ada0dfe4dc8b223b64127.mp4?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD
+Resolving s3.ap-south-1.amazonaws.com (s3.ap-south-1.amazonaws.com)... 52.219.62.85, 52.219.158.105, 52.219.62.121, ...
+Connecting to s3.ap-south-1.amazonaws.com (s3.ap-south-1.amazonaws.com)|52.219.62.85|:443... connected.
+HTTP request sent, awaiting response... 403 Forbidden
+2024-11-07 07:14:00 ERROR 403: Forbidden.
+
