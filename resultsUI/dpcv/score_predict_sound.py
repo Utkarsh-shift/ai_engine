@@ -385,7 +385,7 @@ def sound_score(filepath,grammer_Score):
     communication_score= 0.4*(articulation_score)+ 0.4*(pace_a_clarity)+ 0.2*(grammer_Score)
     print(communication_score)
 
-    return p_score,clarity_score,energy_score,fluency_score,articulation_score,communication_score,pace_a_clarity
+    return clarity_score,energy_score,fluency_score,communication_score
 
 
 # if __name__ == "__main__" :

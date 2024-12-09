@@ -397,15 +397,16 @@ class ExpRunner:
                 
                 videoPath  = "./datasets/ChaLearn/test/"
                 node = AudioFileNode(file_path)
-                print("*******************************************",type(smile), smile)
+              
                 y = smile.process_file(node.file_path)
                 smile_features = y.filter(col_name).mean().to_dict()
                 # Calculate unigrams and bigrams
+                print("Error in call uni bi ")
                 df_unigram, df_bigram,sentiment,sentiment_sc,transcription,gPTgrammer_Score,gpt_grammer_comment = cal_uni_bi(file_path)
-                print("file_path is here 888888888888888888888888888888888888888888888888888888888888888888888888888888888",file_path)
+             
                 link_id=str(node.file_path).split(".")[1]
                 gg=link_id.split("/")[-1]
-                print("link id is here **********************************************************************************",gg,"gvvvgfvg")
+               
                 node.set_link_id(gg)
                 # Set OpenSMILE features
                 node.set_smile_features(smile_features)
@@ -470,7 +471,7 @@ class ExpRunner:
                 body_lang_score=get_score(body_lang_prompt,bodylang)
                 emotion_score=get_score(emotion_score_prompt,emotioncomment)
 
-                print("The node comment is  3333333333333333333333333333333set",node.professionalcomment)
+                print("The node comment is set",node.professionalcomment)
                 
                 LLava_professional_score=professional_score
                 LLava_body_lang_score=body_lang_score
@@ -556,6 +557,9 @@ class ExpRunner:
                 print("positive Emotion",positive_emotion)
                 print("negative Emotion",negative_emotion)
                 print("netutal",netural_emotion)
+
+
+                
                 if final_emotion["positive"]>=final_emotion["negative"] and final_emotion["positive"]>=final_emotion["neutral"]:
                     f_emotion={"positive":final_emotion["positive"],"negative":0,"neutral":0}
                 if final_emotion["negative"]>=final_emotion["positive"] and final_emotion["negative"]>=final_emotion["neutral"]:
@@ -665,6 +669,7 @@ class ExpRunner:
                 videoPath = None
                 import torch
                 torch.cuda.empty_cache()
+        
         from resources.newprompt import AI_resultGenerator
         Finalnode = FullNode()
         print(self.audio_nodes)

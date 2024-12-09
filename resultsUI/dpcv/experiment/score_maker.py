@@ -49,8 +49,8 @@ def ComputingValues(data):
     i_words_set={
         "i","me","my","mine","myself","indifferent","inclusive","individual","identity","initiative","immediate"
     }
-    df_unigram = data['df_unigram']
-    df_bigram = data['df_bigram']
+    df_unigram = data['df_unigrams']
+
  
     
     try:

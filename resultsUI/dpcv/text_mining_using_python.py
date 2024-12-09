@@ -25,144 +25,17 @@ from tqdm import tqdm
 from openai import OpenAI
 import os ,json
 from dotenv import load_dotenv
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from nltk.util import ngrams
+from collections import Counter
+import pandas as pd
+import torch
+     
+
  
-class TextProcessor:
-    def __init__(self, badWordsFileName):
-        badWordsFileURL = "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/badwordslist/badwords.txt"
-        if not os.path.exists(badWordsFileName):
-            urllib.request.urlretrieve(badWordsFileURL, badWordsFileName)
-        # Read bad words from file
-        with open(badWordsFileName, 'r', encoding='utf-8') as file:
-            self.badwords = file.read().splitlines()
- 
-    @staticmethod
-    def remove_internet_chars(text):
-        text = re.sub(r'\s+@\s+', ' ', text)  
-        text = re.sub(r'@', ' ', text)        
-        text = re.sub(r'#', ' ', text)        
-        text = re.sub(r'//', ' ', text)       
-        return text
- 
-    @staticmethod
-    def remove_symbols(text):
-        text = re.sub(r"[’‘`´]", "'", text)     
-        # text = re.sub(r"[^a-zA-Z']", ' ', text)
-        text = re.sub(r"'{2,}", ' ', text)      
-        text = re.sub(r"'(\s+|$)", ' ', text)   
-        text = re.sub(r"^\s+'|'\s+$", '', text)
-        text = text.strip()                     
-        return text
- 
-    def remove_badwords(self, text):
-        if self.badwords:
-            pattern = r'\b(?:{})\b'.format('|'.join(map(re.escape, self.badwords)))
-            text = re.sub(pattern, '', text, flags=re.IGNORECASE)
-        return text
- 
- 
-# Global list to collect transcriptions
-transcriptions = []
- 
-def split_audio(audio_path, chunk_length_ms=30000):
-    """Splits the audio file into chunks and keeps them on disk."""
-    audio = AudioSegment.from_file(audio_path)
-    chunks = []
-    for i in range(0, len(audio), chunk_length_ms):
-        chunk = audio[i:i + chunk_length_ms]
-        chunk_path = f"chunk_{i // chunk_length_ms}.wav"
-        chunk.export(chunk_path, format="wav")
-        chunks.append(chunk_path)
-    
-    del audio
-    gc.collect()
-    return chunks
- 
-import re
- 
-def extract_chunk_number(s):
-    """Extracts the chunk number from a string like '$#@chunk_1.wav$#@'."""
-    match = re.search(r'\$#@chunk_(\d+)\.wav\$#@', s)
-    if match:
-        return int(match.group(1))
-    return -1  
- 
-def remove_chunk_tag(s):
-    """Removes the chunk tag from the string."""
-    return re.sub(r'\$#@chunk_\d+\.wav\$#@', '', s)
- 
-def sort_and_clean_chunks(lst):
-    """Sorts the list of strings based on the chunk number and removes the tags."""
-    # Sort the list using the extracted chunk number as the key
-    sorted_list = sorted(lst, key=extract_chunk_number)
-    
-    # Remove the tags from each sorted item
-    cleaned_list = [remove_chunk_tag(item) for item in sorted_list]
-    
-    return cleaned_list
- 
- 
- 
-def transcribe_chunk_batch(chunk_path , mod):
-    
-    """Transcribes a single audio chunk using the Whisper model."""
-    audio = whisper.load_audio(chunk_path)
-    audio = whisper.pad_or_trim(audio)
-    
-    
-    result = mod.transcribe(audio)
-    #print( "This result is for the wav file ", chunk_path ,"and The generated results are" ,result["text"])
-    res = "$#@"+  chunk_path + "$#@" + result["text"]
-    
-    os.remove(chunk_path)  # Clean up the chunk files
- 
-    # Free up memory used by variables
-    del audio
-    gc.collect()  # Trigger garbage collection
-    
-    return res  # Return the transcribed text
- 
-def callback(transcription):
-    """Callback function to collect transcription results."""
-    
-    transcriptions.append(transcription)
- 
-def long_time_task(audio_file , model):
-    """Processes an individual audio file."""
-   # print("The audio_file in long_time task is ", audio_file)
-    return transcribe_chunk_batch(chunk_path=audio_file , mod= model)
- 
-def process_in_batches(audio_path, batch_size=8):
-    """Processes the audio file in batches, transcribing chunks in parallel."""
-    # Split the audio file into manageable chunks
-    model = whisper.load_model("medium", download_root=os.path.join(os.getcwd(), "whisper"))
-    chunks = split_audio(audio_path)
- 
-    for i in range(0, len(chunks), batch_size):
-        batch = chunks[i:i + batch_size]
-        print("The batch for ASR is processed")
-        # Multiprocessing Pool for parallel processing of batches
-        with Pool(16) as pool:
-            for aud_file in tqdm(batch):
-                # Apply async for each file in the batch
-                pool.apply_async(long_time_task, args=(aud_file,model), callback=callback)
-            pool.close()
-            pool.join()  # Ensure all processes complete
- 
-        # Free up memory used by the batch
-        del batch
-        gc.collect()
- 
-    # Combine all transcriptions into a single output
-    cleaned_list = sort_and_clean_chunks(transcriptions)
-    full_transcription = "".join(cleaned_list)
-    print("Processed all batches")
-    
-    # Clean up the transcriptions list
-    del transcriptions[:]
-    gc.collect()
-    
-    return full_transcription
- 
+import re 
  
 def hf(text):
     load_dotenv()
@@ -175,162 +48,276 @@ def hf(text):
             messages = [message]
             ,max_tokens=256
         )
-        # print("|\n|\n|\n|\n|\n|\n|\n|\n|v",chat_completion)
-    # finish_reason = chat_completion.choices[0].finish_reason
- 
+    
     
     newdata = chat_completion.choices[0].message.content
     print("newdta is ",newdata)
     return newdata
  
+import whisper
+import torch
+import gc
+import os
+import json
+import pandas as pd
+from openai import OpenAI
+from dotenv import load_dotenv
 
-def transcribe_chunk_batch_new(audio_path):
+def calculate_avg_logprob(transcription_segments):
+   
+    avg_logprobs = [segment['avg_logprob'] for segment in transcription_segments]
+    avg_logprob_mean = sum(avg_logprobs) / len(avg_logprobs)
+    return avg_logprob_mean
+
+def split_audio(audio_path, chunk_length_ms=15000):
+    """Splits the audio file into chunks and keeps them on disk."""
+    audio = AudioSegment.from_file(audio_path)
+    chunks = []
+    for i in range(0, len(audio), chunk_length_ms):
+        chunk = audio[i:i + chunk_length_ms]
+        chunk_path = f"chunk_{i // chunk_length_ms}.wav"
+        chunk.export(chunk_path, format="wav")
+        chunks.append(chunk_path)
+    
+    del audio
+    gc.collect()
+    return chunks
+
+def scale_wpm_to_score(wpm, min_wpm=50, max_wpm=250):
+    """Scale WPM to a score between 0 and 100."""
+    if wpm < min_wpm:
+        return 0
+    elif wpm > max_wpm:
+        return 100
+    else:
+        return ((wpm - min_wpm) / (max_wpm - min_wpm)) * 100
+
+
+def scale_avg_logprob_to_score(avg_logprob, min_logprob=-1.0, max_logprob=-0.1):
+    """Scale avg_logprob to a score between 0 and 100."""
+    if avg_logprob < min_logprob:
+        return 0
+    elif avg_logprob > max_logprob:
+        return 100
+    else:
+        return ((avg_logprob - min_logprob) / (max_logprob - min_logprob)) * 100
+    
+
+def transcribe_chunk_batch_new(chunks, model):
+    transcriptions = []
+    total_duration = 0
+    total_words=0
+    avg_logprobs = []
+     
     try:
-        model = whisper.load_model("large-v2", download_root=os.path.join(os.getcwd(), "whisper"))
-        chunks = split_audio(audio_path)
-        chunks.sort()
-        print(chunks)
         for i in chunks:
-
             audio = whisper.load_audio(i)
             audio = whisper.pad_or_trim(audio)
-
-            result = model.transcribe(audio)
-            #print( "This result is for the wav file ", chunk_path ,"and The generated results are" ,result["text"])
-            res = result["text"]
-            print("transcription is:",res)
-            transcriptions.append(res)
+            transcription = model.transcribe(audio)
+            final_transcription = transcription['text']
+            words = final_transcription.split()
+            transcriptions.append(final_transcription)
+            num_words = len(words)
+            total_words += num_words
+            for segment in transcription['segments']:
+                segment_duration = segment['end'] - segment['start']
+                total_duration += segment_duration
+                avg_logprobs.append(segment['avg_logprob'])
+            
             os.remove(i)
-        # cleaned_list=sort_and_clean_chunks(transcriptions)
-        return "".join(transcriptions)
-    except Exception as e:
-        print("exception occurs:",e)
+        full_transcription = "".join(transcriptions)
 
-def cal_uni_bi(audio_file):
-  
-   
-    set_start_method("spawn", force=True)  # Use "spawn" to avoid issues with fork and CUDA
-    
-    # model = whisper.load_model("large-v2")ownload('punkt')
-    # nltk.download('stopwords')    
-    
-    # transcription = process_in_batches(audio_file, batch_size=8)
-    transcription=transcribe_chunk_batch_new(audio_file)
-    torch.cuda.empty_cache()
-    print("Final Transcription:", transcription)
-    gc.collect()
-    # text=transcription
-    text=hf(transcription)
-    print("The text is , ", text)
-    load_dotenv()
-    # test = "je m'appelle utkarsh, j'etudie avec varun et j'habite en panchkula"
-    # message={"role": "system",
-    #         "content": f"""calculate the grammer score for the text {text}, out of 100 consider vocabulary, grammer mistakes, sentence formation only give response in digit and no text, give minimum 10 score."""}
-    client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
-    # chat_completion = client.chat.completions.create(
-    #         model="gpt-3.5-turbo",
-    #         messages = [message]
-    #     )
-    #     # print("|\n|\n|\n|\n|\n|\n|\n|\n|v",chat_completion)
-    # finish_reason = chat_completion.choices[0].finish_reason
- 
- 
-    # newdata = chat_completion.choices[0].message.content
-    # double_digit = re.findall(r'\b\d{2}\b', newdata)
-    # newdata = int(double_digit[0])
- 
-    example_json="""{"grammer_score":<<score>>,
-            "grammer_comment":<<comment>>            
-            }"""
+        duration_in_minutes = total_duration/60
+        if duration_in_minutes > 0:
+            wpm = total_words / duration_in_minutes
+        else:
+            wpm = 0
+
+        print(f"Total Words: {total_words}, Duration: {total_duration} seconds")
+        print(f"Words per minute (WPM): {wpm:.2f}")
+        wpm_score = scale_wpm_to_score(wpm , min_wpm=50, max_wpm=130)
+        print(f"wpm Score : {wpm_score}")
+        pace_prompt =  f"""If the peron is speaking at a average word per minute rate of {wpm}, and is given a score of {wpm_score} , then comment about the pace of the person in speech """
+        pace_comment = get_comment(pace_prompt)
+        print("pace comment is :",pace_comment)
+
+        
+
+
+     
+        avg_logprob_mean = sum(avg_logprobs) / len(avg_logprobs)
+        print("The average_logprob is calculates as" , avg_logprob_mean)
+        avg_logprob_score = scale_avg_logprob_to_score(avg_logprob_mean)
+        print("The arrticualtion score is given as " , avg_logprob_score)
+        articulation_prompt = f""" If the person is average log probability mean of articulation is {avg_logprob_mean} , and the score is {avg_logprob_score} , then comment about the articulation of the person in speech """
+
+        articulation_prompt_comment = get_comment(articulation_prompt)
+        return full_transcription, wpm_score, avg_logprob_score , pace_comment , articulation_prompt_comment
+    except Exception as e:
+        print("Exception occurred:", e)
+        
+from decouple import config
+client = OpenAI(api_key=config("OPENAI_API_KEY"))
+
+
+def get_comment(prompt):
     message={"role": "system",
-            "content": f"""calculate the grammer score and also give comment for the text "{text}", out of 100 consider vocabulary, grammer mistakes, sentence formation.Give response in the json format as given below:
-            {example_json}
-            """}
-    
+            "content": prompt}
+    # client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
     chat_completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            response_format={"type":"json_object"},
-            messages = [message]
+            messages = [message],
+            temperature=0.2
         )
         # print("|\n|\n|\n|\n|\n|\n|\n|\n|v",chat_completion)
     finish_reason = chat_completion.choices[0].finish_reason
  
  
     newdata = chat_completion.choices[0].message.content
-    # newdata = chat_completion.choices[0].message.content
-    json_data=json.loads(newdata)
-    print("newdta is ",json_data)
-    print("grammer_score is ",json_data["grammer_score"])
-    print("grammer_comment",json_data["grammer_comment"])
-    grammer_score=json_data["grammer_score"]
-    grammer_comment=json_data["grammer_comment"]
-    # newdata = json.loads(data)
- 
- 
-    # text = TextProcessor.remove_internet_chars(text)
-    # text = TextProcessor.remove_symbols(text)
-    text = text.lower()
- 
-    analyzer = SentimentIntensityAnalyzer()
-    scores = analyzer.polarity_scores(text)
-    if scores['compound'] >= 0.05:
-        sentiment='Positive'
-    elif scores['compound'] <= -0.05:
-        sentiment='Negative'
-    else:
-        sentiment='Neutral'
- 
-    if scores['compound'] >= 0.05:
- 
-        sentiment_sc=(100*scores["pos"])*10
-        if sentiment_sc>100:
-            sentiment_sc=100
- 
-    elif scores['compound'] <= -0.05:
- 
-        sentiment_sc=33
- 
-    else:
- 
-        sentiment_sc=50
- 
+    # print("new dta in text mining is :",newdata)
+    # double_digit = re.findall(r'\b\d{2}\b', newdata)
+    # newdata = int(double_digit[0])
+    print(newdata)
+    return newdata     
+
+def get_score_transcipt_file(prompt):
+    message={"role": "system",
+            "content": prompt}
+    # client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
+    chat_completion = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages = [message],
+            temperature=0.2
+        )
+    text = chat_completion.choices[0].message.content
+    score_match = re.search(r'\bscore\s*[\w]*\s*([+-]?\d*\.\d+|\d+)', text)
     
-    print("text without tokenization is --------------------------------------------------",text)
-    tokens = word_tokenize(text)
+    if score_match:
+        score = float(score_match.group(1))  # Extract the number as a float
+        rounded_score = round(score, 2)      # Round to 2 decimal places
+        print("Extracted and rounded score:", rounded_score)
+        return rounded_score
+    else:
+        print("No score found in the text.")
+        return 0
+
+def cal_uni_bi(audio_file):
+    chunks = split_audio(audio_file)
+    chunks.sort()
+    print(chunks)
+    model = whisper.load_model("large-v3", download_root=os.path.join(os.getcwd(), "whisper"))
+    final_transcription , pace_score , articulation_score ,pace_comment , articulation_comment = transcribe_chunk_batch_new(chunks,model)
+
+    torch.cuda.empty_cache()
+    print("Final Transcription:", final_transcription)
+
+    load_dotenv()
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+    example_json = """{
+        "grammer_score": <score>,
+        "grammer_comment": <comment>            
+    }"""
+
+    message_score = {
+        "role": "system",
+        "content": f""""calculate the grammer score for the text: "{final_transcription}", out of 100 consider vocabulary, grammer mistakes, sentence formation only give response in digit and no text, give minimum 10 score."""
+
+    }
+    message_comment = {
+        "role": "system",
+        "content": f""""comment on the grammer issues for the text: "{final_transcription}", consider vocabulary, grammer mistakes, sentence formation."""
+
+    }
+
+    try:
+        chat_completion = client.chat.completions.create(
+            model="gpt-3.5-turbo", 
+            messages=[message_score]
+        )
+        newdata = chat_completion.choices[0].message.content
+        double_digit = re.findall(r'\b\d{2}\b', newdata)
+        grammer_score = int(double_digit[0])
+        chat_completion_comment = client.chat.completions.create(
+            model="gpt-3.5-turbo", 
+            messages=[message_comment]
+        )
+        newdata = chat_completion_comment.choices[0].message.content
+        grammer_comment = newdata
+
+
+        print("Grammar Score:", grammer_score)
+        print("Grammar Comment:", grammer_comment)
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        grammer_score, grammer_comment = None, None
+
+    example_json_structure = """{
+    "sentiment_score":<<score>>,
+    "sentiment_comment": <<comment>>,    
+    }"""
+
+    sentiment_analysis_message = {
+        "role": "system",
+       "content": f"""Calculate the sentiment score and provide a comment for the text "{final_transcription}" out of 100. Consider factors such as the emotional tone, positivity/negativity, overall sentiment, and mood conveyed in the text. Provide the response in the following JSON format:
+        {example_json_structure}
+        """
+    }
+
+    try : 
+        sentiment_analysis_response = client.chat.completions.create(model="gpt-3.5-turbo", messages=[sentiment_analysis_message])
+        sentiment_choice = sentiment_analysis_response.choices[0].message.content
+        sentiment_choice_data = json.loads(sentiment_choice)
+        sentiment_score_value = sentiment_choice_data["sentiment_score"]
+        sentiment_comment_value = sentiment_choice_data["sentiment_comment"]
+        print("sentiment Score:", sentiment_score_value)
+        print("sentiment Comment:", sentiment_comment_value)
+    except Exception as error:
+        print(f"Error occurred: {error}")
+        sentiment_score_value, sentiment_comment_value = None, None
+    gc.collect()
+
+    nltk.download('punkt')
+    nltk.download('stopwords')
+
+    tokens = word_tokenize(final_transcription)
+
     stop_words = set(stopwords.words('english'))
+
     tokenized_corpus = [word for word in tokens if word.lower() not in stop_words]
-    
-    # word_freq = Counter(tokenized_corpus)
-    
-    #wordcloud = WordCloud(width=800, height=400, background_color='white', max_words=50).generate_from_frequencies(word_freq)
-    
+
     unigrams = list(ngrams(tokenized_corpus, 1))
     bigrams = list(ngrams(tokenized_corpus, 2))
-#   trigrams = list(ngrams(tokenized_corpus, 3))
- 
-#   print("The unigrams are ",unigrams)
-#   print("The bigrams are ",bigrams)
-#    print("The trigrams are " , trigrams)
- 
+
     unigram_freq = Counter(unigrams)
     bigram_freq = Counter(bigrams)
-#    trigram_freq = Counter(trigrams)
-    
+
     df_unigrams = pd.DataFrame(list(unigram_freq.items()), columns=['Word', 'Frequency'])
-    df_bigrams = pd.DataFrame(list(bigram_freq.items()), columns=['Word', 'Frequency'])
-#   df_trigrams = pd.DataFrame(list(trigram_freq.items()), columns=['Word', 'Frequency'])
-    #print(df_unigrams['Frequency'])
     
+
     df_unigrams = df_unigrams.sort_values(by='Frequency', ascending=False).reset_index(drop=True)
-    df_bigrams = df_bigrams.sort_values(by='Frequency', ascending=False).reset_index(drop=True)
-#  df_trigrams = df_trigrams.sort_values(by='Frequency', ascending=False).reset_index(drop=True)
- 
-    #print(f"Uni-gram freq sum is :{sum(df_unigrams['Frequency'][:10])}")
-    #print(f"Bi-gram freq sum is :{sum(df_bigrams['Frequency'][:10])}")
-# print(f"Tri-gram freq sum is :{sum(df_trigrams['Frequency'][:10])}")
-    # print("text  tokenization is --------------------------------------------------",text)
+
+    # print(df_unigrams)
+    
+
+
     torch.cuda.empty_cache()
-    return df_unigrams , df_bigrams ,sentiment,sentiment_sc,text,grammer_score,grammer_comment
+
  
-if __name__ == "__main__":
-    cal_uni_bi()
+    return df_unigrams ,sentiment_score_value , sentiment_comment_value , final_transcription, grammer_score , grammer_comment , pace_score , articulation_score,pace_comment , articulation_comment
+ 
+
+
+
+
+
+
+# if __name__ == "__main__":
+#     audio_file1 = "/disk/new_AVIPA/60a54673aeec23e42964965c8dbb92672e6e717a217b67b71b03b97398df8e56.mp3"
+
+#     audio_file = "/disk/new_AVIPA/f088d879927623ebdba85b3fa13f8bb2e8ea850d23275f4da8d517202e767622.mp3"
+
+
+#     audio_file3 = "/disk/Examples of good speaking pace during a presentation.mp3"
+#     cal_uni_bi(audio_file)

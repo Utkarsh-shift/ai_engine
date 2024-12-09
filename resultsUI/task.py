@@ -106,16 +106,6 @@ def trigger_webhook(batch_id, data):
         print("json is given as --------------------------------------------------------------",response.json())
     except Exception as e:
         print("exception in webhhok part is ---------------------- ",e)
-        #     pass
-        # print("The staust is given as *****************",response.raise_for_status())
-    # except Exception as e:
-    #     payload = {
-    #     'batch_id': str(batch_id),
-    #     'data': {"status":"failed"},
-    #     'event': 'batch_processed',
-    # }
-    #     response = requests.post(webhook_url, json=payload)
-    #     print(f"Error sending webhook: {e}")
 
 @shared_task
 def start_sagemaker_endpoint_task(endpoint_name, region):
@@ -298,7 +288,10 @@ def process_batch(batch_id,Questions):
             # Perform the processing (e.g., extract audio)
         result1= show_results(Questions)  # Assuming show_results processes the video and returns JSON
         print("print result 1 is here:",result1)
-        result = json.loads(result1) 
+        # result1['ocean_values']=result1['ocean_values'].tolist()
+        result = json.dumps(result1) 
+        result=json.loads(result)
+        # result=result1
         print("the type is -------------------------------------------------------",type(result)) # Used to Set the Json Response 
         #     processed_json.append(result)
         
@@ -313,7 +306,7 @@ def process_batch(batch_id,Questions):
 
         # Once all link entries in the batch are processed, update the batch status
         batch_entry.status = 'processed'
-        batch_entry.results = result # Save the results as a JSON string
+        batch_entry.results = result# Save the results as a JSON string
         batch_entry.save()
 
         # Trigger the webhook after processing is complete

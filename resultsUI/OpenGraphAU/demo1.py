@@ -244,15 +244,11 @@ def mainExec(conf):
         "Engagement": {"AU1": 31.5, "AU2": 16.0, "AU5": 24.5, "AU7": 28},
         "Concentration": {"AU4": 40, "AU7": 28, "AU17": 27},
         "Discomfort": {"AU4": 20, "AU5": 24.5, "AU7": 28, "AU14": 28, "AU15": 5.2},
-   #     "Uncertainty": {"AU14": 20, "AU15": 20, "AU43": 15},
         "Dominance": {"AU4": 30, "AU5": 11.5, "AU23": 13.35, "AU24": 5.7},
         "Submission": {"AU12": 17, "AU17": 27, "AU24": 5.7},
         "Interest": {"AU1": 31.5, "AU2": 16.0, "AU5": 24.5},
-    #    "Boredom": {"AU43": 25, "AU64": 20},
         "Rapport": {"AU12": 17, "AU6": 45, "AU2": 16.0},
         "Skepticism": {"AU12": 17, "AU14": 28},
-    #    "Tiredness": {"AU43": 25, "AU44": 20, "AU64": 20},
-    #    "Deception": {"AU14": 20, "AU12": 25, "AU43": 15}
     }
 
 
@@ -260,54 +256,35 @@ def mainExec(conf):
         "Engagement": {"AU1": 31.5, "AU2": 16.0, "AU5": 24.5, "AU7": 28},
         "Concentration": {"AU4": 40, "AU7": 28, "AU17": 27},
         "Discomfort": {"AU4": 20, "AU5": 24.5, "AU7": 28, "AU14": 28, "AU15": 5.2},
-   #     "Uncertainty": {"AU14": 20, "AU15": 20, "AU43": 15},
         "Dominance": {"AU4": 30, "AU5": 11.5, "AU23": 13.35, "AU24": 5.7},
         "Submission": {"AU12": 17, "AU17": 27, "AU24": 5.7},
         "Interest": {"AU1": 31.5, "AU2": 16.0, "AU5": 24.5},
-    #    "Boredom": {"AU43": 25, "AU64": 20},
         "Rapport": {"AU12": 17, "AU6": 45, "AU2": 16.0},
         "Skepticism": {"AU12": 17, "AU14": 28},
-    #    "Tiredness": {"AU43": 25, "AU44": 20, "AU64": 20},
-    #    "Deception": {"AU14": 20, "AU12": 25, "AU43": 15}
 }
 
 
 
     non_verbal_counts = {behavior: 0 for behavior in non_verbal_thresholds}
 
-# Iterate over each non-verbal behavior and calculate its occurrence
     for behavior, aus in non_verbal_thresholds.items():
         condition = True
         for au, threshold in aus.items():
-            # Ensure the AU column exists in the dataframe
             if au_columns[au] in actionalUnits.columns:
                 std_nonverbal = std_values_nonverbal[behavior].get(au,0)
-                #condition &= (actionalUnits[au_columns[au]] > threshold)
                 condition &= ((actionalUnits[au_columns[au]] >= (threshold - std)) & 
                           (actionalUnits[au_columns[au]] <= (threshold + std)))
 
         non_verbal_counts[behavior] = condition.sum()
 
-    # Print the counts of each non-verbal behavior
     for behavior, count in non_verbal_counts.items():
         non_verbal_counts[behavior] = (count/num_rows)*100
         print(f"{behavior}: {count}")
 
         print(f"{behavior}: {(count/num_rows)*100}")
-    # Initialize a dictionary to store the counts of each expression
   
 
-    # Iterate over each expression and calculate its occurrence
-
-    mean = actionalUnits.mean()
-    std = actionalUnits.std()
-    skew = actionalUnits.skew()
-    kurtois = actionalUnits.kurtosis()
-    Brow_Lower=actionalUnits[4].mean()
-    Lip_Corner_Puller=actionalUnits[12].mean()
-    Upper_Lip_Raiser=actionalUnits[5].mean()
-    Lips_Part=actionalUnits[25].mean()
-    return mean, std, skew, kurtois ,emotion_lst,Brow_Lower,Lip_Corner_Puller,Upper_Lip_Raiser,Lips_Part,expression_counts, non_verbal_counts
+    return emotion_lst,expression_counts, non_verbal_counts
 
 # ---------------------------------------------------------------------------------
 

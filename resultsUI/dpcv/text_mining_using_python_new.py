@@ -132,7 +132,7 @@ from decouple import config
 
 
 def transcribe_chunk_batch(chunk_path):
-    print("The client is open for chunk", chunk_path)
+    
     client = OpenAI(api_key=config("OPENAI_API_KEY"))
     try:
         with open(chunk_path, "rb") as audio_file:
@@ -187,18 +187,6 @@ def transcribe_chunk_batch_new(audio_path):
         print("exception occurs:",e)
 
 
-def process_in_batches(audio_path, batch_size=8):
-    chunks = split_audio(audio_path)
-    for i in range(0, len(chunks), batch_size):
-        batch = chunks[i:i + batch_size]
-        print("Processing batch...")
-        with Pool(16) as pool:
-            results = [pool.apply_async(transcribe_chunk_batch, (chunk,)) for chunk in batch]
-            # for result in tqdm(results):
-            #     transcriptions.append(result)
-        gc.collect()
-    cleaned_list = sort_and_clean_chunks(results)
-    return "".join(cleaned_list)
 
 def cal_uni_bi(audio_file):
   

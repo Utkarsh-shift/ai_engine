@@ -17,7 +17,7 @@ sys.path.append(work_path)
 from dpcv.tools.common import parse_args
 from dpcv.config.default_config_opt import cfg, cfg_from_file, cfg_from_list
 # from torch.utils.tensorboard import SummaryWriter
-from dpcv.experiment.exp_runner import ExpRunner
+from dpcv.experiment.new_exp import ExpRunner
 from dpcv.data.utils.video_to_image import convert_videos_to_frames
 from dpcv.data.utils.video_to_wave import audio_extract
 from dpcv.data.utils.raw_audio_process import audio_process
@@ -426,94 +426,302 @@ def evaluate_student_answer(question, student_answer):
     
     return evaluation
  
+
+def format_feedback(input_json):
+    
+    formatted_json = {
+        "feedback": {
+            "overall_score": {
+                "title": "Overall Score",
+                "comment": "Overall performance summary will go here.",
+                "score": input_json["pace_score"]
+            },
+            "scores": {
+                "communication_score": {
+                    "title": "Communication Score",
+                    "comment": input_json["communication_comment"],
+                    "score": input_json["communication_score"],
+                    "subparts": [
+                        {
+                            "articulation_score": {
+                                "title": "Articulation Score",
+                                "comment": input_json["articulation_comment"],
+                                "score": input_json["articulation_score"]
+                            },
+                            "pace_and_clarity_score": {
+                                "title": "Pace and Clarity Score",
+                                "comment": input_json["pace_score_comment"],
+                                "score": input_json["pace_score"]
+                            },
+                            "grammar_score": {
+                                "title": "Grammar Score",
+                                "comment": input_json["grammar_comment"],
+                                "score": input_json["grammar_score"]
+                            }
+                        }
+                    ]
+                },
+                "sociability_score": {
+                    "title": "Sociability Score",
+                    "comment": input_json["sociability_comment"],
+                    "score": input_json["sociability_score"],
+                    "subparts": [
+                        {
+                            "energy_score": {
+                                "title": "Energy Score",
+                                "comment": input_json["energy_comment"],
+                                "score": input_json["emotion_score"]
+                            },
+                            "sentiment_score": {
+                                "title": "Sentiment Score",
+                                "comment": input_json["sentiment_comment"],
+                                "score": input_json["sentiment_score"]
+                            },
+                            "emotion_score": {
+                                "title": "Emotion Score",
+                                "comment": input_json["emotion_comment"],
+                                "score": input_json["emotion_score"]
+                            }
+                        }
+                    ]
+                },
+                "positive_attitude_score": {
+                    "title": "Positive Attitude Score",
+                    "comment": input_json["positive_attitude_comment"],  # Fixed closing bracket error here
+                    "score": input_json["positive_attitude_score"],
+                    "subparts": [
+                        {
+                            "energy_score": {
+                                "title": "Energy Score",
+                                "comment": input_json["energy_comment"],
+                                "score": input_json["energy_score"]
+                            }
+                        }
+                    ]
+                },
+                "professional_score": {
+                    "title": "Professional Score",
+                    "comment": input_json["professional_comment"],
+                    "score": input_json["professional_score"],
+                    "subparts": [
+                        {
+                            "presentability_score": {
+                                "title": "Presentability Score",
+                                "comment": input_json["presentability_comment"],
+                                "score": input_json["presentability_score"]
+                            },
+                            "body_language_score": {
+                                "title": "Body Language Score",
+                                "comment": input_json["body_language_comment"],
+                                "score": input_json["bodylang_score"]
+                            },
+                            "dressing_score": {
+                                "title": "Dressing Score",
+                                "comment": input_json["dressing_comment"],
+                                "score": input_json["dressing_score"]
+                            }
+                        }
+                    ]
+                }
+            },
+            "transcription": input_json["transcription"]
+        }
+    }
+
+    return formatted_json
+
+def get_ocean_comment(ocean_list):
+    message={"role": "system",
+            "content": f"These are the ocean values {ocean_list[0]}, {ocean_list[1]},{ocean_list[2]},{ocean_list[3]},{ocean_list[4]} give comment based on that values"}
+    client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
+    chat_completion = client.chat.completions.create(
+            model="gpt-4o",
+            messages = [message]
+            ,max_tokens=256
+        )
+        # print("|\n|\n|\n|\n|\n|\n|\n|\n|v",chat_completion)
+    # finish_reason = chat_completion.choices[0].finish_reason
  
+    
+    final_comment = chat_completion.choices[0].message.content
+    
+    return final_comment
+
+
+
+def get_sw(prompt):
+       
+    message={"role": "system",
+            "content": prompt}
+    client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
+    chat_completion = client.chat.completions.create(
+            model="gpt-4",
+            messages = [message]
+            ,max_tokens=256
+        )
+        # print("|\n|\n|\n|\n|\n|\n|\n|\n|v",chat_completion)
+    # finish_reason = chat_completion.choices[0].finish_reason
+ 
+    
+    final = chat_completion.choices[0].message.content
+    print("strength and weakness json is ---------",final)
+    final=final.replace("'", '"')
+    final_res=json.loads(final)    
+    return final_res
+
     
 import json
 # from sagemaker.remote_function import remote
 # @remote(instance_type="ml.p3.2xlarge")
 def show_results(Questions):
-    try:
-        counts = 0  
-        allprompts, final_score,comment_dict= dpmain(counts)
-        print(Questions)
-        results = test12(allprompts)
-        print("********************##########################", results)
-        print("-" * 50, final_score)
+    # try:
+      counts = 0  
+      final_dict= dpmain(counts)
+      print(Questions)
+      
+      
+      
 
-        # Check if 'results' is a JSON string and convert to a dictionary
-        if isinstance(results, str):
-            # Convert string to dict
-            results1 = json.loads(results)
-        else:
-            # If it's already a dict or similar object, use it as is
-            results1 = results
+      # Check if 'results' is a JSON string and convert to a dictionary
+      if isinstance(final_dict, str):
+          # Convert string to dict
+          results1 = json.loads(final_dict)
+      else:
+          # If it's already a dict or similar object, use it as is
+          results1 = final_dict
 
-        # Ensure final_score is a dict and update the results
-        if isinstance(final_score, dict):
-            print("Final score is ------------------------------------------------------------------------",final_score)
-            results1.update(final_score)
-            
-
-        else:
-            print("Final score is not a dictionary, unable to update results.")
-        # answers=results1['transcription']
-        ids = [entry['id'] for entry in results1['transcription']]
-        answers = [entry['transcript'] for entry in results1['transcription']]
-        ans_feedback=[]
-        for i,j in zip(Questions,answers):
-
-            ans=evaluate_student_answer(i,j)
-            ans_feedback.append(ans)
-        ques_feedback = [{"id": id_, "answer_evaluation": transcript} for id_, transcript in zip(ids,ans_feedback)]
-        ques_feedback={"answer_feedback":ques_feedback}
-        if isinstance(ques_feedback, dict):
-            results1.update(ques_feedback)
-        else:
-            print("Final score is not a dictionary, unable to update results.")
-        # Convert the updated dictionar back to a JSON string
-        promt="Summarize the given text and also maintain all detail"
-        gpt_comm=" ".join(comment_dict['gpt_grammer_comment'])
-        client = OpenAI(api_key =config('OPENAI_API_KEY'))
-        message={"role": "system",
-                "content": promt+f"The Given text is : '{gpt_comm}'"}
-        # client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
-        chat_completion = client.chat.completions.create(
-                model="gpt-4o",
-                messages = [message]
-                ,max_tokens=256
-            )
-            # print("|\n|\n|\n|\n|\n|\n|\n|\n|v",chat_completion)
-        # finish_reason = chat_completion.choices[0].finish_reason
+      # Ensure final_score is a dict and update the results
+      
 
 
-        final_grammer_comment = chat_completion.choices[0].message.content
 
-        if isinstance(results1,dict):
-            results1["feedback"]["scores"]["overall_professional_score"]["comment"]=comment_dict["professional_comment"]
-            results1["feedback"]["scores"]["overall_professional_score"]["subparts"]["body_language_score"]["comment"]=comment_dict["bodylang_comment"]
-            results1["feedback"]["scores"]["sociability_score"]["subparts"]["emotion_score"]["comment"]=comment_dict["emotioncomment"]
-            results1["feedback"]["scores"]["overall_professional_score"]["subparts"]["presentability_score"]["comment"]=comment_dict["grommingcomment"]+comment_dict["dressingcomment"]
-            results1["feedback"]["scores"]["communication_score"]["subparts"]["grammar_score"]["comment"]=final_grammer_comment
-            results1["feedback"]["scores"]["overall_professional_score"]["subparts"]["dressing_score"]["comment"]=comment_dict["dressingcomment"]
-            
+      ids = [entry['id'] for entry in results1['transcription']]
+      answers = [entry['transcript'] for entry in results1['transcription']]
+      ans_feedback=[]
+      for i,j in zip(Questions,answers):
 
-        display_data = json.dumps(results1, indent=4)
+          ans=evaluate_student_answer(i,j)
+          ans_feedback.append(ans)
+      ques_feedback = [{"id": id_, "answer_evaluation": transcript} for id_, transcript in zip(ids,ans_feedback)]
+      ques_feedback={"answer_feedback":ques_feedback}
+      if isinstance(ques_feedback, dict):
+          results1.update(ques_feedback)
+      else:
+          print("Final score is not a dictionary, unable to update results.")
+      # Convert the updated dictionar back to a JSON string
+      # promt="Summarize the given text and also maintain all detail"
+      # gpt_comm=" ".join(comment_dict['gpt_grammer_comment'])
+      # client = OpenAI(api_key =config('OPENAI_API_KEY'))
+      # message={"role": "system",
+      #         "content": promt+f"The Given text is : '{gpt_comm}'"}
+      # # client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
+      # chat_completion = client.chat.completions.create(
+      #         model="gpt-4o",
+      #         messages = [message]
+      #         ,max_tokens=256
+      #     )
+      
 
-        video_dir = "datasets/ChaLearn/test"
-        delete_all_files_in_folder(video_dir)
-        print("Files are deleted in Test Folder.")
-        import torch
-        torch.cuda.empty_cache()
-        return display_data
 
-    except Exception as e:
-        print(e)
-        video_dir = "datasets/ChaLearn/test"
-        batch_dir=os.getcwd()
-        batch_dir=batch_dir.replace("/resultsUI","/videos")
-        delete_all_files_in_folder(video_dir)
-        delete_all_folders_in_folder(batch_dir)
-        print("Files are deleted in Test Folder.")
+
+
+
+
+      # final_grammer_comment = chat_completion.choices[0].message.content
+
+      # if isinstance(results1,dict):
+      #     results1["feedback"]["scores"]["overall_professional_score"]["comment"]=comment_dict["professional_comment"]
+      #     results1["feedback"]["scores"]["overall_professional_score"]["subparts"]["body_language_score"]["comment"]=comment_dict["bodylang_comment"]
+      #     results1["feedback"]["scores"]["sociability_score"]["subparts"]["emotion_score"]["comment"]=comment_dict["emotioncomment"]
+      #     results1["feedback"]["scores"]["overall_professional_score"]["subparts"]["presentability_score"]["comment"]=comment_dict["grommingcomment"]+comment_dict["dressingcomment"]
+      #     results1["feedback"]["scores"]["communication_score"]["subparts"]["grammar_score"]["comment"]=final_grammer_comment
+      #     results1["feedback"]["scores"]["overall_professional_score"]["subparts"]["dressing_score"]["comment"]=comment_dict["dressingcomment"]
+          
+
+      display_data = results1
+
+
+      for transcript in display_data['transcription']:
+          # Find the corresponding answer_evaluation from 'answer_feedback' using the ID
+          evaluation = next((feedback['answer_evaluation'] for feedback in display_data['answer_feedback'] if feedback['id'] == transcript['id']), None)
+          if evaluation:
+              transcript['answer_evaluation'] = evaluation
+
+      # Remove the 'answer_feedback' field entirely
+      del display_data['answer_feedback']
+
+      # Print the modified JSON
+      # print(json.dumps(display_data, indent=2))   
+      # 
+      ocean_values=display_data["ocean_values"]
+      ocean_comment=get_ocean_comment(ocean_values)
+      formatted_dta=format_feedback(display_data)
+      
+      sociability_score = formatted_dta["feedback"]["scores"]["sociability_score"]["score"]
+      communication_score = formatted_dta["feedback"]["scores"]["communication_score"]["score"]
+      positive_attitude_score = formatted_dta["feedback"]["scores"]["positive_attitude_score"]["score"]
+      overall_score = formatted_dta["feedback"]["scores"]["professional_score"]["score"]
+
+      sociability_comment = formatted_dta["feedback"]["scores"]["sociability_score"]["comment"]
+      communication_comment = formatted_dta["feedback"]["scores"]["communication_score"]["comment"]
+      positive_attitude_comment = formatted_dta["feedback"]["scores"]["positive_attitude_score"]["comment"]
+      formatted_dta["feedback"]["ocean_values_analysis"]={"values":ocean_values,"title":"Ocean values analysis","comment":ocean_comment}
+
+      
+      example_json=str({
+          "strengths": {
+              "title": "Strengths",
+              "strengths": [
+                  "<strength1>",
+                  "<strength2>",
+                  "<strength3>",
+                  "<strength4>"
+              ]
+          },
+          "weakness": {
+              "title": "Weakness",
+              "weakness": [
+                  "<weakness1>",
+                  "<weakness2>",
+                  "<weakness3>",
+                  "<weakness4>"
+              ]
+          }
+      })
+      prompt = f"""
+      The following feedback was provided for a student interview:
+
+      - Sociability Score: {sociability_score}, Comment: {sociability_comment}.
+      - Communication Score: {communication_score}, Comment:{communication_comment}.
+      - Positive Attitude Score: {positive_attitude_score}, Comment:{positive_attitude_comment}.
+      - Overall Professional Score: {overall_score}
+
+      Please provide a summary of the student's strengths and weaknesses in the following format:
+
+      {example_json}
+
+      Make sure the strengths and weaknesses are based on the comments for each of the scores provided.
+      """
+
+      dict_result=get_sw(prompt)
+
+      formatted_dta["feedback"]["strengths"]=dict_result["strengths"]
+      formatted_dta["feedback"]["weakness"]=dict_result["weakness"]
+      video_dir = "datasets/ChaLearn/test"
+      delete_all_files_in_folder(video_dir)
+      print("Files are deleted in Test Folder.")
+      import torch
+      torch.cuda.empty_cache()
+      return formatted_dta
+
+    # except Exception as e:
+    #     print(e)
+    #     video_dir = "datasets/ChaLearn/test"
+    #     batch_dir=os.getcwd()
+    #     batch_dir=batch_dir.replace("/resultsUI","/videos")
+    #     delete_all_files_in_folder(video_dir)
+    #     delete_all_folders_in_folder(batch_dir)
+    #     print("Files are deleted in Test Folder.")
  
  
  
