@@ -140,11 +140,6 @@ def transcribe_chunk_batch_new(chunks, model):
         pace_prompt =  f"""If the peron is speaking at a average word per minute rate of {wpm}, and is given a score of {wpm_score} , then comment about the pace of the person in speech """
         pace_comment = get_comment(pace_prompt)
         print("pace comment is :",pace_comment)
-
-        
-
-
-     
         avg_logprob_mean = sum(avg_logprobs) / len(avg_logprobs)
         print("The average_logprob is calculates as" , avg_logprob_mean)
         avg_logprob_score = scale_avg_logprob_to_score(avg_logprob_mean)
@@ -244,6 +239,7 @@ def cal_uni_bi(audio_file):
         )
         newdata = chat_completion_comment.choices[0].message.content
         grammer_comment = newdata
+        grammer_comment=grammer_comment.replace('\"',"")
 
 
         print("Grammar Score:", grammer_score)

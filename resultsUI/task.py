@@ -295,27 +295,22 @@ def process_batch(batch_id,Questions):
         print("the type is -------------------------------------------------------",type(result)) # Used to Set the Json Response 
         #     processed_json.append(result)
         
-        # # Convert the list of processed JSONs into a pretty JSON string
-        # prettyJSON = json.dumps(processed_json, indent=4)
-        # print(prettyJSON)
 
-        # Update the link entries as processed
         for link_entry in link_entries:
             link_entry.status = 'processed'
             link_entry.save()
 
-        # Once all link entries in the batch are processed, update the batch status
+
         batch_entry.status = 'processed'
         batch_entry.results = result# Save the results as a JSON string
         batch_entry.save()
 
-        # Trigger the webhook after processing is complete
         trigger_webhook(batch_id,result)
 
     # except BatchEntry.DoesNotExist:
     #     print(f"BatchEntry with ID {batch_id} does not exist.")
     except Exception as e:
-        # Handle other exceptions
+
         link_entry.status = f"failed : {e}"
         link_entry.save()
         print(f"Exception occurred: {e}")

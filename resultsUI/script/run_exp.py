@@ -380,36 +380,38 @@ def evaluate_student_answer(question, student_answer):
             "content":f"""
     You are tasked with evaluating a candidate's answer to a question. Follow these instructions to provide a thorough and constructive evaluation:
  
-    1. Understand the Question: First, ensure you understand the question fully. Identify the main components or steps required to reach a correct answer.
+    Understand the Question: First, ensure you understand the question fully. Identify the main components or steps required to reach a correct answer.
  
-    2. Review the Candidate's Answer: Carefully read the Candidate's response. Identify the approach they took, noting any key points or methods they used.
+    Review the Candidate's Answer: Carefully read the Candidate's response. Identify the approach they took, noting any key points or methods they used.
  
-    3. Compare with an Ideal Solution:
-       - Break down the ideal solution step-by-step and see if the candidate's answer aligns with each step.
-       - Note any parts where the candidate deviated from the ideal solution, missed steps, or made incorrect assumptions.
+    Compare with an Ideal Solution:
+    - Break down the ideal solution step-by-step and see if the candidate's answer aligns with each step.
+    - Note any parts where the candidate deviated from the ideal solution, missed steps, or made incorrect assumptions.
  
-    4. Check for Accuracy:
-       - Verify each calculation, reasoning step, or logical point for correctness.
-       - Ensure the final answer is in the correct form (e.g., simplified fraction, correct units).
+    Check for Accuracy:
+    - Verify each calculation, reasoning step, or logical point for correctness.
+    - Ensure the final answer is in the correct form (e.g., simplified fraction, correct units).
  
-    5. Assess Clarity and Completeness:
-       - Determine if the answer is easy to follow and if the candidate clearly explains their thought process.
-       - Check if the answer addresses all parts of the question, including any specific conditions or assumptions.
+    Assess Clarity and Completeness:
+    - Determine if the answer is easy to follow and if the candidate clearly explains their thought process.
+    - Check if the answer addresses all parts of the question, including any specific conditions or assumptions.
  
-    6. Provide Constructive Feedback:
-       - If the answer is correct, highlight what the candidate did well, such as clarity, accurate calculations, or thorough explanations.
-       - If there are errors, gently explain each mistake and suggest improvements or correct methods.
+    Provide Constructive Feedback:
+    - If the answer is correct, highlight what the candidate did well, such as clarity, accurate calculations, or thorough explanations.
+    - If there are errors, gently explain each mistake and suggest improvements or correct methods.
  
-    7. Assign a Score or Rating (if applicable):
-       - Based on accuracy, clarity, and completeness, assign a score or rating according to the provided grading criteria.
+    Assign a Score or Rating (if applicable):
+    - Based on accuracy, clarity, and completeness, assign a score or rating according to the provided grading criteria.
  
-    8. Summarize the Evaluation:
-       - Conclude with a brief summary, noting both strengths and areas for improvement.
- 
+    
     Here is the question and the candidate's answer:
  
     **Question**: {question}
     **Candidate's Answer**: {student_answer}
+
+    Summarize the Evaluation:
+    Conclude with a brief summary in 3-4 lines 
+ 
     """}
  
  
@@ -423,7 +425,7 @@ def evaluate_student_answer(question, student_answer):
  
  
     evaluation = response.choices[0].message.content
-    
+    evaluation=evaluation.replace("\n","")
     return evaluation
  
 
@@ -532,19 +534,16 @@ def format_feedback(input_json):
 
 def get_ocean_comment(ocean_list):
     message={"role": "system",
-            "content": f"These are the ocean values {ocean_list[0]}, {ocean_list[1]},{ocean_list[2]},{ocean_list[3]},{ocean_list[4]} give comment based on that values"}
+            "content": f"These are the ocean values: {ocean_list[0]}, {ocean_list[1]},{ocean_list[2]},{ocean_list[3]},{ocean_list[4]} representing openness to experience, conscientiousness, extraversion, agreeableness and neuroticism. Give comment in 2-3 lines based on these values"}
     client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
     chat_completion = client.chat.completions.create(
             model="gpt-4o",
             messages = [message]
             ,max_tokens=256
         )
-        # print("|\n|\n|\n|\n|\n|\n|\n|\n|v",chat_completion)
-    # finish_reason = chat_completion.choices[0].finish_reason
- 
-    
+
     final_comment = chat_completion.choices[0].message.content
-    
+    final_comment=final_comment.replace("\n"," ")
     return final_comment
 
 

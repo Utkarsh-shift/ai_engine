@@ -457,6 +457,7 @@ class ExpRunner:
         presentability_comm=finalcomment(list_presentability_comment)
         dressing_comm=finalcomment(list_dressing_comment)
         grammer_comm=finalcomment(list_grammar_comment)
+        grammer_comm=grammer_comm.replace("\"","")
         sentiment_comm=finalcomment(list_sentiment_comment)
         pace_comm=finalcomment(list_pace_comment)
         articulation_comm=finalcomment(list_articulation_comment)
