@@ -378,26 +378,26 @@ def evaluate_student_answer(question, student_answer):
  
     prompt = { "role": "system",
             "content":f"""
-    You are tasked with evaluating a student's answer to a question. Follow these instructions to provide a thorough and constructive evaluation:
+    You are tasked with evaluating a candidate's answer to a question. Follow these instructions to provide a thorough and constructive evaluation:
  
     1. Understand the Question: First, ensure you understand the question fully. Identify the main components or steps required to reach a correct answer.
  
-    2. Review the Student's Answer: Carefully read the student's response. Identify the approach they took, noting any key points or methods they used.
+    2. Review the Candidate's Answer: Carefully read the Candidate's response. Identify the approach they took, noting any key points or methods they used.
  
     3. Compare with an Ideal Solution:
-       - Break down the ideal solution step-by-step and see if the student's answer aligns with each step.
-       - Note any parts where the student deviated from the ideal solution, missed steps, or made incorrect assumptions.
+       - Break down the ideal solution step-by-step and see if the candidate's answer aligns with each step.
+       - Note any parts where the candidate deviated from the ideal solution, missed steps, or made incorrect assumptions.
  
     4. Check for Accuracy:
        - Verify each calculation, reasoning step, or logical point for correctness.
        - Ensure the final answer is in the correct form (e.g., simplified fraction, correct units).
  
     5. Assess Clarity and Completeness:
-       - Determine if the answer is easy to follow and if the student clearly explains their thought process.
+       - Determine if the answer is easy to follow and if the candidate clearly explains their thought process.
        - Check if the answer addresses all parts of the question, including any specific conditions or assumptions.
  
     6. Provide Constructive Feedback:
-       - If the answer is correct, highlight what the student did well, such as clarity, accurate calculations, or thorough explanations.
+       - If the answer is correct, highlight what the candidate did well, such as clarity, accurate calculations, or thorough explanations.
        - If there are errors, gently explain each mistake and suggest improvements or correct methods.
  
     7. Assign a Score or Rating (if applicable):
@@ -406,10 +406,10 @@ def evaluate_student_answer(question, student_answer):
     8. Summarize the Evaluation:
        - Conclude with a brief summary, noting both strengths and areas for improvement.
  
-    Here is the question and the student's answer:
+    Here is the question and the candidate's answer:
  
     **Question**: {question}
-    **Student's Answer**: {student_answer}
+    **Candidate's Answer**: {student_answer}
     """}
  
  
@@ -434,14 +434,14 @@ def format_feedback(input_json):
             "overall_score": {
                 "title": "Overall Score",
                 "comment": "Overall performance summary will go here.",
-                "score": input_json["pace_score"]
+                "score": input_json["overall_score"]
             },
             "scores": {
                 "communication_score": {
                     "title": "Communication Score",
                     "comment": input_json["communication_comment"],
                     "score": input_json["communication_score"],
-                    "subparts": [
+                    "subparts": 
                         {
                             "articulation_score": {
                                 "title": "Articulation Score",
@@ -459,13 +459,13 @@ def format_feedback(input_json):
                                 "score": input_json["grammar_score"]
                             }
                         }
-                    ]
+                    
                 },
                 "sociability_score": {
                     "title": "Sociability Score",
                     "comment": input_json["sociability_comment"],
                     "score": input_json["sociability_score"],
-                    "subparts": [
+                    "subparts": 
                         {
                             "energy_score": {
                                 "title": "Energy Score",
@@ -483,13 +483,13 @@ def format_feedback(input_json):
                                 "score": input_json["emotion_score"]
                             }
                         }
-                    ]
+                    
                 },
                 "positive_attitude_score": {
                     "title": "Positive Attitude Score",
                     "comment": input_json["positive_attitude_comment"],  # Fixed closing bracket error here
                     "score": input_json["positive_attitude_score"],
-                    "subparts": [
+                    "subparts": 
                         {
                             "energy_score": {
                                 "title": "Energy Score",
@@ -497,13 +497,13 @@ def format_feedback(input_json):
                                 "score": input_json["energy_score"]
                             }
                         }
-                    ]
+                    
                 },
                 "professional_score": {
                     "title": "Professional Score",
                     "comment": input_json["professional_comment"],
                     "score": input_json["professional_score"],
-                    "subparts": [
+                    "subparts": 
                         {
                             "presentability_score": {
                                 "title": "Presentability Score",
@@ -521,7 +521,7 @@ def format_feedback(input_json):
                                 "score": input_json["dressing_score"]
                             }
                         }
-                    ]
+                    
                 }
             },
             "transcription": input_json["transcription"]
@@ -549,13 +549,14 @@ def get_ocean_comment(ocean_list):
 
 
 
-def get_sw(prompt):
+def get_sw(prompt,json_schema):
        
     message={"role": "system",
             "content": prompt}
     client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
     chat_completion = client.chat.completions.create(
-            model="gpt-4",
+        model="gpt-4o-2024-08-06",
+        response_format={"type":"json_schema","json_schema":json_schema},
             messages = [message]
             ,max_tokens=256
         )
@@ -574,7 +575,7 @@ import json
 # from sagemaker.remote_function import remote
 # @remote(instance_type="ml.p3.2xlarge")
 def show_results(Questions):
-    # try:
+    try:
       counts = 0  
       final_dict= dpmain(counts)
       print(Questions)
@@ -668,7 +669,7 @@ def show_results(Questions):
       formatted_dta["feedback"]["ocean_values_analysis"]={"values":ocean_values,"title":"Ocean values analysis","comment":ocean_comment}
 
       
-      example_json=str({
+      example_json="""{
           "strengths": {
               "title": "Strengths",
               "strengths": [
@@ -687,7 +688,56 @@ def show_results(Questions):
                   "<weakness4>"
               ]
           }
-      })
+      }"""
+
+      json_schema={
+  "description": "A schema representing an individual's strengths and weaknesses, with titles and lists of strengths/weaknesses.",
+  "name": "strengths_and_weakness",
+    "strict": True,
+    "schema":{
+  "type": "object",
+  "properties": {
+    "strengths": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "enum": ["Strengths"]
+        },
+        "strengths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "A list of strengths. Can contain up to four strength entries."
+        }
+      },
+      "required": ["title", "strengths"],
+      "additionalProperties": False
+    },
+    "weakness": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "enum": ["Weakness"]
+        },
+        "weakness": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "A list of weaknesses. Can contain up to four weakness entries."
+        }
+      },
+      "required": ["title", "weakness"],
+      "additionalProperties": False
+    }
+  },
+  "required": ["strengths", "weakness"],
+  "additionalProperties": False
+}}
+
       prompt = f"""
       The following feedback was provided for a student interview:
 
@@ -703,7 +753,7 @@ def show_results(Questions):
       Make sure the strengths and weaknesses are based on the comments for each of the scores provided.
       """
 
-      dict_result=get_sw(prompt)
+      dict_result=get_sw(prompt,json_schema)
 
       formatted_dta["feedback"]["strengths"]=dict_result["strengths"]
       formatted_dta["feedback"]["weakness"]=dict_result["weakness"]
@@ -714,14 +764,14 @@ def show_results(Questions):
       torch.cuda.empty_cache()
       return formatted_dta
 
-    # except Exception as e:
-    #     print(e)
-    #     video_dir = "datasets/ChaLearn/test"
-    #     batch_dir=os.getcwd()
-    #     batch_dir=batch_dir.replace("/resultsUI","/videos")
-    #     delete_all_files_in_folder(video_dir)
-    #     delete_all_folders_in_folder(batch_dir)
-    #     print("Files are deleted in Test Folder.")
+    except Exception as e:
+        print(e)
+        video_dir = "datasets/ChaLearn/test"
+        batch_dir=os.getcwd()
+        batch_dir=batch_dir.replace("/resultsUI","/videos")
+        delete_all_files_in_folder(video_dir)
+        delete_all_folders_in_folder(batch_dir)
+        print("Files are deleted in Test Folder.")
  
  
  

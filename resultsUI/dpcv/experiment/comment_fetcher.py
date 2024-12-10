@@ -60,7 +60,7 @@ def finalcomment(final_commentList):
     commenttext = " ".join(final_commentList)
     
     message={"role": "system",
-            "content": "Summarize the text and keep all details."+f"The Given text is : '{commenttext}'"}
+            "content": "Summarize the text  in 2-3 lines and keep all details."+f"The Given text is : '{commenttext}'"}
     # client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
     chat_completion = client.chat.completions.create(
             model="gpt-4o",
@@ -97,7 +97,7 @@ def getcomment_communication(pace_comment,articulation_comment,energy_comment):
 def getcomment_sociability(energy_score,sentiment_score,emotion_score):
        
     message={"role": "system",
-            "content": f"The sociability score is computed with energy , sentiment and emotion of the performance of person in these field is stated in english as {energy_score} , {sentiment_score} , {emotion_score}, what do you think how the person is behaving ?"}
+            "content": f"The sociability score is computed with energy , sentiment and emotion of the performance of person in these field is stated in english as {energy_score} , {sentiment_score} , {emotion_score}, what do you think how the person is behaving ? ,Explain in about 2-3 lines"}
     # client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
     chat_completion = client.chat.completions.create(
             model="gpt-4o",

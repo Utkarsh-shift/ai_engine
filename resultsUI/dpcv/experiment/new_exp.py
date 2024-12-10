@@ -67,6 +67,7 @@ class FinalNode:
         self.communication_comment=None
         self.positive_attitude_comment=None
         self.sociability_comment=None
+        self.overall_score=None
         
 
     def get_summary(self):
@@ -104,7 +105,8 @@ class FinalNode:
             "positive_attitude_comment":self.positive_attitude_comment,
             "sociability_comment":self.sociability_comment,
             "energy_score":self.energy_score,
-            "body_language_comment":self.bodylang_comment
+            "body_language_comment":self.bodylang_comment,
+            "overall_score":self.overall_score
             
         
         }
@@ -324,7 +326,7 @@ class ExpRunner:
 
                 presentability_prompt="You are an interviewer conducting a candidate interview. Based on the video, provide a summary of the person's presentability in the interview situation. Do not offer any suggestions or advice; just describe the person's presentability observed during the interview."
                 body_langauage_prompt="You are an interviewer conducting a candidate interview. Based on the video, provide a summary of the person's body language in the interview situation. Do not offer any suggestions or advice; just describe the person's body language observed during the interview."
-                dressing_prompt="You are an interviewer conducting a candidate interview. Based on the video, provide a summary of the person's dressing in the interview situation. Do not offer any suggestions or advice; just describe the person's dressing observed during the interview."
+                dressing_prompt="You are an interviewer conducting a candidate interview. Based on the video, provide a summary of the person's dressing and gromming in the interview situation. Do not offer any suggestions or advice; just describe the person's dressing and gromming observed during the interview."
                 professional_prompt="You are an interviewer conducting a candidate interview. Based on the video, provide a summary of the person's professionalism in the interview situation. Do not offer any suggestions or advice; just describe the professionalism observed during the interview."
                 emotion_prompt="You are an interviewer conducting a candidate interview. Based on the video, provide a summary of the person's emotion's in the interview situation. Do not offer any suggestions or advice; just describe the emotion's observed during the interview."
                 energy_prompt = "You are an interviewer conducting a candidate interview. Based on the video, provide a summary of the person's enerygy in the interview situation. Do not offer any suggestions or advice; just describe the energy observed during the interview."
@@ -349,7 +351,7 @@ class ExpRunner:
 
 
                 presentability_score_prompt="calculate the gromming score using the text"
-                dressing_score_prompt="calculate the dressing score using the text"
+                dressing_score_prompt="calculate the dressing and grooming score using the text"
                 
                 body_lang_prompt="calculate the body language score using the text"
                 emotion_score_prompt="calculate the emotion score using the text"
@@ -362,18 +364,19 @@ class ExpRunner:
                 body_lang_score=get_score(body_lang_prompt,bodylang)
                 emotion_score=get_score(emotion_score_prompt,emotioncomment)
                 energy_score=get_score(energy_score_prompt , energycomment)
-
+                
                 professional_score=(presentability_score+dressing_score+body_lang_score)/3
-                node.professional_score = professional_score
+                node.professional_score = round(professional_score, 2)
                 node.presentability_score = presentability_score
                 node.dressing_score = dressing_score
                 node.bodylang_score = body_lang_score
                 node.emotion_score = emotion_score
                 node.energy_score = energy_score
                 node.positive_attitude=energy_score  # need to change as sentiment is not included only energy
-
-                node.communication_score=(node.articulation_score+node.pace_score+node.grammar_score)/3
-                node.sociability_score=(node.emotion_score+node.energy_score+node.sentiment_score)/3
+                communication_score=(node.articulation_score+node.pace_score+node.grammar_score)/3
+                node.communication_score=round(communication_score,2)
+                sociability_score=(node.emotion_score+node.energy_score+node.sentiment_score)/3
+                node.sociability_score=round(sociability_score,2)
 
                 self.audio_nodes.append(node)
                 
@@ -458,17 +461,27 @@ class ExpRunner:
         pace_comm=finalcomment(list_pace_comment)
         articulation_comm=finalcomment(list_articulation_comment)
         energy_comm=finalcomment(list_energy_comment)
-        Finalnode.emotion_score=np.mean(list_emotion_score)
-        Finalnode.articulation_score = np.mean(list_articulation_score)
-        Finalnode.bodylang_score = np.mean(list_bodylang_score)
-        Finalnode.dressing_score = np.mean(list_dressing_score)
-        Finalnode.energy_score = np.mean(list_energy_score)
+        emotion_sc=np.mean(list_emotion_score)
+        Finalnode.emotion_score=round(emotion_sc)
+        articulation_sc=np.mean(list_articulation_score)
+        Finalnode.articulation_score = round(articulation_sc,2)
+        body_lang_sc= np.mean(list_bodylang_score)
+        Finalnode.bodylang_score = round(body_lang_sc,2)
+        dressing_sc=np.mean(list_dressing_score)
+        Finalnode.dressing_score = round(dressing_sc,2)
+        energy_sc=np.mean(list_energy_score)
+        Finalnode.energy_score = round(energy_sc,2)
         Finalnode.ocean_values = (np.mean(list_ocean_values, axis = 0)).tolist()
-        Finalnode.grammar_score=np.mean(list_grammar_score)
-        Finalnode.pace_score=np.mean(list_pace_score)
-        Finalnode.sentiment_score=np.mean(list_sentiment_score)
-        Finalnode.professional_score=np.mean(list_professional_score)
-        Finalnode.presentability_score=np.mean(list_presentability_score)
+        grammer_sc=np.mean(list_grammar_score)
+        Finalnode.grammar_score=round(grammer_sc,2)
+        pace_sc=np.mean(list_pace_score)
+        Finalnode.pace_score=round(pace_sc,2)
+        sentiment_sc=np.mean(list_sentiment_score)
+        Finalnode.sentiment_score=round(sentiment_sc,2)
+        professional_sc=np.mean(list_professional_score)
+        Finalnode.professional_score=round(professional_sc,2)
+        presentability_sc=np.mean(list_presentability_score)
+        Finalnode.presentability_score=round(presentability_sc,2)
         Finalnode.transcript=list_transcript
         Finalnode.sentiment_comment=sentiment_comm
         Finalnode.grammar_comment=grammer_comm
@@ -482,9 +495,12 @@ class ExpRunner:
         Finalnode.energy_comment=energy_comm
         Finalnode.link_id=list_link_id
         Finalnode.df_unigrams=list_unigrams
-        Finalnode.positive_attitude=np.mean(list_positive_attitude)   # try this prompt and continue : write the prompt same as communication 
-        Finalnode.sociability_score=np.mean(list_sociability_score)   # try this prompt and continue : write the prompt same as communication 
-        Finalnode.communication_score=np.mean(list_communication_score)    # try this prompt : The communication score is computed with pace , aticutaion and energy of the performance of person in these field is stated in english as {pace comment} , {articulation comment} , {enery comment}, what do you think how the person is behaving ?
+        positive_attitude_sc=np.mean(list_positive_attitude)
+        Finalnode.positive_attitude=round(positive_attitude_sc,2) 
+        sociability_sc=np.mean(list_sociability_score)
+        Finalnode.sociability_score=round(sociability_sc,2)
+        communication_sc=np.mean(list_communication_score) 
+        Finalnode.communication_score=round(communication_sc,2)   
         communication_comm=getcomment_communication(pace_comment=Finalnode.pace_comment,articulation_comment=Finalnode.articulation_comment,energy_comment=Finalnode.energy_comment)
         Finalnode.communication_comment=communication_comm
         sociability_comm=getcomment_sociability(energy_score=Finalnode.energy_score,sentiment_score=Finalnode.sentiment_score,emotion_score=Finalnode.emotion_score)
@@ -493,6 +509,8 @@ class ExpRunner:
         Finalnode.positive_attitude_comment=positive_attitude_comm
         transcription = [{"id": id_, "transcript": transcript} for id_, transcript in zip(Finalnode.link_id,Finalnode.transcript)]
         Finalnode.transcription=transcription
+        overall_score=(Finalnode.sociability_score+Finalnode.professional_score+Finalnode.communication_score+Finalnode.positive_attitude)/4
+        Finalnode.overall_score=round(overall_score,2)
         return Finalnode.get_summary()
 
 
