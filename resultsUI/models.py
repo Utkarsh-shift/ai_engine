@@ -7,7 +7,7 @@ import uuid
 #     created_at = models.DateTimeField(auto_now_add=True)
 
 class BatchEntry(models.Model):
-    batch_id = models.UUIDField( editable=False, unique=True)
+    batch_id = models.CharField(max_length=255,unique=True)
     status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('processing', 'Processing'), ('processed', 'Processed')], default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     results = models.JSONField(null=True, blank=True)

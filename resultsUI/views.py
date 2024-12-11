@@ -186,7 +186,7 @@ class LinkEntryAPIView(APIView):
             new_links=[]
             Id=[]
             Questions=[]
-            batch_id=request.data["batch_id"]
+            batch_id=str(request.data["batch_id"])
             for item in links1["links"]:
                 # print("ID:", item["id"])
                 # print("Link:", item["link"])
@@ -208,7 +208,7 @@ class LinkEntryAPIView(APIView):
                 status_values = BatchEntry.objects.filter(batch_id=batch_id).values_list('status', flat=True)
                 if str(status_values[0])=="processed":
                     results_values = BatchEntry.objects.filter(batch_id=batch_id).values_list('results', flat=True)
-                    result_final={"batch_id":batch_id,"status":"processed","data":results_values}
+                    result_final={"batch_id":batch_id,"status":"processed","data":results_values[0]}
                     return Response(result_final,status=status.HTTP_201_CREATED)
                 if str(status_values[0])=="pending":
                     results_values = BatchEntry.objects.filter(batch_id=batch_id).values()[0]
