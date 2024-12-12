@@ -101,7 +101,22 @@ def scale_avg_logprob_to_score(avg_logprob, min_logprob=-1.0, max_logprob=-0.1):
         return 100
     else:
         return ((avg_logprob - min_logprob) / (max_logprob - min_logprob)) * 100
+
+def translate_text(text):
+    message = [
+    {"role": "system", "content": "You are a translation assistant. Translate all user-provided text into English. Respond ONLY with the translated text, without adding extra explanations or comments."},
+    {"role": "user", "content": text }
+    ]
     
+    client = OpenAI(api_key =config("OPENAI_API_KEY"))
+    chat_completion = client.chat.completions.create(
+            model="gpt-4o",
+            messages = message
+            ,max_tokens=256
+        )
+    newdata = chat_completion.choices[0].message.content
+    print(newdata)
+    return newdata
 
 def transcribe_chunk_batch_new(chunks, model):
     transcriptions = []
@@ -126,7 +141,7 @@ def transcribe_chunk_batch_new(chunks, model):
             
             os.remove(i)
         full_transcription = "".join(transcriptions)
-
+        full_transcription=translate_text(full_transcription)
         duration_in_minutes = total_duration/60
         if duration_in_minutes > 0:
             wpm = total_words / duration_in_minutes
