@@ -39,7 +39,7 @@ import re
  
 def hf(text):
     load_dotenv()
-    client = OpenAI(api_key ="sk-proj-5J6AGNVXQEJ6Ji9NATgCT3BlbkFJblejOzq7DI9TgfagRxd7")
+    client = OpenAI(api_key =config("OPENAI_API_KEY"))
     message={"role": "system",
             "content": f"""If the given text is not in English, translate it to English only. If the text is already in English, return the exact same text without any modification. The text to be processed is: '{text}'"""}
     client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
