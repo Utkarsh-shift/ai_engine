@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import json
 import numpy as np
+import torch
 from dpcv.faceTracker.face import process_in_batches
 from datetime import datetime
 from dpcv.data.datasets.build import build_dataloader
@@ -12,7 +13,7 @@ from dpcv.engine.build import build_trainer
 from dpcv.evaluation.summary import TrainSummary
 from dpcv.checkpoint.save import save_model, resume_training, load_model
 from dpcv.tools.logger import make_logger
-import opensmile,threading
+
 import pandas as pd
 from dpcv.text_mining_using_python import cal_uni_bi
 from OpenGraphAU.demo1 import CallMethod
@@ -246,7 +247,9 @@ class ExpRunner:
             self.optimizer.param_groups[0]["lr"] = self.cfg.SOLVER.LR_INIT
 
     def test(self, weight=None):
-        self.logger.info("Test only mode")
+        self.logger.info("Test only mode and clearing the GPU")
+        torch.cuda.empty_cache()
+        
         cfg = self.cfg.TEST
         cfg.WEIGHT = weight if weight else cfg.WEIGHT
 
@@ -269,7 +272,7 @@ class ExpRunner:
 
         folderpath = "./datasets/ChaLearn/voice_data/voice_raw/test_data/"
         audio_list = os.listdir(folderpath)
-        audio_list = list(filter(lambda x: ".praat" not in x, audio_list))   
+        # audio_list = list(filter(lambda x: ".praat" not in x, audio_list))   
         videopath  = "./datasets/ChaLearn/test/"
 
         for idx, audio in enumerate(audio_list):
@@ -364,10 +367,12 @@ class ExpRunner:
                 body_lang_score=get_score(body_lang_prompt,bodylang)
                 emotion_score=get_score(emotion_score_prompt,emotioncomment)
                 energy_score=get_score(energy_score_prompt , energycomment)
-                
+                print("########################################################")
                 professional_score=(presentability_score+dressing_score+body_lang_score)/3
                 node.professional_score = round(professional_score, 2)
+                print(node.professional_score)
                 node.presentability_score = presentability_score
+                print(node.presentability_score)
                 node.dressing_score = dressing_score
                 node.bodylang_score = body_lang_score
                 node.emotion_score = emotion_score
@@ -378,10 +383,13 @@ class ExpRunner:
                 sociability_score=(node.emotion_score+node.energy_score+node.sentiment_score)/3
                 node.sociability_score=round(sociability_score,2)
 
+                print("########################################################################")
+
                 self.audio_nodes.append(node)
                 
         
         Finalnode = FinalNode(videopath)
+        print("########################################################################")
         print(self.audio_nodes)
         list_link_id = []
         list_ocean_values = []

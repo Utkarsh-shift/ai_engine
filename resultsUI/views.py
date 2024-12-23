@@ -187,6 +187,7 @@ class LinkEntryAPIView(APIView):
             Id=[]
             Questions=[]
             batch_id=str(request.data["batch_id"])
+            webhook_url = str(request.data["server_url"])
             for item in links1["links"]:
                 # print("ID:", item["id"])
                 # print("Link:", item["link"])
@@ -228,7 +229,8 @@ class LinkEntryAPIView(APIView):
                     entry_data = LinkEntrySerializer(link_entry).data
                     response_data.append(entry_data)
                 print(response_data)
-                process_batch.delay(batch_id=batch_entry.batch_id,Questions=Questions)
+                print("the url in signature post is" , webhook_url)
+                process_batch.delay(batch_id=batch_entry.batch_id,Questions=Questions,webhook_url=webhook_url)
                 # Serialize the batch entry and include it in the response
                 batch_serializer = BatchEntrySerializer(batch_entry)
                 # batch_id=batch_entry.batch_id
@@ -256,29 +258,29 @@ class LinkEntryAPIView(APIView):
             # If not all are processed, set the batch status to processing
             batch_entry.status = 'processing'
             batch_entry.save()
+###################################################Not Working ###################
+    # def trigger_webhook(self, batch_id, data):
+    #     signature_url="http://192.168.1.120:8020/get-signature"
+    #     # try:
+    #     signature=requests.get(signature_url)
+    #     # except Exception as e:
+    #     #     print("error getting signature",e)
 
-    def trigger_webhook(self, batch_id, data):
-        signature_url="http://192.168.1.120:8020/get-signature"
-        # try:
-        signature=requests.get(signature_url)
-        # except Exception as e:
-        #     print("error getting signature",e)
-
-        webhook_url = config('RESPONSE_FEEDBACK_URL')
-        headers = {
-            'Accept': 'application/json',  
-            'Signature': signature
-        }
-        payload = {
-            'batch_id': batch_id,
-            'data': data,
-            'event': 'batch_processed',
-        }
-        try:
-            response = requests.post(webhook_url,headers=headers, json=payload)
-            response.raise_for_status()
-        except requests.exceptions.RequestException as e:
-            print(f"Error sending webhook: {e}")
+    #     webhook_url = config('RESPONSE_FEEDBACK_URL')
+    #     headers = {
+    #         'Accept': 'application/json',  
+    #         'Signature': signature
+    #     }
+    #     payload = {
+    #         'batch_id': batch_id,
+    #         'data': data,
+    #         'event': 'batch_processed',
+    #     }
+    #     try:
+    #         response = requests.post(webhook_url,headers=headers, json=payload)
+    #         response.raise_for_status()
+    #     except requests.exceptions.RequestException as e:
+    #         print(f"Error sending webhook: {e}")
 
 # Other views remain the same as before
 

@@ -4,28 +4,19 @@ import pandas as pd
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.util import ngrams
-from wordcloud import WordCloud
-import matplotlib.pyplot as plt
 from collections import Counter
 import os
 from pydub import AudioSegment
-import urllib
 import whisper
-import openai
-import argparse
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-import torch,torchaudio
-from transformers import WhisperForConditionalGeneration, WhisperProcessor
+import torch
 import whisper
 from pydub import AudioSegment
 import os
 import gc
 from multiprocessing import Pool, set_start_method
-from tqdm import tqdm
 from openai import OpenAI
 import os ,json
 from dotenv import load_dotenv
-import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.util import ngrams

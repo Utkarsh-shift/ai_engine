@@ -32,10 +32,20 @@ def convert_images_to_base64(image_folder_path):
 
 client = OpenAI(api_key=config("OPENAI_API_KEY"))
 
-def get_comments_for_gpt(base64Frames,prompt,transcript):  
+def get_comments_for_gpt(base64Frames,prompt,transcript):
+
+    # jump = 0
+
+    # if len(base64Frames) <= 15 : 
+    #     jump = 1
+    # elif   16 <= len(base64Frames) <= 65:
+    #     jump = 3 
+    # else : 
+    #     jump = 15   
     
     PROMPT_MESSAGES = [
-        {
+   
+        {   
             "role": "user",
             "content": [
                 prompt + f"And the transcript is given as {transcript}",          # prototype only try and see 
@@ -46,7 +56,7 @@ def get_comments_for_gpt(base64Frames,prompt,transcript):
     params = {
         "model": "gpt-4o",
         "messages": PROMPT_MESSAGES,
-        "max_tokens": 200,
+        "max_tokens": 1000,
         "temperature": 0.2,
     }
 
@@ -147,9 +157,12 @@ def get_score(prompt,text):
  
  
     newdata = chat_completion.choices[0].message.content
-    double_digit = re.findall(r'\b\d{2}\b', newdata)
-    newdata = int(double_digit[0])
-    print(newdata)
+    try :
+        double_digit = re.findall(r'\b\d{2}\b', newdata)
+        newdata = int(double_digit[0])
+    except : 
+        newdata = 10 
+    print("The score is given as ",newdata )
     return newdata
 
 # if __name__ == "__main__":

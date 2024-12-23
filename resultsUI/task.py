@@ -55,12 +55,13 @@ def list_and_download_files(bucket_name, local_directory):
         print(f'Error listing files: {e}')
 
 
-def get_signature():
+def get_signature(webhook_url):
     # from dotenv import load_dotenv
     # load_dotenv()
     # os.getenv("SIGN_URL")
     # signature_url="http://192.168.1.127:8020/webhook/get-signature"
-    signature_url=config('SIGN_URL')
+    signature_url=webhook_url + "webhook/get-signature"
+    print("################The signature url is given as ################" , signature_url)
     signature_res=requests.get(signature_url)
     sign_json=signature_res.json()
     real_signature=str(sign_json["data"])
@@ -69,7 +70,7 @@ def get_signature():
 
 
 @shared_task
-def trigger_webhook(batch_id, data):
+def trigger_webhook(batch_id, data,webhook_url):
     print("The code is in the webhook code $$$$$$$$$$$$$$$$$$$s")
     # signature_url="http://192.168.1.121:8020/webhook/get-signature"
     print("batch id -------------------------is ",batch_id)
@@ -79,11 +80,11 @@ def trigger_webhook(batch_id, data):
 # except Exception as e:
 #     print("error getting signature",e)
     try:
-        signature=get_signature()
+        signature=get_signature(webhook_url)
         print("signature is ----------",signature)
     
         # webhook_url = "http://192.168.1.127:8020/webhook/video-response-ai-feedback"
-        webhook_url=config('RESPONSE_FEEDBACK_URL')
+        webhook_url=webhook_url+"webhook/video-response-ai-feedback"
         headers = {
         'Accept': 'application/json',  
         'Signature': signature
@@ -195,31 +196,31 @@ def stop_ec2_instance():
 
 
 @shared_task
-def process_batch(batch_id,Questions):
+def process_batch(batch_id,Questions ,webhook_url):
     print("The current batch id in process is givenas " , batch_id)
-    try:
-        print("The code is here in process_batch")
-        
-        batch_entry = BatchEntry.objects.get(batch_id=batch_id)
-        link_entries = LinkEntry.objects.filter(batch=batch_entry).order_by('id')
-        # processed_json = []
-        processing_dir = os.path.join(settings.MEDIA_ROOT)
-        os.makedirs(processing_dir, exist_ok=True)
-        
-        batch_folder_path = os.path.join(settings.MEDIA_DOWNLOAD, str(batch_entry.batch_id))
-        os.makedirs(batch_folder_path,exist_ok=True)
+    
+    print("The code is here in process_batch")
+    
+    batch_entry = BatchEntry.objects.get(batch_id=batch_id)
+    link_entries = LinkEntry.objects.filter(batch=batch_entry).order_by('id')
+    # processed_json = []
+    processing_dir = os.path.join(settings.MEDIA_ROOT)
+    os.makedirs(processing_dir, exist_ok=True)
+    
+    batch_folder_path = os.path.join(settings.MEDIA_DOWNLOAD, str(batch_entry.batch_id))
+    os.makedirs(batch_folder_path,exist_ok=True)
 
-        img_processing_dir=settings.FRAME_ROOT
-        os.makedirs(img_processing_dir,exist_ok=True)
-        # downloding checkpoints
-        import dotenv
-        from dotenv import load_dotenv
-        load_dotenv()
-        ondrive_user_name=os.getenv("ONEDRIVE_USER")
-        ondrive_password=os.getenv("ONEDRIVE_PASS")
+    img_processing_dir=settings.FRAME_ROOT
+    os.makedirs(img_processing_dir,exist_ok=True)
+    # downloding checkpoints
+    import dotenv
+    from dotenv import load_dotenv
+    load_dotenv()
+    ondrive_user_name=os.getenv("ONEDRIVE_USER")
+    ondrive_password=os.getenv("ONEDRIVE_PASS")
         #openAUgraph models
         
-
+    try:
 
         path = os.getcwd()
         path = path + "/resultsUI/"
@@ -287,12 +288,14 @@ def process_batch(batch_id,Questions):
 
             # Perform the processing (e.g., extract audio)
         result1= show_results(Questions)  # Assuming show_results processes the video and returns JSON
-        print("print result 1 is here:",result1)
+        
         # result1['ocean_values']=result1['ocean_values'].tolist()
         result = json.dumps(result1) 
         result=json.loads(result)
         # result=result1
         print("the type is -------------------------------------------------------",type(result)) # Used to Set the Json Response 
+
+        print("The answer the is " , result)
         #     processed_json.append(result)
         
 
@@ -304,8 +307,9 @@ def process_batch(batch_id,Questions):
         batch_entry.status = 'processed'
         batch_entry.results = result# Save the results as a JSON string
         batch_entry.save()
-
-        trigger_webhook(batch_id,result)
+        print("The signature url in process_batch",webhook_url)
+        
+        trigger_webhook(batch_id,result,webhook_url)
 
     # except BatchEntry.DoesNotExist:
     #     print(f"BatchEntry with ID {batch_id} does not exist.")
