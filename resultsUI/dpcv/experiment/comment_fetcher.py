@@ -6,11 +6,29 @@ import time
 from openai import OpenAI
 import os,re
 import requests
+import tiktoken
 from decouple import config
 
+MAX_TOKENS = 10000
+OUTPUT_TOKENS = 256
 
+def count_tokens(text):
+    encoder = tiktoken.get_encoding("cl100k_base")  
+    tokens = encoder.encode(text)
+    return len(tokens)
+
+
+
+def truncate_text_to_fit(text, max_input_tokens):
+    """Truncate the input text to fit within the available token limit."""
+    while count_tokens(text) + OUTPUT_TOKENS > max_input_tokens:
+        text = " ".join(text.split()[:-5])  
+    return text
  
+
+
 def convert_images_to_base64(image_folder_path):
+
     image_folder=os.listdir(image_folder_path)
     image_folder.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
     base64Frames = []
@@ -30,26 +48,40 @@ def convert_images_to_base64(image_folder_path):
     
     return base64Frames
 
+
+
 client = OpenAI(api_key=config("OPENAI_API_KEY"))
 
+
+def estimate_image_token_count(base64Frames):
+    # Base64 encoded images typically consume around 50 tokens per image (this is an estimate)
+    return len(base64Frames) * 50
+
+
 def get_comments_for_gpt(base64Frames,prompt,transcript):
+    base64Frames = base64Frames[0::15]
+    prompt_tokens = count_tokens(prompt  + f"And the transcript is given as {transcript}")
 
-    # jump = 0
+    image_token = estimate_image_token_count(base64Frames)
 
-    # if len(base64Frames) <= 15 : 
-    #     jump = 1
-    # elif   16 <= len(base64Frames) <= 65:
-    #     jump = 3 
-    # else : 
-    #     jump = 15   
+    total_input_tokens = prompt_tokens + image_token
+
+    available_tokens = MAX_TOKENS - OUTPUT_TOKENS
     
+    if total_input_tokens > available_tokens:
+        # If input is too large, reduce the input size dynamically
+        max_input_tokens = available_tokens - OUTPUT_TOKENS
+        prompt = truncate_text_to_fit(prompt , max_input_tokens)  # Truncate the prompt if it's too large
+        base64Frames = base64Frames[:max_input_tokens // 50]  # Reduce the number of images accordingly
+
+
     PROMPT_MESSAGES = [
    
         {   
             "role": "user",
             "content": [
                 prompt + f"And the transcript is given as {transcript}",          # prototype only try and see 
-                *map(lambda x: {"image": x, "resize": 768}, base64Frames[0::15]),
+                *map(lambda x: {"image": x, "resize": 768}, base64Frames),
             ],
         },
     ]
@@ -68,9 +100,16 @@ def get_comments_for_gpt(base64Frames,prompt,transcript):
 
 def finalcomment(final_commentList):
     commenttext = " ".join(final_commentList)
+
+
+    input_tokens = count_tokens(commenttext)
+
+    if input_tokens + OUTPUT_TOKENS > MAX_TOKENS:
+        max_input_token = MAX_TOKENS - OUTPUT_TOKENS
+        commenttext = truncate_text_to_fit(commenttext , max_input_token)
     
     message={"role": "system",
-            "content": "Summarize the text  in 2-3 lines and keep all details."+f"The Given text is : '{commenttext}'"}
+            "content": "Summarize the text lines and keep all details."+f"The Given text is : '{commenttext}'"}
     # client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
     chat_completion = client.chat.completions.create(
             model="gpt-4o",

@@ -176,23 +176,45 @@ def start_ec2_instance():
  
     except Exception as e:
         print(f'Error starting instance {instance_id}: {e}')
- 
+
+
+
+@shared_task
 def stop_ec2_instance():
-    session = boto3.Session(
-        aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
-        aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-        region_name=os.getenv("AWS_REGION")
-    )
+    instance_id = config("INSTANCE_ID")
+    aws_access_key_id = config("AWS_ACCESS_KEY_ID")
+    aws_secret_access_key = config("AWS_SECRET_ACCESS_KEY")
+    region_name = config("AWS_REGION", "ap-south-1")
     
+
+    session = boto3.Session(
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+        region_name=region_name
+    )
     ec2_client = session.client('ec2')
-    response = ec2_client.stop_instances(
-    InstanceIds=[
-        'string',
-    ],
-    Hibernate=True|False,
-    DryRun=True|False,
-    Force=True|False
-)
+    response = ec2_client.describe_instances(InstanceIds=[instance_id])
+    instance_state = response['Reservations'][0]['Instances'][0]['State']['Name']
+
+    if instance_state == "running" : 
+
+       
+        response_instance = ec2_client.stop_instances(
+        InstanceIds=[
+            instance_id,
+        ],
+        Hibernate=False,
+        DryRun=False,
+        Force=False)
+        instance_stopped_waiter = ec2_client.get_waiter('instance_stopped')
+        instance_stopped_waiter.wait(InstanceIds=[instance_id])
+        print(f'Instance {instance_id} is stopped.')
+    else : 
+        print(f'Instance {instance_id} is already running.')
+
+    
+
+    print(instance_state)
 
 
 @shared_task
@@ -315,6 +337,7 @@ def process_batch(batch_id,Questions ,webhook_url):
     #     print(f"BatchEntry with ID {batch_id} does not exist.")
     except Exception as e:
 
+        batch_entry.status = f"failed : {e}"
         link_entry.status = f"failed : {e}"
         link_entry.save()
         print(f"Exception occurred: {e}")
@@ -328,6 +351,13 @@ def process_batch(batch_id,Questions ,webhook_url):
         print(f"Error sending webhook: {e}")
         raise Exception
         return None
+    
+    finally: 
+
+        import os 
+        print("####################################### Shutting down the Engine in one minute ##############################################")
+        time.sleep(60)
+        os.system("sudo shutdown now")
 
 
 def download_video(link_entry, video_path):

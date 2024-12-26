@@ -547,27 +547,39 @@ def get_ocean_comment(ocean_list):
     return final_comment
 
 
-
+import time
 def get_sw(prompt,json_schema):
-       
-    message={"role": "system",
-            "content": prompt}
-    client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
-    chat_completion = client.chat.completions.create(
-        model="gpt-4o-2024-08-06",
-        response_format={"type":"json_schema","json_schema":json_schema},
-            messages = [message]
-            ,max_tokens=256
-        )
-        # print("|\n|\n|\n|\n|\n|\n|\n|\n|v",chat_completion)
-    # finish_reason = chat_completion.choices[0].finish_reason
- 
+    retries = 0
+
+    max_retries = 3
+
+    while retries < max_retries :
+      try :       
+        message={"role": "system",
+                "content": prompt}
+        client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
+        chat_completion = client.chat.completions.create(
+            model="gpt-4o-2024-08-06",
+            response_format={"type":"json_schema","json_schema":json_schema},
+                messages = [message]
+                ,max_tokens=256
+            )
+            # print("|\n|\n|\n|\n|\n|\n|\n|\n|v",chat_completion)
+        # finish_reason = chat_completion.choices[0].finish_reason
     
-    final = chat_completion.choices[0].message.content
-    print("strength and weakness json is ---------",final)
-    final=final.replace("'", '"')
-    final_res=json.loads(final)    
-    return final_res
+        
+        final = chat_completion.choices[0].message.content
+        print("strength and weakness json is ---------",final)
+        final=final.replace("'", '"')
+        final_res=json.loads(final)    
+        return final_res
+      except (json.JSONDecodeError , Exception) as e :
+          retries += 1
+          print(f"Error occurred: {e}. Retrying {retries}/{max_retries}.")
+          time.sleep(10)
+    print("Max retries exceeded. Failed to generate valid JSON.")
+
+    return None  # Return None if max retries exceeded
 
     
 import json
