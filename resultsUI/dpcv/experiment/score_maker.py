@@ -170,9 +170,9 @@ def ComputingValues(data):
       #  print(df_unigram['Word'])
       #  print(top_two['word'])
     except:
-        print("\n|\n|\n|unigram is\n",df_unigram)
+        # print("\n|\n|\n|unigram is\n",df_unigram)
         top_two = df_unigram[:2]   # changes by vK
-    print(top_two)
+    # print(top_two)
     language_score=0
    
  
@@ -183,8 +183,8 @@ def ComputingValues(data):
 
     for i in top_two['Word']:
         j = i[0].lower()
-        print("###########################################")
-        print(j)
+        # print("###########################################")
+        # print(j)
         
         if j in interview_words_set:
             language_score += 0.0384615385
@@ -214,13 +214,13 @@ def ComputingValues(data):
     # facial_score=facial_score*10
     # print("\n\n\nVoice Weightage : ",voice_score*0.25)
     # print("\n\n\nFacial Weightage : ",facial_score*0.25)
-    print("\n\n\nLanguage Weightage : ",language_score*0.125)
-    print("\n\n\nI Word Weightage : ",i_score*0.125)
-    print("\n\n\nSocial Weightage : ",social_score*0.125)
-    print("\n\n\nCognitive Weightage : ",cognitive_score*0.125)
+    # print("\n\n\nLanguage Weightage : ",language_score*0.125)
+    # print("\n\n\nI Word Weightage : ",i_score*0.125)
+    # print("\n\n\nSocial Weightage : ",social_score*0.125)
+    # print("\n\n\nCognitive Weightage : ",cognitive_score*0.125)
     # final_score = 0.35 * voice_score + 0.35 * facial_score + 0.075 * language_score + 0.075 *i_score + 0.075*social_score + 0.075*cognitive_score
     final_score = 0.7* language_score + 0.1 *i_score + 0.1*social_score + 0.1*cognitive_score
     
     # Print the final score
-    print("\n\n\nGrammer_Score", final_score*10)
+    # print("\n\n\nGrammer_Score", final_score*10)
     return final_score*10

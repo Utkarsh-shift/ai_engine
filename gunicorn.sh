@@ -11,12 +11,21 @@ sudo systemctl daemon-reload
 echo "Restarting Gunicorn socket and service..."
 
 sudo systemctl restart gunicorn
+echo "gunicorn restarted"
 sudo systemctl restart gunicorn.socket 
+echo "gunicorn socket restarted"
 sudo systemctl restart  gunicorn.service
-
+echo "gunicorn service restarted"
+sudo systemctl restart celery
+echo "gunicorn celery restarted"
 # Reload Nginx
 echo "Reloading Nginx..."
 sudo systemctl reload nginx
+
+sudo systemctl start celery
+
+sudo systemctl status celery
+
 
 # Check the Status of Gunicorn
 echo "Checking Gunicorn service status..."
@@ -25,10 +34,5 @@ sudo systemctl status gunicorn.socket
 echo "Checking Gunicorn socket status..."
 sudo systemctl status gunicorn.service
 
-# Check the Status of Nginx
 echo "Checking Nginx status..."
 sudo systemctl status nginx  
-
-sudo systemctl daemon-reload
-
-sudo systemctl start celery

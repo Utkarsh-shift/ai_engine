@@ -11,7 +11,125 @@ import dotenv
 from decouple import config
 import botocore
 import os,time
+from urllib.parse import urljoin
+
+
+
+# @shared_task
+# def stop_ec2_instance():
+#     instance_id = config("INSTANCE_ID")
+#     aws_access_key_id = config("AWS_ACCESS_KEY_ID")
+#     aws_secret_access_key = config("AWS_SECRET_ACCESS_KEY")
+#     region_name = config("AWS_REGION", "ap-south-1")
+    
+
+#     session = boto3.Session(
+#         aws_access_key_id=aws_access_key_id,
+#         aws_secret_access_key=aws_secret_access_key,
+#         region_name=region_name
+#     )
+#     ec2_client = session.client('ec2')
+#     response = ec2_client.describe_instances(InstanceIds=[instance_id])
+#     instance_state = response['Reservations'][0]['Instances'][0]['State']['Name']
+
+#     if instance_state == "running" : 
+
+       
+#         response_instance = ec2_client.stop_instances(
+#         InstanceIds=[
+#             instance_id,
+#         ],
+#         Hibernate=False,
+#         DryRun=False,
+#         Force=False)
+#         instance_stopped_waiter = ec2_client.get_waiter('instance_stopped')
+#         instance_stopped_waiter.wait(InstanceIds=[instance_id])
+#         print(f'Instance {instance_id} is stopped.')
+#     else : 
+#         print(f'Instance {instance_id} is already running.')
+
+       
+# @shared_task
+# def start_ec2_instance():
+#     """
+#     Start an EC2 instance with specified AWS credentials, if it is not already running.
  
+#     :param instance_id: The ID of the EC2 instance to start.
+#     :param aws_access_key_id: Your AWS access key ID.
+#     :param aws_secret_access_key: Your AWS secret access key.
+#     :param region_name: The AWS region where the instance is located (default: 'ap-south-1').
+#     """
+#     # Create a session using provided AWS credentials and region
+#     session = boto3.Session(
+#         aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+#         aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+#         region_name=os.getenv("AWS_REGION")
+#     )
+    
+#     ec2_client = session.client('ec2')
+ 
+#     try:
+#         # Describe the instance to check its state
+#         response = ec2_client.describe_instances(InstanceIds=[instance_id])
+#         instance_state = response['Reservations'][0]['Instances'][0]['State']['Name']
+ 
+#         if instance_state == 'running':
+#             print(f'Instance {instance_id} is already running.')
+#             return None
+ 
+#         # Start the instance
+#         start_response = ec2_client.start_instances(
+#             InstanceIds=[instance_id]
+#         )
+        
+#         # Extract current and previous states from the response
+#         for instance in start_response['StartingInstances']:
+#             instance_id = instance['InstanceId']
+#             current_state = instance['CurrentState']
+#             previous_state = instance['PreviousState']
+            
+#             print(f'Starting instance {instance_id}...')
+#             print(f'Current State: {current_state["Name"]}, Previous State: {previous_state["Name"]}')
+ 
+#         # Wait for the instance to be in the 'running' state
+#         ec2_client.get_waiter('instance_running').wait(InstanceIds=[instance_id])
+        
+#         # Reload the instance state after starting
+#         response = ec2_client.describe_instances(InstanceIds=[instance_id])
+#         instance_state = response['Reservations'][0]['Instances'][0]['State']['Name']
+#         print(f'Instance {instance_id} is now in {instance_state} state.')
+ 
+#     except Exception as e:
+#         print(f'Error starting instance {instance_id}: {e}')
+    
+
+#     print(instance_state)
+
+
+
+# def download_video(link_entry, video_path):
+#     try:
+#         command = f"yt-dlp -f mp4 -o {video_path} {link_entry.link}"
+#         response_code = os.system(command)
+#         if response_code == 0:
+#             link_entry.video_path = video_path 
+#             link_entry.status = 'processed'
+#             link_entry.save()
+#             print(f"Video downloaded and saved to {video_path}")
+#             return video_path
+#         else:
+#             link_entry.status = 'failed'
+#             link_entry.save()
+#             print(f"Failed to download video with wget command. Response code: {response_code}")
+#             return None
+#     except Exception as e:
+#         link_entry.status = 'failed'
+#         link_entry.save()
+#         print(f"Exception occurred: {e}")
+#         return None
+
+
+
 # Function to download a file from S3
 def download_file_from_s3(bucket_name, object_key, local_path):
 
@@ -43,9 +161,9 @@ def list_and_download_files(bucket_name, local_directory):
             for obj in response['Contents']:
                 object_key = obj['Key']
                 print(f' - {object_key}')
-                # Create local file path
+
                 local_file_path = os.path.join(local_directory, object_key)
-                # Create any necessary directories
+        
                 os.makedirs(os.path.dirname(local_file_path), exist_ok=True)
                 # Download the file
                 download_file_from_s3(bucket_name, object_key, local_file_path)
@@ -56,10 +174,7 @@ def list_and_download_files(bucket_name, local_directory):
 
 
 def get_signature(webhook_url):
-    # from dotenv import load_dotenv
-    # load_dotenv()
-    # os.getenv("SIGN_URL")
-    # signature_url="http://192.168.1.127:8020/webhook/get-signature"
+
     signature_url=webhook_url + "webhook/get-signature"
     print("################The signature url is given as ################" , signature_url)
     signature_res=requests.get(signature_url)
@@ -68,35 +183,56 @@ def get_signature(webhook_url):
     return real_signature
 
 
-
+############################################################################# Updated this part of the code ##################################
 @shared_task
-def trigger_webhook(batch_id, data,webhook_url):
-    print("The code is in the webhook code $$$$$$$$$$$$$$$$$$$s")
-    # signature_url="http://192.168.1.121:8020/webhook/get-signature"
-    print("batch id -------------------------is ",batch_id)
-# # try:
-    # signature_res=requests.get(signature_url)
-    # signature=signature_res.json()
-# except Exception as e:
-#     print("error getting signature",e)
+def trigger_webhook(batch_id, data, webhook_url):
+    print(f"Batch ID: {batch_id}")
+    
     try:
-        signature=get_signature(webhook_url)
-        print("signature is ----------",signature)
-    
-        # webhook_url = "http://192.168.1.127:8020/webhook/video-response-ai-feedback"
-        webhook_url=webhook_url+"webhook/video-response-ai-feedback"
+        signature = get_signature(webhook_url)
+        print(f"Signature Retrieved: {signature}")
+
+        # Ensure webhook URL is formatted correctly
+        webhook_endpoint = urljoin(webhook_url, "webhook/video-response-ai-feedback")
+        
         headers = {
-        'Accept': 'application/json',  
-        'Signature': signature
+            'Accept': 'application/json',  
+            'Signature': signature
         }
+
         payload = {
-                    'batch_id': str(batch_id),
-                    'data': data,
-                    'event': 'batch_processed',
-                }
-    
-        print("Webhook url is -------------------------------",webhook_url)
-        response = requests.post(webhook_url,headers=headers, json=payload)
+            'batch_id': str(batch_id),
+            'data': data,
+            'event': 'batch_processed',
+        }
+
+        # Debug: Print webhook request details
+        print(f"Webhook URL: {webhook_endpoint}")
+        print(f"Payload: {json.dumps(payload, indent=2)}")
+        print(f"Headers: {headers}")
+
+        # Send the request
+        response = requests.post(webhook_endpoint, headers=headers, json=payload)
+
+        print(f"Webhook Response Status: {response.status_code}")
+        try:
+            response_json = response.json()
+            print(f"Webhook Response JSON: {json.dumps(response_json, indent=2)}")
+        except Exception:
+            print(f"Webhook Response (Non-JSON): {response.text}")
+
+        # Handle failed responses
+        if response.status_code != 200:
+            print(f"Webhook Failed! Status: {response.status_code}, Response: {response.text}")
+
+    except Exception as e:
+        print(f"Error in Webhook: {e}")
+
+
+
+##########################################################################################################################################################
+
+
     
     # while response.status_code!=200:
     #     time.sleep(3)
@@ -104,9 +240,9 @@ def trigger_webhook(batch_id, data,webhook_url):
     
     # if response.status_code==200:
     #     print("succesfully request is send *******************************************************")
-        print("json is given as --------------------------------------------------------------",response.json())
-    except Exception as e:
-        print("exception in webhhok part is ---------------------- ",e)
+    #     print("json is given as --------------------------------------------------------------",response.json())
+    # except Exception as e:
+    #     print("exception in webhhok part is ---------------------- ",e)
 
 @shared_task
 def start_sagemaker_endpoint_task(endpoint_name, region):
@@ -123,98 +259,56 @@ def start_sagemaker_endpoint_task(endpoint_name, region):
             )
     except Exception as e:
         print(e)
-        
-@shared_task
-def start_ec2_instance():
-    """
-    Start an EC2 instance with specified AWS credentials, if it is not already running.
  
-    :param instance_id: The ID of the EC2 instance to start.
-    :param aws_access_key_id: Your AWS access key ID.
-    :param aws_secret_access_key: Your AWS secret access key.
-    :param region_name: The AWS region where the instance is located (default: 'ap-south-1').
-    """
-    # Create a session using provided AWS credentials and region
-    session = boto3.Session(
-        aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
-        aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-        region_name=os.getenv("AWS_REGION")
-    )
+def check_for_pending_tasks():
+    """Function to check if there are any tasks pending or processing."""
+    pending_tasks = LinkEntry.objects.filter(status__in=['processing' , 'pending'])
+    return pending_tasks.exists()
+
+
+
+def perform_shutdown():
+    """Perform the shutdown operations."""
+    print("Gracefully stopping Celery workers...")
+    os.system("sudo systemctl stop celery")
+
+    print("Gracefully stopping Gunicorn...")
+    os.system("sudo systemctl stop gunicorn")
+
+    print("Gracefully stopping Nginx...")
+    os.system("sudo systemctl stop nginx")
+
+    print("Gracefully waiting before shutting down the server...")
+    time.sleep(10)  # Add some time before the final shutdown command
+    print("Shutting down the server...")
+    os.system("sudo shutdown now")
+
+
+
+def shutdown_process(elapsed_time , timeout , check_interval):
+    # check for no pending tasks initially 
+    if check_for_pending_tasks(): 
+        print("pending taskes are detected , exiting the shout down process " ) 
+        return 
     
-    ec2_client = session.client('ec2')
- 
-    try:
-        # Describe the instance to check its state
-        response = ec2_client.describe_instances(InstanceIds=[instance_id])
-        instance_state = response['Reservations'][0]['Instances'][0]['State']['Name']
- 
-        if instance_state == 'running':
-            print(f'Instance {instance_id} is already running.')
-            return None
- 
-        # Start the instance
-        start_response = ec2_client.start_instances(
-            InstanceIds=[instance_id]
-        )
-        
-        # Extract current and previous states from the response
-        for instance in start_response['StartingInstances']:
-            instance_id = instance['InstanceId']
-            current_state = instance['CurrentState']
-            previous_state = instance['PreviousState']
-            
-            print(f'Starting instance {instance_id}...')
-            print(f'Current State: {current_state["Name"]}, Previous State: {previous_state["Name"]}')
- 
-        # Wait for the instance to be in the 'running' state
-        ec2_client.get_waiter('instance_running').wait(InstanceIds=[instance_id])
-        
-        # Reload the instance state after starting
-        response = ec2_client.describe_instances(InstanceIds=[instance_id])
-        instance_state = response['Reservations'][0]['Instances'][0]['State']['Name']
-        print(f'Instance {instance_id} is now in {instance_state} state.')
- 
-    except Exception as e:
-        print(f'Error starting instance {instance_id}: {e}')
+    else: 
+        print("No pending task initially , waiting for any task ")
+        if elapsed_time >= timeout:
+                print("No pending tasks,  and waiting time is over , shutting down...")
 
-
-
-@shared_task
-def stop_ec2_instance():
-    instance_id = config("INSTANCE_ID")
-    aws_access_key_id = config("AWS_ACCESS_KEY_ID")
-    aws_secret_access_key = config("AWS_SECRET_ACCESS_KEY")
-    region_name = config("AWS_REGION", "ap-south-1")
-    
-
-    session = boto3.Session(
-        aws_access_key_id=aws_access_key_id,
-        aws_secret_access_key=aws_secret_access_key,
-        region_name=region_name
-    )
-    ec2_client = session.client('ec2')
-    response = ec2_client.describe_instances(InstanceIds=[instance_id])
-    instance_state = response['Reservations'][0]['Instances'][0]['State']['Name']
-
-    if instance_state == "running" : 
+                perform_shutdown()
 
        
-        response_instance = ec2_client.stop_instances(
-        InstanceIds=[
-            instance_id,
-        ],
-        Hibernate=False,
-        DryRun=False,
-        Force=False)
-        instance_stopped_waiter = ec2_client.get_waiter('instance_stopped')
-        instance_stopped_waiter.wait(InstanceIds=[instance_id])
-        print(f'Instance {instance_id} is stopped.')
-    else : 
-        print(f'Instance {instance_id} is already running.')
+        else : 
+            time.sleep(check_interval)
+            elapsed_time += check_interval
+            # check again for the interval
+            print(f"Elapsed time: {elapsed_time}/{timeout} seconds.") 
+            shutdown_process(elapsed_time=elapsed_time , timeout= timeout , check_interval= check_interval)
 
-    
 
-    print(instance_state)
+                
+
 
 
 @shared_task
@@ -225,6 +319,23 @@ def process_batch(batch_id,Questions ,webhook_url):
     
     batch_entry = BatchEntry.objects.get(batch_id=batch_id)
     link_entries = LinkEntry.objects.filter(batch=batch_entry).order_by('id')
+
+
+########## Updated below #################
+    
+    # ✅ Check if batch_id exists
+    batch_entry = BatchEntry.objects.filter(batch_id=batch_id).first()
+    if not batch_entry:
+        print(f"❌ Invalid batch_id: {batch_id}. Skipping processing.")
+        return  # Don't return an error, just stop execution safely
+
+    print(f"✅ Found batch entry: {batch_entry}")
+
+
+##########################################################
+
+
+
     # processed_json = []
     processing_dir = os.path.join(settings.MEDIA_ROOT)
     os.makedirs(processing_dir, exist_ok=True)
@@ -273,65 +384,74 @@ def process_batch(batch_id,Questions ,webhook_url):
         else:
             os.system(f"""wget -O {path} --user={ondrive_user_name} --password={ondrive_password} https://almabay-my.sharepoint.com/:u:/p/varun_kumar/EXKw_nvbUqhJrTLZZflt8SIBCpXubzGr3NucqisYjP_V3w?download=1""")
         print("link entries are -----------------------------------------------------------------",link_entries)
+        all_links_failed = True
         for link_entry in link_entries:
             # Mark the current link entry as processing
             link_entry.status = 'processing'
             link_entry.save()
             video_filename = f"{link_entry.unique_id}.mp4"
             video_path = os.path.join(batch_folder_path , video_filename)
-            # command = f"yt-dlp -f mp4 -o {video_path} {link_entry.link}"
-            # command=os.system(f"""wget -O {video_path} --user={ondrive_user_name} --password={ondrive_password}  {link_entry.link} """)
-            # response_code = os.system(command)
+
             import subprocess
 
-            # Construct the command as a list
             print("The code is here in command ")
             command = [
             "wget",
             "-O", video_path,
             link_entry.link
             ]
-            response_code = subprocess.run(command, check=True, capture_output=True, text=True)
-            
-            if response_code.returncode == 0 : 
-                link_entry.video_path = video_path  # Store the absolute path
-                link_entry.status = 'processing'
-                link_entry.save()
-                print(f"Video downloaded and saved to {video_path}")
-            else:
+
+            try:
+                response_code = subprocess.run(command, check=True, capture_output=True, text=True)
+                if response_code.returncode == 0 : 
+                    link_entry.video_path = video_path  
+                    link_entry.status = 'processing'
+                    link_entry.save()
+                    print(f"Video downloaded and saved to {video_path}")
+                    all_links_failed = False
+
+                    video_filename = os.path.basename(link_entry.video_path)
+                    processing_video_path = os.path.join(processing_dir, video_filename)
+                    shutil.move(link_entry.video_path, processing_video_path)
+                else : 
+                     raise Exception(f"Failed to download video. Response code: {response_code.returncode}")
+
+            except Exception as e : 
                 link_entry.status = 'failed'
                 link_entry.save()
-                print(f"Failed to download video with wget command. Response code: {response_code}")
-                raise Exception(f"Failed to download video with wget command. Response code: {response_code}")
-            # Move the video file to the processing directory
-            video_filename = os.path.basename(link_entry.video_path)
-            processing_video_path = os.path.join(processing_dir, video_filename)
-            shutil.move(link_entry.video_path, processing_video_path)
-
-            # Perform the processing (e.g., extract audio)
-        result1= show_results(Questions)  # Assuming show_results processes the video and returns JSON
-        
-        # result1['ocean_values']=result1['ocean_values'].tolist()
+        if all_links_failed:
+            batch_entry.status ='failed'
+        else : 
+            batch_entry.status = 'pending'
+        result1= show_results(Questions) 
+        print("*************************" , result1)
         result = json.dumps(result1) 
+
+        print(":::::::::::::::::::::::::::::", result)
         result=json.loads(result)
-        # result=result1
-        print("the type is -------------------------------------------------------",type(result)) # Used to Set the Json Response 
-
-        print("The answer the is " , result)
-        #     processed_json.append(result)
         
-
-        for link_entry in link_entries:
-            link_entry.status = 'processed'
-            link_entry.save()
+        print("The answer the is " , result)
 
 
-        batch_entry.status = 'processed'
-        batch_entry.results = result# Save the results as a JSON string
-        batch_entry.save()
+
+        if result is None :
+            batch_entry.status = 'failed'
+            batch_entry.save()
+
+        else : 
+            batch_entry.status = 'processed'
+            for link_entry in link_entries:
+                if link_entry.status == 'processing':
+                    link_entry.status = 'processed'
+                    link_entry.save()
+
+            batch_entry.results = result
+            batch_entry.save()
+        
+            
         print("The signature url in process_batch",webhook_url)
         
-        trigger_webhook(batch_id,result,webhook_url)
+        trigger_webhook.delay(batch_id, result, webhook_url)   ## Updated here
 
     # except BatchEntry.DoesNotExist:
     #     print(f"BatchEntry with ID {batch_id} does not exist.")
@@ -350,33 +470,11 @@ def process_batch(batch_id,Questions ,webhook_url):
         response = requests.post(webhook_url, json=payload)
         print(f"Error sending webhook: {e}")
         raise Exception
-        return None
+       
     
     finally: 
-
-        import os 
-        print("####################################### Shutting down the Engine in one minute ##############################################")
-        time.sleep(60)
-        os.system("sudo shutdown now")
-
-
-def download_video(link_entry, video_path):
-    try:
-        command = f"yt-dlp -f mp4 -o {video_path} {link_entry.link}"
-        response_code = os.system(command)
-        if response_code == 0:
-            link_entry.video_path = video_path 
-            link_entry.status = 'processed'
-            link_entry.save()
-            print(f"Video downloaded and saved to {video_path}")
-            return video_path
-        else:
-            link_entry.status = 'failed'
-            link_entry.save()
-            print(f"Failed to download video with wget command. Response code: {response_code}")
-            return None
-    except Exception as e:
-        link_entry.status = 'failed'
-        link_entry.save()
-        print(f"Exception occurred: {e}")
-        return None
+        print("##############################################Shut down process#####################################")
+        timeout = 200  
+        check_interval = 30
+        elapsed_time = 0
+        shutdown_process(elapsed_time , timeout , check_interval)

@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 current_path = os.path.dirname(os.path.abspath(__file__))
 work_path = os.path.join(current_path, "../")
 sys.path.append(work_path)
- 
+
 from dpcv.tools.common import parse_args
 from dpcv.config.default_config_opt import cfg, cfg_from_file, cfg_from_list
 # from torch.utils.tensorboard import SummaryWriter
@@ -61,7 +61,7 @@ def create_folder_with_datetime(parent_dir):
     except OSError as e:
         print(f"Failed to create folder at: {folder_path} - {e}")
     return folder_path
- 
+
 def delete_all_files_in_folder(folder_path):
     try:
         # Check if the folder exists
@@ -119,9 +119,6 @@ def setup():
  
 def dpmain(count):
  
- 
- 
- 
     count += 1
     print("The cnt is **********************************************" , count)
     path = os.getcwd()
@@ -167,209 +164,213 @@ def dpmain(count):
  
     runner = ExpRunner(cfg)
     
-    return runner.test()
+    res = runner.test()
+
+
+
+    return res
  
  
-def support( testdic )-> List[Dict[str, str]]:
-    """
-    Prepare messages to end the interview and generate feedback.
-    """
-    #transcript = [f"{message['role'].capitalize()}: {message['content']}" for message in chat_history[1:]]
-    system_prompt = testdic
-    # print("- - -  - - - - - - -",system_prompt)
-    return [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": "Grade the interview based on the transcript provided and give feedback."},
-    ]
+# def support( testdic )-> List[Dict[str, str]]:
+#     """
+#     Prepare messages to end the interview and generate feedback.
+#     """
+#     #transcript = [f"{message['role'].capitalize()}: {message['content']}" for message in chat_history[1:]]
+#     system_prompt = testdic
+#     # print("- - -  - - - - - - -",system_prompt)
+#     return [
+#         {"role": "system", "content": system_prompt},
+#         {"role": "user", "content": "Grade the interview based on the transcript provided and give feedback."},
+#     ]
  
  
-def test12(testdic ) -> Generator[str, None, None]:
-    """
-    End the interview and get feedback from the LLM.
-    """
+# def test12(testdic ) -> Generator[str, None, None]:
+#     """
+#     End the interview and get feedback from the LLM.
+#     """
     
-    message = support(testdic)
+#     message = support(testdic)
     
-    load_dotenv()
-    client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
-    # message1={'role': 'system', 'content':message[0]['content']["audio_prompt"]}
-    # message2={'role': 'system', 'content':message[0]['content']["video_prompt"]}
-    message3={'role': 'system' ,'content':message[0]['content']['language_prompt']}
-    # print("\n|\n|\n|\n|\n|\n|\n|v",message)  # prompt returned from newprompt file
-    # print("message3 is ---------------------------------------",message3)
+#     load_dotenv()
+#     client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
+#     # message1={'role': 'system', 'content':message[0]['content']["audio_prompt"]}
+#     # message2={'role': 'system', 'content':message[0]['content']["video_prompt"]}
+#     message3={'role': 'system' ,'content':message[0]['content']['language_prompt']}
+#     # print("\n|\n|\n|\n|\n|\n|\n|v",message)  # prompt returned from newprompt file
+#     # print("message3 is ---------------------------------------",message3)
  
  
-    message=[
-    {
-        "role": "system",
-        "content": """
-You are an AI system designed to provide interview feedback in JSON format with clear sections and detailed comments. Ensure that the feedback is constructive, supportive, and aimed at helping the candidate enhance their performance.
-{
-  "feedback": {
-    "overall_score": {
-      "title": "Overall Score",
-      "comment": "<comment>",
-      "score": "<value>"
-    },
-    "scores": {
-      "communication_score": {
-        "title": "Communication Score",
-        "comment": "<comment>",
-        "score": "<value>",
-        "subparts": {
-            "articulation_score": {
-              "title": "Articulation Score",
-              "comment": "<comment>",
-              "score": "<value>"
-            },
-            "pace_and_clarity_score": {
-              "title": "Pace and Clarity Score",
-              "comment": "<comment>",
-              "score": "<value>"
-            },
-            "grammar_score": {
-              "title": "Grammar Score",
-              "comment": "<comment>",
-              "score": "<value>"
-            }
+#     message=[
+#     {
+#         "role": "system",
+#         "content": """
+# You are an AI system designed to provide interview feedback in JSON format with clear sections and detailed comments. Ensure that the feedback is constructive, supportive, and aimed at helping the candidate enhance their performance.
+# {
+#   "feedback": {
+#     "overall_score": {
+#       "title": "Overall Score",
+#       "comment": "<comment>",  
+#       "score": "<value>"
+#     },
+#     "scores": {
+#       "communication_score": {
+#         "title": "Communication Score",
+#         "comment": "<comment>",
+#         "score": "<value>",
+#         "subparts": {
+#             "articulation_score": {
+#               "title": "Articulation Score",
+#               "comment": "<comment>",
+#               "score": "<value>"
+#             },
+#             "pace_and_clarity_score": {
+#               "title": "Pace and Clarity Score",
+#               "comment": "<comment>",
+#               "score": "<value>"
+#             },
+#             "grammar_score": {
+#               "title": "Grammar Score",
+#               "comment": "<comment>",
+#               "score": "<value>"
+#             }
           
-      }
-      },
-      "sociability_score": {
-        "title": "Sociability Score",
-        "comment": "<comment>",
-        "score": "<value>",
-        "subparts": 
-          {
-            "energy_score": {
-              "title": "Energy Score",
-              "comment": "<comment>",
-              "score": "<value>"
-            },
-            "sentiment_score": {
-              "title": "Sentiment Score",
-              "comment": "<comment>",
-              "score": "<value>"
-            },
-            "emotion_score": {
-              "title": "Emotion Score",
-              "comment": "<comment>",
-              "score": "<value>"
-            }
-          }
+#       }
+#       },
+#       "sociability_score": {
+#         "title": "Sociability Score",
+#         "comment": "<comment>",
+#         "score": "<value>",
+#         "subparts": 
+#           {
+#             "energy_score": {
+#               "title": "Energy Score",
+#               "comment": "<comment>",
+#               "score": "<value>"
+#             },
+#             "sentiment_score": {
+#               "title": "Sentiment Score",
+#               "comment": "<comment>",
+#               "score": "<value>"
+#             },
+#             "emotion_score": {
+#               "title": "Emotion Score",
+#               "comment": "<comment>",
+#               "score": "<value>"
+#             }
+#           }
         
-      },
-      "positive_attitude_score": {
-        "title": "Positive Attitude Score",
-        "comment": "<comment>",
-        "score": "<value>",
-        "subparts": 
-          {
-            "energy_score": {
-              "title": "Energy Score",
-              "comment": "<comment>",
-              "score": "<value>"
-            }
-          }
+#       },
+#       "positive_attitude_score": {
+#         "title": "Positive Attitude Score",
+#         "comment": "<comment>",
+#         "score": "<value>",
+#         "subparts": 
+#           {
+#             "energy_score": {
+#               "title": "Energy Score",
+#               "comment": "<comment>",
+#               "score": "<value>"
+#             }
+#           }
         
-      },
-      "overall_professional_score": {
-        "title": "Overall Professional Score",
-        "comment": "<comment>",
-        "score": "<value>",
-        "subparts": 
-          {
-            "presentability_score": {
-              "title": "Presentability Score",
-              "comment": "<comment>",
-              "score": "<value>"
-            },
-            "body_language_score": {
-              "title": "Body Language Score",
-              "comment": "<comment>",
-              "score": "<value>"
-            },
-            "dressing_score": {
-              "title": "Dressing Score",
-              "comment": "<comment>",
-              "score": "<value>"
-            }
-          }
+#       },
+#       "overall_professional_score": {
+#         "title": "Overall Professional Score",
+#         "comment": "<comment>",
+#         "score": "<value>",
+#         "subparts": 
+#           {
+#             "presentability_score": {
+#               "title": "Presentability Score",
+#               "comment": "<comment>",
+#               "score": "<value>"
+#             },
+#             "body_language_score": {
+#               "title": "Body Language Score",
+#               "comment": "<comment>",
+#               "score": "<value>"
+#             },
+#             "dressing_score": {
+#               "title": "Dressing Score",
+#               "comment": "<comment>",
+#               "score": "<value>"
+#             }
+#           }
         
-      }
-    },
-    "suggestions_for_improvement": {
-      "title": "Suggestions for improvement",
-      "suggestions": [
-        "<suggestion1>",
-        "<suggestion2>",
-        "<suggestion3>",
-        "<suggestion4>"
-      ]
-    },
-    "areas_for_improvement": {
-      "title": "Areas for improvement",
-      "improvements": [
-        "<improvement1>",
-        "<improvement2>"
-      ]
-    },
-    "ocean_values_analysis": {
-      "title": "Ocean Values Analysis",
-      "ocean_values": [
-        "<value1>",
-        "<value2>",
-        "<value3>",
-        "<value4>",
-        "<value5>"
-      ],
-      "comment": "<comment>"
-    },
-    "strengths": {
-      "title": "Strengths",
-      "strengths": [
-        "<strength1>",
-        "<strength2>",
-        "<strength3>",
-        "<strength4>"
-      ]
-    },
-    "weakness": {
-      "title": "Weakness",
-      "weakness": [
-        "<weakness1>",
-        "<weakness2>",
-        "<weakness3>",
-        "<weakness4>"
-      ]
-    }
-  }
-}
+#       }
+#     },
+#     "suggestions_for_improvement": {
+#       "title": "Suggestions for improvement",
+#       "suggestions": [
+#         "<suggestion1>",
+#         "<suggestion2>",
+#         "<suggestion3>",
+#         "<suggestion4>"
+#       ]
+#     },
+#     "areas_for_improvement": {
+#       "title": "Areas for improvement",
+#       "improvements": [
+#         "<improvement1>",
+#         "<improvement2>"
+#       ]
+#     },
+#     "ocean_values_analysis": {
+#       "title": "Ocean Values Analysis",
+#       "ocean_values": [
+#         "<value1>",
+#         "<value2>",
+#         "<value3>",
+#         "<value4>",
+#         "<value5>"
+#       ],
+#       "comment": "<comment>"
+#     },
+#     "strengths": {
+#       "title": "Strengths",
+#       "strengths": [
+#         "<strength1>",
+#         "<strength2>",
+#         "<strength3>",
+#         "<strength4>"
+#       ]
+#     },
+#     "weakness": {
+#       "title": "Weakness",
+#       "weakness": [
+#         "<weakness1>",
+#         "<weakness2>",
+#         "<weakness3>",
+#         "<weakness4>"
+#       ]
+#     }
+#   }
+# }
 
  
-"""  
-    },
+# """  
+#     },
 
-    message3,
-    # message2,
+#     message3,
+#     # message2,
  
-]
-    print("-------------------------------------------------------------------------------------------")
-    # model="gpt-4o-2024-08-06",
-    #     response_format={"type":"json_schema","json_schema":example_json},
-    chat_completion = client.chat.completions.create(
-        model="gpt-4o-2024-08-06",
-        response_format={"type":"json_object"},
-        messages = message
-    )
+# ]
+#     print("-------------------------------------------------------------------------------------------")
+#     # model="gpt-4o-2024-08-06",
+#     #     response_format={"type":"json_schema","json_schema":example_json},
+#     chat_completion = client.chat.completions.create(
+#         model="gpt-4o-2024-08-06",
+#         response_format={"type":"json_object"},
+#         messages = message
+#     )
  
-    finish_reason = chat_completion.choices[0].finish_reason
+#     finish_reason = chat_completion.choices[0].finish_reason
  
-    # if(finish_reason == "stop"):
-    data = chat_completion.choices[0].message.content
-    newdata = json.loads(data)
-    print(newdata)
-    return newdata
+#     # if(finish_reason == "stop"):
+#     data = chat_completion.choices[0].message.content
+#     newdata = json.loads(data)
+#     print(newdata)
+#     return newdata
  
  
  
@@ -579,32 +580,34 @@ def get_sw(prompt,json_schema):
           time.sleep(10)
     print("Max retries exceeded. Failed to generate valid JSON.")
 
-    return None  # Return None if max retries exceeded
+    return None 
 
     
 import json
-# from sagemaker.remote_function import remote
-# @remote(instance_type="ml.p3.2xlarge")
+
 def show_results(Questions):
     try:
       counts = 0  
       final_dict= dpmain(counts)
-      print(Questions)
-      
-      
-      
 
-      # Check if 'results' is a JSON string and convert to a dictionary
+
+      print(f"Questions | {Questions}")
+      
+    
       if isinstance(final_dict, str):
-          # Convert string to dict
           results1 = json.loads(final_dict)
       else:
-          # If it's already a dict or similar object, use it as is
           results1 = final_dict
 
-      # Ensure final_score is a dict and update the results
+
       
 
+
+      print(":::::::::::::::::::::::::::::::::::::::::::::::::::::")
+
+      print(results1)
+
+      print(":::::::::::::::::::::::::::::::::::::::::::::::::::::")
 
 
       ids = [entry['id'] for entry in results1['transcription']]
@@ -620,41 +623,8 @@ def show_results(Questions):
           results1.update(ques_feedback)
       else:
           print("Final score is not a dictionary, unable to update results.")
-      # Convert the updated dictionar back to a JSON string
-      # promt="Summarize the given text and also maintain all detail"
-      # gpt_comm=" ".join(comment_dict['gpt_grammer_comment'])
-      # client = OpenAI(api_key =config('OPENAI_API_KEY'))
-      # message={"role": "system",
-      #         "content": promt+f"The Given text is : '{gpt_comm}'"}
-      # # client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
-      # chat_completion = client.chat.completions.create(
-      #         model="gpt-4o",
-      #         messages = [message]
-      #         ,max_tokens=256
-      #     )
-      
-
-
-
-
-
-
-      # final_grammer_comment = chat_completion.choices[0].message.content
-
-      # if isinstance(results1,dict):
-      #     results1["feedback"]["scores"]["overall_professional_score"]["comment"]=comment_dict["professional_comment"]
-      #     results1["feedback"]["scores"]["overall_professional_score"]["subparts"]["body_language_score"]["comment"]=comment_dict["bodylang_comment"]
-      #     results1["feedback"]["scores"]["sociability_score"]["subparts"]["emotion_score"]["comment"]=comment_dict["emotioncomment"]
-      #     results1["feedback"]["scores"]["overall_professional_score"]["subparts"]["presentability_score"]["comment"]=comment_dict["grommingcomment"]+comment_dict["dressingcomment"]
-      #     results1["feedback"]["scores"]["communication_score"]["subparts"]["grammar_score"]["comment"]=final_grammer_comment
-      #     results1["feedback"]["scores"]["overall_professional_score"]["subparts"]["dressing_score"]["comment"]=comment_dict["dressingcomment"]
-          
-
       display_data = results1
-
-
       for transcript in display_data['transcription']:
-          # Find the corresponding answer_evaluation from 'answer_feedback' using the ID
           evaluation = next((feedback['answer_evaluation'] for feedback in display_data['answer_feedback'] if feedback['id'] == transcript['id']), None)
           if evaluation:
               transcript['answer_evaluation'] = evaluation

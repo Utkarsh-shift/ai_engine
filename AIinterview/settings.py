@@ -174,11 +174,32 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),}
 
+
+
+
+
+
+from django.utils.timezone import now
+
+class ActivityMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        with open("/home/ubuntu/new_AVIPA/last_activity_time.txt", "w") as f:
+            f.write(now().isoformat())
+        return self.get_response(request)
+
+
+
+
+
+
 from datetime import timedelta
 # string = config('PROCESS_KEY')
 # string = str(hashlib.md5(b'string'))
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(config('API_VALID_TIME',default=30))),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=365*100),
     'ALGORITHM': 'HS512',
     # 'SIGNING_KEY': string,
     # # 'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
