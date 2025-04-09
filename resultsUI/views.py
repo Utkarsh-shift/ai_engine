@@ -78,7 +78,7 @@ class LinkEntryAPIView(APIView):
             Id=[]
             Questions=[]
             batch_id=str(request.data["batch_id"])
-            webhook_url = str(request.data["server_url"])
+            webhook_url = str(request.data["server_url"]) # jobid = str()
             for item in links1["links"]:
 
                 new_links.append(item["link"])

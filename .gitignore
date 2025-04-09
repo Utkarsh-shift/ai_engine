@@ -11,7 +11,7 @@ __pycache__/
 *.pth
 *.md
 
-
+AVIPA_python/*
 resultsUI/migrations
 
 resultsUI/results/demo/unified_frame_images/03_bimodal_resnet/
