@@ -1,144 +1,173 @@
 from celery import shared_task
-from .models import LinkEntry, BatchEntry
+from resultsUI.models import LinkEntry, BatchEntry
 from AIinterview import settings
 import os,json,requests
 import shutil
-from .script.run_exp import show_results
+from resultsUI.script.run_exp  import show_results
 # from openpyxl import load_workbook,Workbook
 import boto3
 import dotenv
-# FUNCTION TO DOWNLOAD ALL THE VIDEOS FROM THE AWS 
 from decouple import config
 import botocore
 import os,time
 from urllib.parse import urljoin
+from flask import Flask
+import mysql.connector
+import logging,json
+import os
+import openai
+from Ai_Agent_Evaluation.Downlord_video_s3 import generate_presigned_url_function, download_file 
+from decouple import config
+from Ai_Agent_Evaluation.video_audio_evaluator import show_results_agent
+from Ai_Agent_Evaluation.extract_questions_answer import fetch_session_data,get_proctoring_metrics
+logging.basicConfig(filename='evaluation_api.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+import openai
+import mysql.connector
+import logging
+import openai
+import json
 
 
 
-# @shared_task
-# def stop_ec2_instance():
-#     instance_id = config("INSTANCE_ID")
-#     aws_access_key_id = config("AWS_ACCESS_KEY_ID")
-#     aws_secret_access_key = config("AWS_SECRET_ACCESS_KEY")
-#     region_name = config("AWS_REGION", "ap-south-1")
-    
-
-#     session = boto3.Session(
-#         aws_access_key_id=aws_access_key_id,
-#         aws_secret_access_key=aws_secret_access_key,
-#         region_name=region_name
-#     )
-#     ec2_client = session.client('ec2')
-#     response = ec2_client.describe_instances(InstanceIds=[instance_id])
-#     instance_state = response['Reservations'][0]['Instances'][0]['State']['Name']
-
-#     if instance_state == "running" : 
-
-       
-#         response_instance = ec2_client.stop_instances(
-#         InstanceIds=[
-#             instance_id,
-#         ],
-#         Hibernate=False,
-#         DryRun=False,
-#         Force=False)
-#         instance_stopped_waiter = ec2_client.get_waiter('instance_stopped')
-#         instance_stopped_waiter.wait(InstanceIds=[instance_id])
-#         print(f'Instance {instance_id} is stopped.')
-#     else : 
-#         print(f'Instance {instance_id} is already running.')
-
-       
-# @shared_task
-# def start_ec2_instance():
-#     """
-#     Start an EC2 instance with specified AWS credentials, if it is not already running.
+OPENAI_API_KEY = config("OPENAI_API_KEY")
+client = openai.OpenAI(api_key=OPENAI_API_KEY)
  
-#     :param instance_id: The ID of the EC2 instance to start.
-#     :param aws_access_key_id: Your AWS access key ID.
-#     :param aws_secret_access_key: Your AWS secret access key.
-#     :param region_name: The AWS region where the instance is located (default: 'ap-south-1').
-#     """
-#     # Create a session using provided AWS credentials and region
-#     session = boto3.Session(
-#         aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
-#         aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-#         region_name=os.getenv("AWS_REGION")
-#     )
-    
-#     ec2_client = session.client('ec2')
- 
-#     try:
-#         # Describe the instance to check its state
-#         response = ec2_client.describe_instances(InstanceIds=[instance_id])
-#         instance_state = response['Reservations'][0]['Instances'][0]['State']['Name']
- 
-#         if instance_state == 'running':
-#             print(f'Instance {instance_id} is already running.')
-#             return None
- 
-#         # Start the instance
-#         start_response = ec2_client.start_instances(
-#             InstanceIds=[instance_id]
-#         )
-        
-#         # Extract current and previous states from the response
-#         for instance in start_response['StartingInstances']:
-#             instance_id = instance['InstanceId']
-#             current_state = instance['CurrentState']
-#             previous_state = instance['PreviousState']
+host = config("HOST_AGENT")
+user = config("DB_USER_AGENT")
+password = config("DB_PASS_AGENT")
+database = config("DB_NAME_AGENT")
+
+app = Flask(__name__)
+DB_CONFIG = {
+    "host":'placecom-co-instance-1.cxjekraxhsam.ap-south-1.rds.amazonaws.com',
+    "user": 'ai_int_qa',
+    "password":'ne6yIJ1UPQ9qkf2z',
+    "database": 'ai_interviewer_qa'
+}
+
+@shared_task
+def start_evaluation(session_id,S3_fileurl,skills,focus_skills,proctoring_data,webhook_url,batch_id):
+    conn = mysql.connector.connect(**DB_CONFIG)
+    cursor = conn.cursor(dictionary=True)
+    logging.info(f"Triggering evaluation for session: {session_id}")
+    print("Pending session: ", session_id)
+    print("S3_fileurl",S3_fileurl)
+    filename = "/".join(S3_fileurl.split("/")[3:])
+    batch_entry = BatchEntry.objects.get(batch_id=batch_id)
+    link_entries = LinkEntry.objects.filter(batch=batch_entry).order_by('id')
+    print(filename,"++++++++++++++++++++++++++++++++++++++++")
+    AWS_SECRET_KEY = config('secret_key')
+    SESSION_TOKEN = None 
+    BUCKET_NAME = config('bucket_name')
+    OBJECT_KEY = filename
+    EXPIRATION = 3600
+    AWS_ACCESS_KEY = config('access_key')
+    SESSION_TOKEN = None 
+
+    url= generate_presigned_url_function(BUCKET_NAME, OBJECT_KEY, EXPIRATION, AWS_ACCESS_KEY, AWS_SECRET_KEY, SESSION_TOKEN)
+    if url:
+        print(f"Presigned URL: {url}")
+        print(session_id,"++++++")
+        path = os.getcwd()
+        print("Current Working Directory is",path)
+        path = path + "/resultsUI/"
+        video_path=path+config("ai_agent_video_path")
+        print("video path is -----",video_path)
+        download_file(url, video_path)
+        data=fetch_session_data(session_id)
+        questions = []
+        answers = []
+        for entry in data:
+            question = entry['question']
+            questions.append(question)
             
-#             print(f'Starting instance {instance_id}...')
-#             print(f'Current State: {current_state["Name"]}, Previous State: {previous_state["Name"]}')
- 
-#         # Wait for the instance to be in the 'running' state
-#         ec2_client.get_waiter('instance_running').wait(InstanceIds=[instance_id])
         
-#         # Reload the instance state after starting
-#         response = ec2_client.describe_instances(InstanceIds=[instance_id])
-#         instance_state = response['Reservations'][0]['Instances'][0]['State']['Name']
-#         print(f'Instance {instance_id} is now in {instance_state} state.')
- 
-#     except Exception as e:
-#         print(f'Error starting instance {instance_id}: {e}')
+            answer = entry['answers']
+            answers.append(answer)
+        print("questions count ==========================================================",len(questions),len(answers))
     
 
-#     print(instance_state)
+    skills =  [skill['skill_title'] for skill in skills] 
+    focus_skills = [skill['skill_title'] for skill in focus_skills]
+    error_message = "" 
+    try:
+        report=show_results_agent(questions,answers,proctoring_data,skills,focus_skills,S3_fileurl)
+    except Exception as e:
+        import traceback 
+        traceback.print_exc()
+        error_message = str(e)
+        print( "There was an error generating report ", e)
+
+        report = None
+
+    if report:
+        print(report,"--------------------------------report ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        logging.info(f"Evaluation request sent successfully for session: {session_id}")
+        update_query = "UPDATE interview_evaluations SET status = 'EVALUATED' WHERE session_id = %s"
+        print(update_query)
+        json_data = json.dumps(report)
+        cursor.execute("UPDATE interview_evaluations SET evaluation_text = %s WHERE session_id = %s", (json_data, session_id))
+        cursor.execute(update_query, (session_id,))
+        conn.commit()
+        
+        video_path= path + config('ai_agent_video_path')
+        if os.path.exists(video_path):
+            os.remove(video_path)
+            print("Video deleted successfully.")
+        else:
+            print("Video file not found.")
+        logging.info(f"Session {session_id} marked as evaluated.")
+
+        # batch_entry = BatchEntry.objects.get(batch_id=batch_id)
+        # link_entries = LinkEntry.objects.filter(batch_id=batch_id)
+        # batch_entry = BatchEntry.objects.filter(batch_id=batch_id).first()
+        if not batch_entry:
+            print(f"Invalid batch_id: {session_id}. Skipping processing.")
+            return  
+
+        print(f"Found batch entry: {batch_entry}")
+
+
+        if report is None :
+            batch_entry.status = 'failed'
+            batch_entry.save()
+
+        else : 
+            print("The batch entry is processed,*********************************")
+            batch_entry.status = 'processed'
+            for link_entry in link_entries:
+                if link_entry.status == 'pending':
+                    link_entry.status = 'processed'
+                
+                    link_entry.save()
+
+            batch_entry.results = report
+            batch_entry.save()
+        
+    else:
+        batch_entry.status = 'failed'
+        batch_entry.results = error_message
+        batch_entry.save()
+        for link_entry in link_entries:
+                    link_entry.status = 'failed'
+            
+                    link_entry.save()
+        print("Failed to generate report.")
+   
+
+    print("###########################################11###Shut down process#####################################")
+    timeout = 200  
+    check_interval = 30
+    elapsed_time = 0
+    shutdown_process(elapsed_time , timeout , check_interval)
 
 
 
-# def download_video(link_entry, video_path):
-#     try:
-#         command = f"yt-dlp -f mp4 -o {video_path} {link_entry.link}"
-#         response_code = os.system(command)
-#         if response_code == 0:
-#             link_entry.video_path = video_path 
-#             link_entry.status = 'processed'
-#             link_entry.save()
-#             print(f"Video downloaded and saved to {video_path}")
-#             return video_path
-#         else:
-#             link_entry.status = 'failed'
-#             link_entry.save()
-#             print(f"Failed to download video with wget command. Response code: {response_code}")
-#             return None
-#     except Exception as e:
-#         link_entry.status = 'failed'
-#         link_entry.save()
-#         print(f"Exception occurred: {e}")
-#         return None
-
-
-
-# Function to download a file from S3
 def download_file_from_s3(bucket_name, object_key, local_path):
-
-    
     s3 = boto3.client(
         's3',
         aws_access_key_id=os.getenv("ACCESS_KEY"),
         aws_secret_access_key=os.getenv("SECRET_KEY"))
-        # aws_session_token=os.getenv("SESSION_TOKEN")) # session token is optional
     try:
 
         s3.download_file(bucket_name, object_key, local_path)
@@ -154,8 +183,6 @@ def list_and_download_files(bucket_name, local_directory):
         aws_secret_access_key=os.getenv("SECRET_KEY"))
     try:
         response = s3.list_objects_v2(Bucket=bucket_name)
- 
-        # Check if the bucket has any objects
         if 'Contents' in response:
             print(f'Files in bucket "{bucket_name}":')
             for obj in response['Contents']:
@@ -289,6 +316,7 @@ def shutdown_process(elapsed_time , timeout , check_interval):
     # check for no pending tasks initially 
     if check_for_pending_tasks(): 
         print("pending taskes are detected , exiting the shout down process " ) 
+        
         return 
     
     else: 
@@ -312,10 +340,11 @@ def shutdown_process(elapsed_time , timeout , check_interval):
 
 
 @shared_task
-def process_batch(batch_id,Questions ,webhook_url):
+def process_batch(skills,focus_skills,proctoring_data,batch_id,Questions ,webhook_url):
+    print(Questions,"++++++++++++++++++++++++++++++++++++")
     print("The current batch id in process is givenas " , batch_id)
-    
-    print("The code is here in process_batch")
+    print(proctoring_data,"===============================")
+    print("################################################## Updated below #######################################################")
     
     batch_entry = BatchEntry.objects.get(batch_id=batch_id)
     link_entries = LinkEntry.objects.filter(batch=batch_entry).order_by('id')
@@ -323,13 +352,13 @@ def process_batch(batch_id,Questions ,webhook_url):
 
 ########## Updated below #################
     
-    # ✅ Check if batch_id exists
+ 
     batch_entry = BatchEntry.objects.filter(batch_id=batch_id).first()
     if not batch_entry:
-        print(f"❌ Invalid batch_id: {batch_id}. Skipping processing.")
+        print(f"Invalid batch_id: {batch_id}. Skipping processing.")
         return  # Don't return an error, just stop execution safely
 
-    print(f"✅ Found batch entry: {batch_entry}")
+    print(f"Found batch entry: {batch_entry}")
 
 
 ##########################################################
@@ -423,7 +452,7 @@ def process_batch(batch_id,Questions ,webhook_url):
             batch_entry.status ='failed'
         else : 
             batch_entry.status = 'pending'
-        result1= show_results(Questions) 
+        result1= show_results(skills,focus_skills,Questions,proctoring_data) 
         print("*************************" , result1)
         result = json.dumps(result1) 
 
@@ -443,6 +472,7 @@ def process_batch(batch_id,Questions ,webhook_url):
             for link_entry in link_entries:
                 if link_entry.status == 'processing':
                     link_entry.status = 'processed'
+                    print("******************************************************************************************")
                     link_entry.save()
 
             batch_entry.results = result
@@ -451,7 +481,7 @@ def process_batch(batch_id,Questions ,webhook_url):
             
         print("The signature url in process_batch",webhook_url)
         
-        trigger_webhook.delay(batch_id, result, webhook_url)   ## Updated here
+        trigger_webhook(batch_id, result, webhook_url)   ## Updated here
 
     # except BatchEntry.DoesNotExist:
     #     print(f"BatchEntry with ID {batch_id} does not exist.")

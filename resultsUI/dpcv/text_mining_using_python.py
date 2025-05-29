@@ -1,37 +1,38 @@
-import re
+
 import nltk
 import pandas as pd
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.util import ngrams
 from collections import Counter
-import os
+
 from pydub import AudioSegment
 import whisper
-import torch
-import whisper
-from pydub import AudioSegment
-import os
-import gc
+
+import math
+
+
 from multiprocessing import Pool, set_start_method
-from openai import OpenAI
-import os ,json
+
+import json
 from dotenv import load_dotenv
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
-from nltk.util import ngrams
-from collections import Counter
-import pandas as pd
+
+
 import torch
 import re 
-import whisper
-import torch
+
+
 import gc
 import os
-import json
-import pandas as pd
+
+
 from openai import OpenAI
-from dotenv import load_dotenv
+import nltk
+
+
+
+
+
 
 def calculate_avg_logprob(transcription_segments):   
     avg_logprobs = [segment['avg_logprob'] for segment in transcription_segments]
@@ -50,38 +51,58 @@ def split_audio(audio_path, chunk_length_ms=15000):
     gc.collect()
     return chunks
 
-def scale_wpm_to_score(wpm, min_wpm=50, max_wpm=250):
-    if wpm < min_wpm:
-        return 0
-    elif wpm > max_wpm:
-        return 100
-    else:
-        return ((wpm - min_wpm) / (max_wpm - min_wpm)) * 100
 
 
-def scale_avg_logprob_to_score(avg_logprob, min_logprob=-1.0, max_logprob=-0.1):
-    if avg_logprob < min_logprob:
-        return 0
-    elif avg_logprob > max_logprob:
-        return 100
-    else:
-        return ((avg_logprob - min_logprob) / (max_logprob - min_logprob)) * 100
 
-# def translate_text(text):
-#     message = [
-#     {"role": "system", "content": "You are a translation assistant. Translate all user-provided text into English. Respond ONLY with the translated text, without adding extra explanations or comments."},
-#     {"role": "user", "content": text }
-#     ]
-    
-#     client = OpenAI(api_key =config("OPENAI_API_KEY"))
-#     chat_completion = client.chat.completions.create(
-#             model="gpt-4o",
-#             messages = message
-#             ,max_tokens=256
-#         )
-#     newdata = chat_completion.choices[0].message.content
+
+
+
+
+
  
-#     return newdata
+def scale_avg_logprob_to_score(avg_logprob, ideal_min=-0.1, ideal_max=0.0, batch_size=0.02, batch_penalty=1):
+
+    if ideal_max <= avg_logprob <= ideal_min:
+        return 100
+    if avg_logprob < ideal_min:
+        distance = ideal_min - avg_logprob
+    else:
+        distance = avg_logprob - ideal_max
+
+    quotient = int(distance // batch_size)
+    remainder = distance % batch_size
+
+    penalty = sum([batch_penalty * (2 ** i) for i in range(quotient)]) + remainder
+
+    score = max(0, 100 - penalty)
+ 
+    if score == 0:
+        score = 40
+ 
+    return score
+
+def scale_wpm_to_score(wpm, min_wpm=140, max_wpm=160, batch_size=6, batch_penalty=2):
+    if wpm <= 0:
+        return 0  # No score, max penalty applied
+   
+    if min_wpm <= wpm <= max_wpm:
+        return 100
+   
+    if wpm < min_wpm:
+        distance = min_wpm - wpm
+    else:
+        distance = wpm - max_wpm
+ 
+    quotient = distance // batch_size
+    remainder = distance % batch_size
+   
+    penalty = sum([batch_penalty * (2 ** i) for i in range(int(quotient))]) + remainder
+   
+    score = max(0, 100 - penalty)
+    if score == 0:
+      score = 40    
+    return score
+
 
 def transcribe_chunk_batch_new(chunks, model):
     transcriptions = []
@@ -93,7 +114,7 @@ def transcribe_chunk_batch_new(chunks, model):
             audio = whisper.load_audio(i)
             audio = whisper.pad_or_trim(audio)
             transcription = model.transcribe(audio, language="en")
-            try : 
+            try :
                 final_transcription = transcription['text']
             except :
                 final_transcription = transcription.get('text','')
@@ -108,33 +129,65 @@ def transcribe_chunk_batch_new(chunks, model):
             os.remove(i)
         print("*******************************" , transcriptions)    
         full_transcription = "".join(transcriptions)
-        
+        print( "Total words in transcription:", total_words,"__________________________________________")
+        print("Total duration in seconds:", total_duration,"############################################")
         duration_in_minutes = total_duration/60
         if duration_in_minutes > 0:
             wpm = total_words / duration_in_minutes
         else:
             wpm = 0
-
+ 
         print(f"Total Words: {total_words}, Duration: {total_duration} seconds")
         print(f"Words per minute (WPM): {wpm:.2f}")
-        wpm_score = scale_wpm_to_score(wpm , min_wpm=50, max_wpm=130)
+        try : 
+        #  wpm_score = scale_wpm_to_score(wpm , ideal_min=120, ideal_max=180)
+           wpm_score = scale_wpm_to_score(wpm )
+        except Exception as e :
+            print(e)
         print(f"wpm Score : {wpm_score}")
-        pace_prompt =  f"""If the peron is speaking at a average word per minute rate of {wpm}, and is given a score of {wpm_score} , then comment about the pace of the person in speech """
+ 
+ 
+        pace_prompt = f"""If the person is speaking at an average rate of {wpm} words per minute and is given a score of {wpm_score}, then comment on the pace of the person's speech in one line. Also, mention the speed of the person in speech, and note that the ideal speed is between 140-160 words per minute. Comment only in one line."""
+
+        
         pace_comment = get_comment(pace_prompt)
         print("pace comment is :",pace_comment)
-        avg_logprob_mean = sum(avg_logprobs) / len(avg_logprobs)
+        
+        try : 
+            avg_logprob_mean = sum(avg_logprobs) / len(avg_logprobs)
+        except : 
+            avg_logprob_mean = -0.9
         print("The average_logprob is calculates as" , avg_logprob_mean)
-        avg_logprob_score = scale_avg_logprob_to_score(avg_logprob_mean)
+        
+        avg_logprob_score = scale_avg_logprob_to_score(avg_logprob_mean )
+        
         print("The arrticualtion score is given as " , avg_logprob_score)
-        articulation_prompt = f""" If the person is average log probability mean of articulation is {avg_logprob_mean} , and the score is {avg_logprob_score} , then comment about the articulation of the person in speech """
+
+
+        articulation_prompt = f"""If the person's pronunciation is given a score of {avg_logprob_score}, and the average log probability of the pronunciation is {avg_logprob_mean}, with the ideal range being -0.1 to -0.2, then comment on the person's pronunciation in one line only. Do not mention the average log probability or ideal range in the comment."""
 
         articulation_prompt_comment = get_comment(articulation_prompt)
         print("The WPM_score is given as" , wpm_score)
+ 
+        print("**************************************************************************************************************",articulation_prompt)
+ 
+        print(full_transcription , wpm_score , avg_logprob_score , pace_comment , articulation_prompt_comment)
+ 
+        print("**************************************************************************************************************")
+ 
         return full_transcription, wpm_score, avg_logprob_score , pace_comment , articulation_prompt_comment
+    
+    
     except Exception as e:
-        print("Exception occurred:", e)
-        
+        print("Exception occurred:", e)   
+ 
+ 
+
+
+
 from decouple import config
+
+
 client = OpenAI(api_key=config("OPENAI_API_KEY"))
 
 
@@ -185,87 +238,101 @@ def cal_uni_bi(audio_file):
     
     model = whisper.load_model("large-v3", download_root=os.path.join(os.getcwd(), "whisper"))
     final_transcription , pace_score , articulation_score ,pace_comment , articulation_comment = transcribe_chunk_batch_new(chunks,model)
-
+ 
     torch.cuda.empty_cache()
     
-
+ 
     load_dotenv()
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-
+ 
+ 
     message_score = {
         "role": "system",
         "content": f""""calculate the grammar score for the text: "{final_transcription}", out of 100 consider vocabulary, grammar mistakes, sentence formation only give response in digit and no text, give minimum 10 score."""
-
+ 
     }
     message_comment = {
         "role": "system",
-        "content": f""""comment on the grammar issues for the text: "{final_transcription}", consider vocabulary, grammar mistakes, sentence formation."""
-
+        "content": f""""comment on the grammar issues for the text: "{final_transcription}", consider vocabulary, grammar mistakes, sentence formation. ALSO SUGGEST IMPROVEMENTS WITH POWER PHRASES AND VOCABULARY.comment only in one line."""
+ 
     }
-
+ 
     try:
         chat_completion = client.chat.completions.create(
-            model="gpt-3.5-turbo", 
+            model="gpt-3.5-turbo",
             messages=[message_score]
         )
         newdata = chat_completion.choices[0].message.content
+        print(newdata)
+        if int(newdata) < 29 : 
+            newdata = 30
         double_digit = re.findall(r'\b\d{2}\b', newdata)
         grammer_score = int(double_digit[0])
         chat_completion_comment = client.chat.completions.create(
-            model="gpt-3.5-turbo", 
+            model="gpt-3.5-turbo",
             messages=[message_comment]
         )
         newdata = chat_completion_comment.choices[0].message.content
         grammer_comment = newdata
         grammer_comment=grammer_comment.replace('\"',"")
-
-
+ 
+ 
         print("Grammar Score:", grammer_score)
         print("Grammar Comment:", grammer_comment)
+ 
+         
+        pronunciation_score = articulation_score
+        pronunciation_comment = articulation_comment
+
+
+        print("Pronunciation Comment:", pronunciation_comment)
+        print("Pronunciation Score:", pronunciation_score)
 
     except Exception as e:
-        print(f"Error occurred: {e}")
-        grammer_score, grammer_comment = None, None
-
+        print("Error while evaluating pronunciation:", e)
+        grammer_Score = 30 
+        grammer_comment = "The grammer is not good and needs improvement"   
+        pronunciation_score = 30
+        pronunciation_comment = "The pronunciation is not good and needs improvement"
+        
+ 
     example_json_structure = """{
     "sentiment_score":<<score>>,
     "sentiment_comment": <<comment>>,    
     }"""
-
+ 
     sentiment_analysis_message = {
         "role": "system",
        "content": f"""Calculate the sentiment score and provide a comment for the text "{final_transcription}" out of 100. Consider factors such as the emotional tone, positivity/negativity, overall sentiment, and mood conveyed in the text. Provide the response in the following JSON format:
         {example_json_structure}
         """
     }
-
-    try : 
+ 
+    try :
         sentiment_analysis_response = client.chat.completions.create(model="gpt-3.5-turbo", messages=[sentiment_analysis_message])
         sentiment_choice = sentiment_analysis_response.choices[0].message.content
         sentiment_choice_data = json.loads(sentiment_choice)
         sentiment_score_value = sentiment_choice_data["sentiment_score"]
         sentiment_comment_value = sentiment_choice_data["sentiment_comment"]
-
+ 
     except Exception as error:
         print(f"Error occurred: {error}")
         sentiment_score_value, sentiment_comment_value = None, None
     gc.collect()
-    nltk.download('punkt')
-    nltk.download('stopwords')
+    
     tokens = word_tokenize(final_transcription)
     stop_words = set(stopwords.words('english'))
     tokenized_corpus = [word for word in tokens if word.lower() not in stop_words]
     unigrams = list(ngrams(tokenized_corpus, 1))
-    bigrams = list(ngrams(tokenized_corpus, 2))
+    
     unigram_freq = Counter(unigrams)
-    bigram_freq = Counter(bigrams)
+ 
     df_unigrams = pd.DataFrame(list(unigram_freq.items()), columns=['Word', 'Frequency'])
     df_unigrams = df_unigrams.sort_values(by='Frequency', ascending=False).reset_index(drop=True)
     torch.cuda.empty_cache()
-
-    return df_unigrams ,sentiment_score_value , sentiment_comment_value , final_transcription, grammer_score , grammer_comment , pace_score , articulation_score,pace_comment , articulation_comment
  
+    return df_unigrams ,sentiment_score_value , sentiment_comment_value , final_transcription, grammer_score , grammer_comment , pace_score ,pace_comment ,pronunciation_score , pronunciation_comment
+
 
 
 

@@ -1,6 +1,6 @@
 import sys
 import os
-import cv2
+# import cv2
 import os
 import zipfile
 from pathlib import Path
@@ -17,7 +17,7 @@ sys.path.append(work_path)
 from dpcv.tools.common import parse_args
 from dpcv.config.default_config_opt import cfg, cfg_from_file, cfg_from_list
 # from torch.utils.tensorboard import SummaryWriter
-from dpcv.experiment.new_exp import ExpRunner
+from dpcv.experiment.exp_runner_new import ExpRunner
 from dpcv.data.utils.video_to_image import convert_videos_to_frames
 from dpcv.data.utils.video_to_wave import audio_extract
 from dpcv.data.utils.raw_audio_process import audio_process
@@ -102,14 +102,6 @@ def setup():
  
     if args.cfg_file is not None:
         cfg_from_file(args.cfg_file)
- 
-    # if args.resume:
-    #     cfg.TRAIN.RESUME = args.resume
-    # if args.max_epoch:
-    #     cfg.TRAIN.MAX_EPOCH = args.max_epoch
-    # if args.lr:
-    #     cfg.SOLVER.RESET_LR = True
-    #     cfg.SOLVER.LR_INIT = args.lr
     if True:
         cfg.TEST.TEST_ONLY = True
  
@@ -117,7 +109,10 @@ def setup():
         cfg_from_list(args.set_cfgs)
     return args
  
-def dpmain(count):
+
+
+ 
+def dpmain(count,Questions):
  
     count += 1
     print("The cnt is **********************************************" , count)
@@ -152,614 +147,534 @@ def dpmain(count):
  
  
  
-  #  delete_all_files_in_folder(video_dir)
+ 
     delete_all_files_in_folder(outforlibrosa)
     delete_all_files_in_folder(outforwav)
     delete_all_folders_in_folder(output_dir)
  
-   # video_to_image()
+ 
     convert_videos_to_frames(video_dir,output_dir)
     audio_extract(video_dir,outforwav)
     audio_process(mode= 'librosa' ,aud_dir=outforwav , saved_dir=outforlibrosa)
- 
     runner = ExpRunner(cfg)
-    
-    res = runner.test()
-
+    res = runner.test(Questions)
 
 
     return res
  
- 
-# def support( testdic )-> List[Dict[str, str]]:
-#     """
-#     Prepare messages to end the interview and generate feedback.
-#     """
-#     #transcript = [f"{message['role'].capitalize()}: {message['content']}" for message in chat_history[1:]]
-#     system_prompt = testdic
-#     # print("- - -  - - - - - - -",system_prompt)
-#     return [
-#         {"role": "system", "content": system_prompt},
-#         {"role": "user", "content": "Grade the interview based on the transcript provided and give feedback."},
-#     ]
- 
- 
-# def test12(testdic ) -> Generator[str, None, None]:
-#     """
-#     End the interview and get feedback from the LLM.
-#     """
-    
-#     message = support(testdic)
-    
-#     load_dotenv()
-#     client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
-#     # message1={'role': 'system', 'content':message[0]['content']["audio_prompt"]}
-#     # message2={'role': 'system', 'content':message[0]['content']["video_prompt"]}
-#     message3={'role': 'system' ,'content':message[0]['content']['language_prompt']}
-#     # print("\n|\n|\n|\n|\n|\n|\n|v",message)  # prompt returned from newprompt file
-#     # print("message3 is ---------------------------------------",message3)
- 
- 
-#     message=[
-#     {
-#         "role": "system",
-#         "content": """
-# You are an AI system designed to provide interview feedback in JSON format with clear sections and detailed comments. Ensure that the feedback is constructive, supportive, and aimed at helping the candidate enhance their performance.
-# {
-#   "feedback": {
-#     "overall_score": {
-#       "title": "Overall Score",
-#       "comment": "<comment>",  
-#       "score": "<value>"
-#     },
-#     "scores": {
-#       "communication_score": {
-#         "title": "Communication Score",
-#         "comment": "<comment>",
-#         "score": "<value>",
-#         "subparts": {
-#             "articulation_score": {
-#               "title": "Articulation Score",
-#               "comment": "<comment>",
-#               "score": "<value>"
-#             },
-#             "pace_and_clarity_score": {
-#               "title": "Pace and Clarity Score",
-#               "comment": "<comment>",
-#               "score": "<value>"
-#             },
-#             "grammar_score": {
-#               "title": "Grammar Score",
-#               "comment": "<comment>",
-#               "score": "<value>"
-#             }
-          
-#       }
-#       },
-#       "sociability_score": {
-#         "title": "Sociability Score",
-#         "comment": "<comment>",
-#         "score": "<value>",
-#         "subparts": 
-#           {
-#             "energy_score": {
-#               "title": "Energy Score",
-#               "comment": "<comment>",
-#               "score": "<value>"
-#             },
-#             "sentiment_score": {
-#               "title": "Sentiment Score",
-#               "comment": "<comment>",
-#               "score": "<value>"
-#             },
-#             "emotion_score": {
-#               "title": "Emotion Score",
-#               "comment": "<comment>",
-#               "score": "<value>"
-#             }
-#           }
+def is_self_awareness_question(q):
+    keywords = [
         
-#       },
-#       "positive_attitude_score": {
-#         "title": "Positive Attitude Score",
-#         "comment": "<comment>",
-#         "score": "<value>",
-#         "subparts": 
-#           {
-#             "energy_score": {
-#               "title": "Energy Score",
-#               "comment": "<comment>",
-#               "score": "<value>"
-#             }
-#           }
+        "strength", "strengths", "greatest strength", "core strength", "key strength",
+        "weakness", "weaknesses", "biggest weakness", "overcome weakness", "handle weakness",
         
-#       },
-#       "overall_professional_score": {
-#         "title": "Overall Professional Score",
-#         "comment": "<comment>",
-#         "score": "<value>",
-#         "subparts": 
-#           {
-#             "presentability_score": {
-#               "title": "Presentability Score",
-#               "comment": "<comment>",
-#               "score": "<value>"
-#             },
-#             "body_language_score": {
-#               "title": "Body Language Score",
-#               "comment": "<comment>",
-#               "score": "<value>"
-#             },
-#             "dressing_score": {
-#               "title": "Dressing Score",
-#               "comment": "<comment>",
-#               "score": "<value>"
-#             }
-#           }
+        "self-aware", "self-awareness", "describe yourself", "personal qualities",
+        "how do you view yourself", "how do others describe you", "know about yourself",
+        "perceive yourself", "self-perception", "how would you describe yourself",
+        "what have you learned about yourself", "reflect on yourself", "your personality",
         
-#       }
-#     },
-#     "suggestions_for_improvement": {
-#       "title": "Suggestions for improvement",
-#       "suggestions": [
-#         "<suggestion1>",
-#         "<suggestion2>",
-#         "<suggestion3>",
-#         "<suggestion4>"
-#       ]
-#     },
-#     "areas_for_improvement": {
-#       "title": "Areas for improvement",
-#       "improvements": [
-#         "<improvement1>",
-#         "<improvement2>"
-#       ]
-#     },
-#     "ocean_values_analysis": {
-#       "title": "Ocean Values Analysis",
-#       "ocean_values": [
-#         "<value1>",
-#         "<value2>",
-#         "<value3>",
-#         "<value4>",
-#         "<value5>"
-#       ],
-#       "comment": "<comment>"
-#     },
-#     "strengths": {
-#       "title": "Strengths",
-#       "strengths": [
-#         "<strength1>",
-#         "<strength2>",
-#         "<strength3>",
-#         "<strength4>"
-#       ]
-#     },
-#     "weakness": {
-#       "title": "Weakness",
-#       "weakness": [
-#         "<weakness1>",
-#         "<weakness2>",
-#         "<weakness3>",
-#         "<weakness4>"
-#       ]
-#     }
-#   }
-# }
-
- 
-# """  
-#     },
-
-#     message3,
-#     # message2,
- 
-# ]
-#     print("-------------------------------------------------------------------------------------------")
-#     # model="gpt-4o-2024-08-06",
-#     #     response_format={"type":"json_schema","json_schema":example_json},
-#     chat_completion = client.chat.completions.create(
-#         model="gpt-4o-2024-08-06",
-#         response_format={"type":"json_object"},
-#         messages = message
-#     )
- 
-#     finish_reason = chat_completion.choices[0].finish_reason
- 
-#     # if(finish_reason == "stop"):
-#     data = chat_completion.choices[0].message.content
-#     newdata = json.loads(data)
-#     print(newdata)
-#     return newdata
- 
- 
- 
- 
-def evaluate_student_answer(question, student_answer):
- 
-    prompt = { "role": "system",
-            "content":f"""
-    You are tasked with evaluating a candidate's answer to a question. Follow these instructions to provide a thorough and constructive evaluation:
- 
-    Understand the Question: First, ensure you understand the question fully. Identify the main components or steps required to reach a correct answer.
- 
-    Review the Candidate's Answer: Carefully read the Candidate's response. Identify the approach they took, noting any key points or methods they used.
- 
-    Compare with an Ideal Solution:
-    - Break down the ideal solution step-by-step and see if the candidate's answer aligns with each step.
-    - Note any parts where the candidate deviated from the ideal solution, missed steps, or made incorrect assumptions.
- 
-    Check for Accuracy:
-    - Verify each calculation, reasoning step, or logical point for correctness.
-    - Ensure the final answer is in the correct form (e.g., simplified fraction, correct units).
- 
-    Assess Clarity and Completeness:
-    - Determine if the answer is easy to follow and if the candidate clearly explains their thought process.
-    - Check if the answer addresses all parts of the question, including any specific conditions or assumptions.
- 
-    Provide Constructive Feedback:
-    - If the answer is correct, highlight what the candidate did well, such as clarity, accurate calculations, or thorough explanations.
-    - If there are errors, gently explain each mistake and suggest improvements or correct methods.
- 
-    Assign a Score or Rating (if applicable):
-    - Based on accuracy, clarity, and completeness, assign a score or rating according to the provided grading criteria.
- 
+        "what motivates you", "why do you do", "passionate about", "what drives you",
+        "what inspires you", "personal values", "your goals", "career goals",
+        "life goals", "future plans", "ambition", "personal mission",
+        
+        "biggest failure", "deal with failure", "learned from failure",
+        "handle failure", "fail at", "mistake you made", "major mistake", "overcome challenge",
+        
+        "personal growth", "how have you grown", "develop yourself", "improve yourself",
+        "learning experience", "continuous improvement", "developed over time",
+        "professional development", "resilience", "bounce back", "cope with setbacks",
+        
+        "emotional intelligence", "how do you handle pressure", "stay calm", "manage stress",
+        "how do you react", "emotional response", "control emotions", "stay focused",
+        "handle criticism", "accept feedback", "give feedback", "receive feedback",
+        
+        "what do you value", "what matters to you", "ethical dilemma", "morals",
+        "what do you believe in", "work ethic", "integrity", "trust", "honesty",
     
-    Here is the question and the candidate's answer:
+        "make decisions", "hardest decision", "difficult choice", "regret", "hindsight",
+        
+        "work with others", "team conflict", "resolve conflict", "how do you communicate",
+        "communication style", "listen", "express yourself",
+        
+        "time management", "organize yourself", "procrastinate", "stay productive",
+        "how do you plan", "daily routine", "structure your day"
+    ]
  
-    **Question**: {question}
-    **Candidate's Answer**: {student_answer}
+    return any(k.lower() in q.lower() for k in keywords)
+ 
+def mark_self_awareness_questions(questions):
+    count = 0
+    max_self_awareness = 3
+    modified = []
+ 
+    for q in questions:
+        if count < max_self_awareness and is_self_awareness_question(q):
+            modified.append(q + "?$#@True$#@")
+            count += 1
+        else:
+            modified.append(q)
+    return modified
 
-    Summarize the Evaluation:
-    Conclude with a brief summary in 3-4 lines 
- 
-    """}
- 
- 
-    client = OpenAI(api_key =config("OPENAI_API_KEY"))
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo",  
-        messages=[prompt],
-        max_tokens=500,
-        temperature=0.5
-    )
- 
- 
-    evaluation = response.choices[0].message.content
-    evaluation=evaluation.replace("\n","")
-    return evaluation
- 
 
-def format_feedback(input_json):
-    
+
+def  show_results(skills,focus_skills,Questions,proctoring_data) :
+    Questions = mark_self_awareness_questions(Questions)
+    try:
+        counts = 0  
+        final_dict= dpmain(counts,Questions)
+
+        print(final_dict,"[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]")
+        print(f"Questions 111111111111111111111| {Questions}")
+        if isinstance(final_dict, str):
+            results1 = json.loads(final_dict)
+        else:
+            results1 = final_dict
+        print(":::::::::::::::::::::::::::::::::::::::::::::::::::::")
+
+        print(results1)
+
+        print(":::::::::::::::::::::::::::::::::::::::::::::::::::::")
+
+
+        ids = [entry['id'] for entry in results1['transcription']]
+        answers = [entry['transcript'] for entry in results1['transcription']]
+        articulation_score=final_dict['articulation_score']
+        articulation_comment=final_dict['articulation_comment']
+        body_language_comment=final_dict['bodylang_comment']
+        bodylang_score=final_dict['bodylang_score']
+        transcription=final_dict['transcription']
+        communication_comment=final_dict['communication_comment']
+        etiquette_score=final_dict['etiquette_score']
+        etiquette_comment=final_dict['etiquette_comment']
+        grammer_score=final_dict['grammar_score']
+        grammer_comment=final_dict['grammar_comment']
+        pace_score=final_dict['pace_score']
+        pace_comment=final_dict['pace_comment']
+        pronunciation_score=final_dict['pronounciation_score']
+        pronunciation_comment=final_dict['pronounciation_comment']
+        self_awareness_comment=final_dict['self_awareness_comment']
+        self_awareness_score=final_dict['self_awareness_score']
+        print("answers",answers)
+        print("::::::::::::::::::::::::::::::::::::::::::::::::::::",transcription)
+
+        from openai import OpenAI
+        import re,requests
+        
+        client = OpenAI(api_key=config("OPENAI_API_KEY"))
+        
+               
+
+        
+        skills =  [skill['skill_title'] for skill in skills]
+        print("skills--------------------------",skills)
+  
+        
+        skills_score = {}
+        overall_scores = {}    
+        focus_skills_score = {}
+        focus_skill_comment = {}
+        
+        focus_skills = [skill['skill_title'] for skill in focus_skills]
+        
+        question_answer_dict = {}
+        
+        for i, question in enumerate(Questions):
+            question_answer_dict[question] = answers[i]
+            print("Question-Answer Dictionary:Question-Answer Dictionary:Question-Answer Dictionary:", question_answer_dict)
+            
+        
+            
+        for skill in skills: 
+            for skill in skills: 
+                if skill not in focus_skills:
+                    print("Skill not in focus skills, skipping:", skill)
+                    prompt = f"""
+                    You are an expert evaluator who will assess the following answer to the interview question for the skill '{skill}'. 
+                    The person's response to the interview question is:
+                    {question_answer_dict}
+
+                    Please evaluate the answer and:
+                    1. Provide a score from 1 to 100 based on the relevance and quality of the answer.
+
+                    Your response should only include the score.
+                    """
+                    response = client.chat.completions.create(
+                        model="gpt-3.5-turbo",
+                        messages=[
+                            {"role": "system", "content": "You are an experienced evaluator who rates interview answers based only on relevance and quality."},
+                            {"role": "user", "content": prompt}
+                        ],
+                        max_tokens=64 
+                    )
+                    response_text = response.choices[0].message.content.strip()
+                    match = re.search(r'\d+', response_text)
+                    if match:
+                        score = int(match.group(0))
+                        focus_skills_score[skill] = score
+                        print(f"Score for non-focus skill '{skill}': {score}")
+                        skills_score[skill] = score
+                    else:
+                        print(f"Warning: No score found in response for non-focus skill '{skill}'. Response: {response_text}")
+                        skills_score[skill] = 50
+                else : 
+                    prompt = f"""
+                    You are an expert evaluator assessing the following answer to an interview question for the skill '{skill}'. 
+                    The person's response to the interview question is:
+                    {question_answer_dict}
+
+                    Please evaluate the answer based on the skill '{skill}' only, and:
+                    1. Provide a score from 1 to 100 based on the relevance and quality of the answer specific to the skill '{skill}'.
+                    2. Write a single, concise comment that covers all relevant aspects of the answer related to the skill '{skill}', including strengths, weaknesses, and key takeaways. The comment should be focused solely on the skill '{skill}' and should not include any feedback or comments related to other skills (e.g., React.js comments should not include feedback on PHP or vice versa).
+
+                    Your response should include both the score (1-100) and a one-line comment specific to the skill '{skill}'.
+                    """
+
+                    response = client.chat.completions.create(
+                        model="gpt-3.5-turbo",
+                        messages=[ 
+                            {"role": "system", "content": "You are an experienced evaluator who rates answers to interview questions. Your task is to rate answers based on relevance and quality, provide a score from 1 to 100, and give a one-line comment specific to the skill."},
+                            {"role": "user", "content": prompt}
+                        ],
+                        max_tokens=64
+                    )
+
+                    response_text = response.choices[0].message.content.strip()
+                    comment = re.sub(r"Score: \d+\n+Comment: ", "", response_text).strip()
+                    match = re.search(r'\d+', response_text)
+
+                    focus_skill_comment[skill] = comment  #   # Always save the comment
+                    if match:
+                        focus_skills_score[skill] = int(match.group(0))
+                    else:
+                        inferred_prompt = f"""
+                        Based on the following feedback you provided, rate the answer on a scale of 1 to 100:
+                        Feedback: {response_text}
+
+                        Please provide a score (1 to 100) that reflects the feedback.
+                        """
+                        inferred_response = client.chat.completions.create(
+                            model="gpt-3.5-turbo",
+                            messages=[ 
+                                {"role": "system", "content": "You are an expert evaluator who rates interview answers based on feedback given."},
+                                {"role": "user", "content": inferred_prompt}
+                            ],
+                            max_tokens=64  
+                        )
+
+                        inferred_score_text = inferred_response.choices[0].message.content.strip()
+                        inferred_match = re.search(r'\d+', inferred_score_text)
+                        if inferred_match:
+                            inferred_score = int(inferred_match.group(0))
+                            focus_skills_score[skill] = inferred_score
+                        else:
+                            focus_skills_score[skill] = 50  # If no inferred score, default to 50
+
+            # Generate the final output for focus skills with both score and comment
+            output = []
+            for skill in focus_skills:
+                skill_data = {
+                    "skill_name": skill,
+                    "score": focus_skills_score.get(skill, "No score available"),
+                    "comment": focus_skill_comment.get(skill, "No comment available")
+                }
+                output.append(skill_data)
+
+            # Print or return final output
+            print("Final Output:", output)
+                        
+
+            messages = [
+                {
+                    "role": "system",
+                    "content": (
+                        "You are an AI Interview Summary Generator.\n"
+                        "You will receive detailed evaluation comments for a candidate across multiple skills.\n"
+                        "Your task is to read all the individual skill-based comments and generate one comprehensive, insightful overall evaluation paragraph summarizing the candidate’s performance.\n\n"
+                        "Your response should be long and detailed, written in a clear, professional tone.\n"
+                        "Do not repeat the skill names or list them again. Focus on synthesizing all the insights into one flowing summary that highlights strengths, communication ability, technical understanding, and overall competence."
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": f"Here are the detailed skill-wise score is :\n\n{skill}\n\n and the score and comment for the focus skills is :\n\n{focus_skills_score}\n\n and the comment is \n\n{focus_skill_comment}\n\nGenerate a single overall evaluation paragraph based on these."
+                }
+            ]
+
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=messages,
+                max_tokens=300
+            )
+
+            technical_comment = response.choices[0].message.content.strip()
+            print(technical_comment)
+
+
+
+
+
+
+
+################################################# evoluation , suggestions ################################################# 
+        def evaluate_student_answer(question, student_answer):
+            print(f"Evaluating Answer for Question: {question}")
+            prompt = {
+                "role": "system",
+                "content": f"""
+                You are tasked with evaluating a candidate's answer to a question. Follow these instructions to provide a thorough and constructive evaluation:
+
+                Understand the Question: First, ensure you understand the question fully. Identify the main components or steps required to reach a correct answer.
+
+                Review the Candidate's Answer: Carefully read the Candidate's response. Identify the approach they took, noting any key points or methods they used.
+
+                Compare with an Ideal Solution:
+                - Break down the ideal solution step-by-step and see if the candidate's answer aligns with each step.
+                - Note any parts where the candidate deviated from the ideal solution, missed steps, or made incorrect assumptions.
+
+                Check for Accuracy:
+                - Verify each calculation, reasoning step, or logical point for correctness.
+                - Ensure the final answer is in the correct form (e.g., simplified fraction, correct units).
+
+                Assess Clarity and Completeness:
+                - Determine if the answer is easy to follow and if the candidate clearly explains their thought process.
+                - Check if the answer addresses all parts of the question, including any specific conditions or assumptions.
+
+                Provide Constructive Feedback:
+                - If the answer is correct, highlight what the candidate did well, such as clarity, accurate calculations, or thorough explanations.
+                - If there are errors, gently explain each mistake and suggest improvements or correct methods.
+
+                Assign a Score or Rating (if applicable):
+                - Based on accuracy, clarity, and completeness, assign a score or rating according to the provided grading criteria.
+
+                Here is the question and the candidate's answer:
+
+                **Question**: {question}
+                **Candidate's Answer**: {student_answer}
+
+                Summarize the Evaluation:
+                Conclude with a brief summary in 3-4 lines
+                """
+            }
+
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",  
+                messages=[prompt],
+                max_tokens=500,
+                temperature=0.5
+            )
+
+            evaluation = response.choices[0].message.content
+            evaluation = evaluation.replace("\n", " ")
+            return evaluation
+
+
+
+
+        def generate_feedback_for_multiple_responses(questions, input_data):
+
+            if len(questions) != len(input_data):
+                raise ValueError("Number of questions must match number of transcript entries")
+            
+            evaluations = []
+
+            for i, question in enumerate(questions):
+                answer = input_data[i]["transcript"]
+
+                # Get the suggestion based on the transcript
+                suggestion_prompt = {
+                    "role": "system",
+                    "content": (
+                        "You are an AI Interview Assistant.\n"
+                        "You will be given a set of interview questions along with their respective answers.\n"
+                        "Your task is to analyze the answers and provide constructive suggestions for improvements.\n\n"
+                        "For each answer, provide suggestions for improving the response, including but not limited to:\n"
+                        "1. Clarity: How can the candidate make the answer clearer?\n"
+                        "2. Depth: Are there details missing that would strengthen the answer?\n"
+                        "3. Accuracy: Are there any factual inaccuracies or better ways to express ideas?\n"
+                        "4. Relevance: Does the answer fully address the question, or does it stray off-topic?\n"
+                        "5. Professionalism: Is the language and tone appropriate for a professional setting?\n\n"
+                        "Format your output like this:\n"
+                        "{\n"
+                        "   [Your detailed suggestion here]\"\n"
+                        "}\n\n"
+                        "Do this for each question-answer pair provided."
+                    )
+                }
+                
+                suggestion_response = client.chat.completions.create(
+                    model="gpt-3.5-turbo",
+                    messages=[
+                        suggestion_prompt,
+                        {
+                            "role": "user",
+                            "content": f"Question: {question}\nAnswer: {answer}\n\nPlease provide suggestions for this answer."
+                        }
+                    ],
+                    max_tokens=500,
+                    temperature=0.7
+                )
+
+                suggestion = suggestion_response.choices[0].message.content.strip()
+
+                # Get the evaluation based on the question and answer
+                evaluation = evaluate_student_answer(question, answer)
+
+                evaluations.append({
+                    "id": input_data[i]["id"],
+                    "transcript": answer,
+                    "suggestions": suggestion,
+                    "evaluation": evaluation
+                })
+            
+            return evaluations
+
+       
+       
+        transcription = generate_feedback_for_multiple_responses(Questions, transcription)
+        ################################################# proctoring_report #################################################
+
+        multi_face_count = 0
+        face_not_visible_count = 0
+        tab_switched = 0
+        
+        Exited_Full_Screen = 0
+
+        for item in proctoring_data : 
+            title = item['proctering_title']
+            count = item['proctering_count']
+            print(title , count)   
+            if title == "Multiple Faces Detected": 
+                multi_face_count = count
+            if title == "No Face Detected":
+                face_not_visible_count = count 
+            if title == "Tab Switched":
+                tab_switched = count 
+            if title == "Exited Full Screen" : 
+                Exited_Full_Screen = count
+
+        print(face_not_visible_count,multi_face_count,tab_switched,Exited_Full_Screen,"____________$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        def calculate_proctoring_score(face_not_visible, multi_face, tab_switched, Exited_Full_Screen):
+            score = (
+                face_not_visible * 5 +
+                multi_face * 10 +
+                tab_switched * 20 +
+                Exited_Full_Screen * 10
+            )
+            final = 100 - score
+            return max(final, 0 )  
+ 
+        proctoring_score = calculate_proctoring_score(
+            face_not_visible_count,
+            multi_face_count,
+            tab_switched,
+            Exited_Full_Screen
+        )
+        message_proctoring_comment = {
+            "role": "system",
+            "content": f"""
+        You are a proctoring analysis assistant. Generate a professional and concise summary based on the following metrics from an online test session:
+ 
+        - Candidate Face not visible count: {face_not_visible_count}
+        - Multiple faces detected count: {multi_face_count}
+        - Screen violation count (tab switches or fullscreen exits): {Exited_Full_Screen + tab_switched}
+ 
+        Evaluate the user's behavior based on these numbers. Highlight any suspicious behavior or concerns.
+        Do not include the numbers in the final comment—only describe the situation based on them using natural, human-like phrasing.
+        """
+        }
+ 
+        try:
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[message_proctoring_comment],
+                max_tokens=200
+            )
+ 
+            # Extract and clean comment
+            proctoring_comment = response.choices[0].message.content.strip().replace('"', '')
+ 
+            print(" Proctoring Report Comment:")
+            print(proctoring_comment)
+            print(" Proctoring Suspicion Score :", proctoring_score)
+ 
+        except Exception as e:
+            print(" Error generating proctoring report:", e)
+ 
+        overall_scores = skills_score.copy()  # Make a copy of skills_score to avoid modifying it
+        overall_scores.update(focus_skills_score)  # Update with focus_skills_score
+ 
+        print(overall_scores)
+        formatted_data =  format_feedback(overall_scores,articulation_comment,articulation_score,body_language_comment,bodylang_score,communication_comment,transcription,etiquette_score,etiquette_comment,technical_comment,grammer_comment,grammer_score,pace_comment,pace_score,output,pronunciation_score,pronunciation_comment,proctoring_comment,proctoring_score,self_awareness_score,self_awareness_comment,face_not_visible_count,multi_face_count,tab_switched,Exited_Full_Screen)
+        return formatted_data
+   
+    except Exception as e:
+        print(f" Error computing final node summary: {e}")
+        import traceback
+        traceback.print_exc()
+ 
+def format_feedback(overall_scores, articulation_comment, articulation_score, body_language_comment, bodylang_score, communication_comment,transcription,etiquette_score,etiquette_comment,technical_comment,grammer_comment,grammer_score,pace_comment,pace_score,output,pronunciation_score,pronunciation_comment,proctoring_comment,proctoring_score,self_awareness_score,self_awareness_comment,face_not_visible_count,multi_face_count,tab_switched,Exited_Full_Screen):
     formatted_json = {
         "feedback": {
-            "overall_score": {
-                "title": "Overall Score",
-                "comment": "Overall performance summary will go here.",
-                "score": input_json["overall_score"]
+            "skill_analysis": {
+                "skills_score": overall_scores
             },
             "scores": {
-                "communication_score": {
-                    "title": "Communication Score",
-                    "comment": input_json["communication_comment"],
-                    "score": input_json["communication_score"],
-                    "subparts": 
-                        {
-                            "articulation_score": {
-                                "title": "Articulation Score",
-                                "comment": input_json["articulation_comment"],
-                                "score": input_json["articulation_score"]
-                            },
-                            "pace_and_clarity_score": {
-                                "title": "Pace and Clarity Score",
-                                "comment": input_json["pace_score_comment"],
-                                "score": input_json["pace_score"]
-                            },
-                            "grammar_score": {
-                                "title": "Grammar Score",
-                                "comment": input_json["grammar_comment"],
-                                "score": input_json["grammar_score"]
-                            }
+                "subjective_analysis": {
+                    "technical_skills": {
+                        "title": "operational_technical_skills",
+                        "comment": technical_comment
+                    },
+                    "behaviour_analysis": {
+                        "self_awareness": {
+                            "title": "self_awareness",
+                            "score": self_awareness_score,
+                            "comment": self_awareness_comment
+                        },
+                        "etiquette": {
+                            "title": "etiquette",
+                            "score": etiquette_score,
+                            "comment": etiquette_comment
                         }
-                    
+                    },
+                    "focus_skills": {  # Corrected typo here
+                        "skills": output
+                    },
+                    "communication": {
+                        "grammer_score": grammer_score,
+                        "grammer_comment": grammer_comment,
+                        "pronounciation_score": pronunciation_score,
+                        "pronounciation_comment": pronunciation_comment,
+                        "pace_score": pace_score,
+                        "pace_comment": pace_comment,
+                        "body_language_score": bodylang_score,  # Corrected typo here
+                        "body_language_comment": body_language_comment,
+                        "articulation_score": articulation_score,
+                        "articulation_comment": articulation_comment
+                    }
                 },
-                "sociability_score": {
-                    "title": "Sociability Score",
-                    "comment": input_json["sociability_comment"],
-                    "score": input_json["sociability_score"],
-                    "subparts": 
-                        {
-                            "energy_score": {
-                                "title": "Energy Score",
-                                "comment": input_json["energy_comment"],
-                                "score": input_json["emotion_score"]
-                            },
-                            "sentiment_score": {
-                                "title": "Sentiment Score",
-                                "comment": input_json["sentiment_comment"],
-                                "score": input_json["sentiment_score"]
-                            },
-                            "emotion_score": {
-                                "title": "Emotion Score",
-                                "comment": input_json["emotion_comment"],
-                                "score": input_json["emotion_score"]
-                            }
-                        }
-                    
-                },
-                "positive_attitude_score": {
-                    "title": "Positive Attitude Score",
-                    "comment": input_json["positive_attitude_comment"],  # Fixed closing bracket error here
-                    "score": input_json["positive_attitude_score"],
-                    "subparts": 
-                        {
-                            "energy_score": {
-                                "title": "Energy Score",
-                                "comment": input_json["energy_comment"],
-                                "score": input_json["energy_score"]
-                            }
-                        }
-                    
-                },
-                "professional_score": {
-                    "title": "Professional Score",
-                    "comment": input_json["professional_comment"],
-                    "score": input_json["professional_score"],
-                    "subparts": 
-                        {
-                            "presentability_score": {
-                                "title": "Presentability Score",
-                                "comment": input_json["presentability_comment"],
-                                "score": input_json["presentability_score"]
-                            },
-                            "body_language_score": {
-                                "title": "Body Language Score",
-                                "comment": input_json["body_language_comment"],
-                                "score": input_json["bodylang_score"]
-                            },
-                            "dressing_score": {
-                                "title": "Dressing Score",
-                                "comment": input_json["dressing_comment"],
-                                "score": input_json["dressing_score"]
-                            }
-                        }
-                    
+                "is_new":"1",
+                "proctoring_report": {
+                    "title": "proctoring_report",
+                    "score": proctoring_score,
+                    "comment": proctoring_comment,
+                    "face_not_visible_count":face_not_visible_count,
+                    "multi_face_count":multi_face_count,
+                    "tab_switched_count":tab_switched,
+                    "exited_Full_Screen_count":Exited_Full_Screen
+
+
                 }
             },
-            "transcription": input_json["transcription"]
+            "transcription": transcription
         }
     }
 
+    print(formatted_json, "=============================================")
     return formatted_json
 
-def get_ocean_comment(ocean_list):
-    message={"role": "system",
-            "content": f"These are the ocean values: {ocean_list[0]}, {ocean_list[1]},{ocean_list[2]},{ocean_list[3]},{ocean_list[4]} representing openness to experience, conscientiousness, extraversion, agreeableness and neuroticism. Give comment in 2-3 lines based on these values"}
-    client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
-    chat_completion = client.chat.completions.create(
-            model="gpt-4o",
-            messages = [message]
-            ,max_tokens=256
-        )
-
-    final_comment = chat_completion.choices[0].message.content
-    final_comment=final_comment.replace("\n"," ")
-    return final_comment
-
-
-import time
-def get_sw(prompt,json_schema):
-    retries = 0
-
-    max_retries = 3
-
-    while retries < max_retries :
-      try :       
-        message={"role": "system",
-                "content": prompt}
-        client = OpenAI(api_key =os.getenv("OPENAI_API_KEY"))
-        chat_completion = client.chat.completions.create(
-            model="gpt-4o-2024-08-06",
-            response_format={"type":"json_schema","json_schema":json_schema},
-                messages = [message]
-                ,max_tokens=256
-            )
-            # print("|\n|\n|\n|\n|\n|\n|\n|\n|v",chat_completion)
-        # finish_reason = chat_completion.choices[0].finish_reason
-    
-        
-        final = chat_completion.choices[0].message.content
-        print("strength and weakness json is ---------",final)
-        final=final.replace("'", '"')
-        final_res=json.loads(final)    
-        return final_res
-      except (json.JSONDecodeError , Exception) as e :
-          retries += 1
-          print(f"Error occurred: {e}. Retrying {retries}/{max_retries}.")
-          time.sleep(10)
-    print("Max retries exceeded. Failed to generate valid JSON.")
-
-    return None 
-
-    
-import json
-
-def show_results(Questions):
-    try:
-      counts = 0  
-      final_dict= dpmain(counts)
-
-
-      print(f"Questions | {Questions}")
-      
-    
-      if isinstance(final_dict, str):
-          results1 = json.loads(final_dict)
-      else:
-          results1 = final_dict
-
-
-      
-
-
-      print(":::::::::::::::::::::::::::::::::::::::::::::::::::::")
-
-      print(results1)
-
-      print(":::::::::::::::::::::::::::::::::::::::::::::::::::::")
-
-
-      ids = [entry['id'] for entry in results1['transcription']]
-      answers = [entry['transcript'] for entry in results1['transcription']]
-      ans_feedback=[]
-      for i,j in zip(Questions,answers):
-
-          ans=evaluate_student_answer(i,j)
-          ans_feedback.append(ans)
-      ques_feedback = [{"id": id_, "answer_evaluation": transcript} for id_, transcript in zip(ids,ans_feedback)]
-      ques_feedback={"answer_feedback":ques_feedback}
-      if isinstance(ques_feedback, dict):
-          results1.update(ques_feedback)
-      else:
-          print("Final score is not a dictionary, unable to update results.")
-      display_data = results1
-      for transcript in display_data['transcription']:
-          evaluation = next((feedback['answer_evaluation'] for feedback in display_data['answer_feedback'] if feedback['id'] == transcript['id']), None)
-          if evaluation:
-              transcript['answer_evaluation'] = evaluation
-
-      # Remove the 'answer_feedback' field entirely
-      del display_data['answer_feedback']
-
-      # Print the modified JSON
-      # print(json.dumps(display_data, indent=2))   
-      # 
-      ocean_values=display_data["ocean_values"]
-      ocean_comment=get_ocean_comment(ocean_values)
-      formatted_dta=format_feedback(display_data)
-      
-      sociability_score = formatted_dta["feedback"]["scores"]["sociability_score"]["score"]
-      communication_score = formatted_dta["feedback"]["scores"]["communication_score"]["score"]
-      positive_attitude_score = formatted_dta["feedback"]["scores"]["positive_attitude_score"]["score"]
-      overall_score = formatted_dta["feedback"]["scores"]["professional_score"]["score"]
-
-      sociability_comment = formatted_dta["feedback"]["scores"]["sociability_score"]["comment"]
-      communication_comment = formatted_dta["feedback"]["scores"]["communication_score"]["comment"]
-      positive_attitude_comment = formatted_dta["feedback"]["scores"]["positive_attitude_score"]["comment"]
-      formatted_dta["feedback"]["ocean_values_analysis"]={"values":ocean_values,"title":"Ocean values analysis","comment":ocean_comment}
-
-      
-      example_json="""{
-          "strengths": {
-              "title": "Strengths",
-              "strengths": [
-                  "<strength1>",
-                  "<strength2>",
-                  "<strength3>",
-                  "<strength4>"
-              ]
-          },
-          "weakness": {
-              "title": "Weakness",
-              "weakness": [
-                  "<weakness1>",
-                  "<weakness2>",
-                  "<weakness3>",
-                  "<weakness4>"
-              ]
-          }
-      }"""
-
-      json_schema={
-  "description": "A schema representing an individual's strengths and weaknesses, with titles and lists of strengths/weaknesses.",
-  "name": "strengths_and_weakness",
-    "strict": True,
-    "schema":{
-  "type": "object",
-  "properties": {
-    "strengths": {
-      "type": "object",
-      "properties": {
-        "title": {
-          "type": "string",
-          "enum": ["Strengths"]
-        },
-        "strengths": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "A list of strengths. Can contain up to four strength entries."
-        }
-      },
-      "required": ["title", "strengths"],
-      "additionalProperties": False
-    },
-    "weakness": {
-      "type": "object",
-      "properties": {
-        "title": {
-          "type": "string",
-          "enum": ["Weakness"]
-        },
-        "weakness": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "A list of weaknesses. Can contain up to four weakness entries."
-        }
-      },
-      "required": ["title", "weakness"],
-      "additionalProperties": False
-    }
-  },
-  "required": ["strengths", "weakness"],
-  "additionalProperties": False
-}}
-
-      prompt = f"""
-      The following feedback was provided for a student interview:
-
-      - Sociability Score: {sociability_score}, Comment: {sociability_comment}.
-      - Communication Score: {communication_score}, Comment:{communication_comment}.
-      - Positive Attitude Score: {positive_attitude_score}, Comment:{positive_attitude_comment}.
-      - Overall Professional Score: {overall_score}
-
-      Please provide a summary of the student's strengths and weaknesses in the following format:
-
-      {example_json}
-
-      Make sure the strengths and weaknesses are based on the comments for each of the scores provided.
-      """
-
-      dict_result=get_sw(prompt,json_schema)
-
-      formatted_dta["feedback"]["strengths"]=dict_result["strengths"]
-      formatted_dta["feedback"]["weakness"]=dict_result["weakness"]
-      video_dir = "datasets/ChaLearn/test"
-      delete_all_files_in_folder(video_dir)
-      print("Files are deleted in Test Folder.")
-      import torch
-      torch.cuda.empty_cache()
-      return formatted_dta
-
-    except Exception as e:
-        print(e)
-        video_dir = "datasets/ChaLearn/test"
-        batch_dir=os.getcwd()
-        batch_dir=batch_dir.replace("/resultsUI","/videos")
-        delete_all_files_in_folder(video_dir)
-        delete_all_folders_in_folder(batch_dir)
-        print("Files are deleted in Test Folder.")
  
- 
- 
- 
- 
-if __name__ == "__main__":
-    count = 0
-    test = show_results()
-    print(test)
+# if __name__ == "__main__":
+#     count = 0
+#     test = show_results()
+#     print(test)
  

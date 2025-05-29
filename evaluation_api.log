@@ -1,0 +1,1454 @@
+2025-05-28 05:18:22,125 - ERROR - Signal handler <bound method DjangoFixup.on_import_modules of <celery.fixups.django.DjangoFixup object at 0x7ed5cd5791e0>> raised: UndefinedValueError('HOST not found. Declare it as envvar or define a default value.')
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/utils/dispatch/signal.py", line 276, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 82, in on_import_modules
+    self.worker_fixup.validate_models()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 121, in validate_models
+    run_checks()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/registry.py", line 88, in run_checks
+    new_errors = check(app_configs=app_configs, databases=databases)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/urls.py", line 136, in check_custom_error_handlers
+    handler = resolver.resolve_error_handler(status_code)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 732, in resolve_error_handler
+    callback = getattr(self.urlconf_module, "handler%s" % view_type, None)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 711, in urlconf_module
+    return import_module(self.urlconf_name)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/AIinterview/urls.py", line 22, in <module>
+    path('',include('resultsUI.urls')),
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/conf.py", line 39, in include
+    urlconf_module = import_module(urlconf_module)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/resultsUI/urls.py", line 2, in <module>
+    from . import views
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 13, in <module>
+    from .task import process_batch,start_sagemaker_endpoint_task
+  File "/home/ubuntu/new_AVIPA/resultsUI/task.py", line 35, in <module>
+    host = config("HOST")
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 248, in __call__
+    return self.config(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 107, in __call__
+    return self.get(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 92, in get
+    raise UndefinedValueError('{} not found. Declare it as envvar or define a default value.'.format(option))
+decouple.UndefinedValueError: HOST not found. Declare it as envvar or define a default value.
+2025-05-28 05:18:42,567 - ERROR - Signal handler <bound method DjangoFixup.on_import_modules of <celery.fixups.django.DjangoFixup object at 0x7ce23b9791e0>> raised: UndefinedValueError('HOST not found. Declare it as envvar or define a default value.')
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/utils/dispatch/signal.py", line 276, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 82, in on_import_modules
+    self.worker_fixup.validate_models()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 121, in validate_models
+    run_checks()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/registry.py", line 88, in run_checks
+    new_errors = check(app_configs=app_configs, databases=databases)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/urls.py", line 16, in check_url_config
+    return check_resolver(resolver)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/urls.py", line 26, in check_resolver
+    return check_method()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 531, in check
+    for pattern in self.url_patterns:
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 718, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 711, in urlconf_module
+    return import_module(self.urlconf_name)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/AIinterview/urls.py", line 22, in <module>
+    path('',include('resultsUI.urls')),
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/conf.py", line 39, in include
+    urlconf_module = import_module(urlconf_module)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/resultsUI/urls.py", line 2, in <module>
+    from . import views
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 13, in <module>
+    from .task import process_batch,start_sagemaker_endpoint_task
+  File "/home/ubuntu/new_AVIPA/resultsUI/task.py", line 35, in <module>
+    host = config("HOST")
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 248, in __call__
+    return self.config(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 107, in __call__
+    return self.get(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 92, in get
+    raise UndefinedValueError('{} not found. Declare it as envvar or define a default value.'.format(option))
+decouple.UndefinedValueError: HOST not found. Declare it as envvar or define a default value.
+2025-05-28 05:19:02,925 - ERROR - Signal handler <bound method DjangoFixup.on_import_modules of <celery.fixups.django.DjangoFixup object at 0x7094271711e0>> raised: UndefinedValueError('HOST not found. Declare it as envvar or define a default value.')
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/utils/dispatch/signal.py", line 276, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 82, in on_import_modules
+    self.worker_fixup.validate_models()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 121, in validate_models
+    run_checks()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/registry.py", line 88, in run_checks
+    new_errors = check(app_configs=app_configs, databases=databases)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/urls.py", line 16, in check_url_config
+    return check_resolver(resolver)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/urls.py", line 26, in check_resolver
+    return check_method()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 531, in check
+    for pattern in self.url_patterns:
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 718, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 711, in urlconf_module
+    return import_module(self.urlconf_name)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/AIinterview/urls.py", line 22, in <module>
+    path('',include('resultsUI.urls')),
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/conf.py", line 39, in include
+    urlconf_module = import_module(urlconf_module)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/resultsUI/urls.py", line 2, in <module>
+    from . import views
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 13, in <module>
+    from .task import process_batch,start_sagemaker_endpoint_task
+  File "/home/ubuntu/new_AVIPA/resultsUI/task.py", line 35, in <module>
+    host = config("HOST")
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 248, in __call__
+    return self.config(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 107, in __call__
+    return self.get(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 92, in get
+    raise UndefinedValueError('{} not found. Declare it as envvar or define a default value.'.format(option))
+decouple.UndefinedValueError: HOST not found. Declare it as envvar or define a default value.
+2025-05-28 05:19:23,210 - ERROR - Signal handler <bound method DjangoFixup.on_import_modules of <celery.fixups.django.DjangoFixup object at 0x76e1fac751e0>> raised: UndefinedValueError('HOST not found. Declare it as envvar or define a default value.')
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/utils/dispatch/signal.py", line 276, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 82, in on_import_modules
+    self.worker_fixup.validate_models()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 121, in validate_models
+    run_checks()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/registry.py", line 88, in run_checks
+    new_errors = check(app_configs=app_configs, databases=databases)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/urls.py", line 136, in check_custom_error_handlers
+    handler = resolver.resolve_error_handler(status_code)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 732, in resolve_error_handler
+    callback = getattr(self.urlconf_module, "handler%s" % view_type, None)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 711, in urlconf_module
+    return import_module(self.urlconf_name)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/AIinterview/urls.py", line 22, in <module>
+    path('',include('resultsUI.urls')),
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/conf.py", line 39, in include
+    urlconf_module = import_module(urlconf_module)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/resultsUI/urls.py", line 2, in <module>
+    from . import views
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 13, in <module>
+    from .task import process_batch,start_sagemaker_endpoint_task
+  File "/home/ubuntu/new_AVIPA/resultsUI/task.py", line 35, in <module>
+    host = config("HOST")
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 248, in __call__
+    return self.config(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 107, in __call__
+    return self.get(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 92, in get
+    raise UndefinedValueError('{} not found. Declare it as envvar or define a default value.'.format(option))
+decouple.UndefinedValueError: HOST not found. Declare it as envvar or define a default value.
+2025-05-28 05:19:43,456 - ERROR - Signal handler <bound method DjangoFixup.on_import_modules of <celery.fixups.django.DjangoFixup object at 0x7afb81f791e0>> raised: UndefinedValueError('HOST not found. Declare it as envvar or define a default value.')
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/utils/dispatch/signal.py", line 276, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 82, in on_import_modules
+    self.worker_fixup.validate_models()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 121, in validate_models
+    run_checks()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/registry.py", line 88, in run_checks
+    new_errors = check(app_configs=app_configs, databases=databases)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/urls.py", line 136, in check_custom_error_handlers
+    handler = resolver.resolve_error_handler(status_code)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 732, in resolve_error_handler
+    callback = getattr(self.urlconf_module, "handler%s" % view_type, None)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 711, in urlconf_module
+    return import_module(self.urlconf_name)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/AIinterview/urls.py", line 22, in <module>
+    path('',include('resultsUI.urls')),
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/conf.py", line 39, in include
+    urlconf_module = import_module(urlconf_module)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/resultsUI/urls.py", line 2, in <module>
+    from . import views
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 13, in <module>
+    from .task import process_batch,start_sagemaker_endpoint_task
+  File "/home/ubuntu/new_AVIPA/resultsUI/task.py", line 35, in <module>
+    host = config("HOST")
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 248, in __call__
+    return self.config(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 107, in __call__
+    return self.get(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 92, in get
+    raise UndefinedValueError('{} not found. Declare it as envvar or define a default value.'.format(option))
+decouple.UndefinedValueError: HOST not found. Declare it as envvar or define a default value.
+2025-05-28 05:20:03,397 - INFO - /home/ubuntu/new_AVIPA/resultsUI/task.py changed, reloading.
+2025-05-28 05:20:03,794 - ERROR - Signal handler <bound method DjangoFixup.on_import_modules of <celery.fixups.django.DjangoFixup object at 0x797d8c3311e0>> raised: UndefinedValueError('HOST not found. Declare it as envvar or define a default value.')
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/utils/dispatch/signal.py", line 276, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 82, in on_import_modules
+    self.worker_fixup.validate_models()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 121, in validate_models
+    run_checks()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/registry.py", line 88, in run_checks
+    new_errors = check(app_configs=app_configs, databases=databases)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/urls.py", line 16, in check_url_config
+    return check_resolver(resolver)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/urls.py", line 26, in check_resolver
+    return check_method()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 531, in check
+    for pattern in self.url_patterns:
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 718, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 711, in urlconf_module
+    return import_module(self.urlconf_name)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/AIinterview/urls.py", line 22, in <module>
+    path('',include('resultsUI.urls')),
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/conf.py", line 39, in include
+    urlconf_module = import_module(urlconf_module)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/resultsUI/urls.py", line 2, in <module>
+    from . import views
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 13, in <module>
+    from .task import process_batch,start_sagemaker_endpoint_task
+  File "/home/ubuntu/new_AVIPA/resultsUI/task.py", line 35, in <module>
+    host = config("DB_HOST")
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 248, in __call__
+    return self.config(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 107, in __call__
+    return self.get(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 92, in get
+    raise UndefinedValueError('{} not found. Declare it as envvar or define a default value.'.format(option))
+decouple.UndefinedValueError: HOST not found. Declare it as envvar or define a default value.
+2025-05-28 05:20:24,250 - ERROR - Signal handler <bound method DjangoFixup.on_import_modules of <celery.fixups.django.DjangoFixup object at 0x71bb863751e0>> raised: UndefinedValueError('DB_NAME2 not found. Declare it as envvar or define a default value.')
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/utils/dispatch/signal.py", line 276, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 82, in on_import_modules
+    self.worker_fixup.validate_models()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 121, in validate_models
+    run_checks()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/registry.py", line 88, in run_checks
+    new_errors = check(app_configs=app_configs, databases=databases)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/urls.py", line 136, in check_custom_error_handlers
+    handler = resolver.resolve_error_handler(status_code)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 732, in resolve_error_handler
+    callback = getattr(self.urlconf_module, "handler%s" % view_type, None)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 711, in urlconf_module
+    return import_module(self.urlconf_name)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/AIinterview/urls.py", line 22, in <module>
+    path('',include('resultsUI.urls')),
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/conf.py", line 39, in include
+    urlconf_module = import_module(urlconf_module)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/resultsUI/urls.py", line 2, in <module>
+    from . import views
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 13, in <module>
+    from .task import process_batch,start_sagemaker_endpoint_task
+  File "/home/ubuntu/new_AVIPA/resultsUI/task.py", line 38, in <module>
+    database = config("DB_NAME2")
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 248, in __call__
+    return self.config(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 107, in __call__
+    return self.get(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 92, in get
+    raise UndefinedValueError('{} not found. Declare it as envvar or define a default value.'.format(option))
+decouple.UndefinedValueError: DB_NAME2 not found. Declare it as envvar or define a default value.
+2025-05-28 05:20:44,776 - ERROR - Signal handler <bound method DjangoFixup.on_import_modules of <celery.fixups.django.DjangoFixup object at 0x77a5a7b311e0>> raised: UndefinedValueError('DB_NAME2 not found. Declare it as envvar or define a default value.')
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/utils/dispatch/signal.py", line 276, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 82, in on_import_modules
+    self.worker_fixup.validate_models()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 121, in validate_models
+    run_checks()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/registry.py", line 88, in run_checks
+    new_errors = check(app_configs=app_configs, databases=databases)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/urls.py", line 16, in check_url_config
+    return check_resolver(resolver)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/urls.py", line 26, in check_resolver
+    return check_method()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 531, in check
+    for pattern in self.url_patterns:
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 718, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 711, in urlconf_module
+    return import_module(self.urlconf_name)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/AIinterview/urls.py", line 22, in <module>
+    path('',include('resultsUI.urls')),
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/conf.py", line 39, in include
+    urlconf_module = import_module(urlconf_module)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/resultsUI/urls.py", line 2, in <module>
+    from . import views
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 13, in <module>
+    from .task import process_batch,start_sagemaker_endpoint_task
+  File "/home/ubuntu/new_AVIPA/resultsUI/task.py", line 38, in <module>
+    database = config("DB_NAME2")
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 248, in __call__
+    return self.config(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 107, in __call__
+    return self.get(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 92, in get
+    raise UndefinedValueError('{} not found. Declare it as envvar or define a default value.'.format(option))
+decouple.UndefinedValueError: DB_NAME2 not found. Declare it as envvar or define a default value.
+2025-05-28 05:21:05,277 - ERROR - Signal handler <bound method DjangoFixup.on_import_modules of <celery.fixups.django.DjangoFixup object at 0x77db7b57d1e0>> raised: UndefinedValueError('DB_NAME2 not found. Declare it as envvar or define a default value.')
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/utils/dispatch/signal.py", line 276, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 82, in on_import_modules
+    self.worker_fixup.validate_models()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 121, in validate_models
+    run_checks()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/registry.py", line 88, in run_checks
+    new_errors = check(app_configs=app_configs, databases=databases)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/urls.py", line 16, in check_url_config
+    return check_resolver(resolver)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/urls.py", line 26, in check_resolver
+    return check_method()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 531, in check
+    for pattern in self.url_patterns:
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 718, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 711, in urlconf_module
+    return import_module(self.urlconf_name)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/AIinterview/urls.py", line 22, in <module>
+    path('',include('resultsUI.urls')),
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/conf.py", line 39, in include
+    urlconf_module = import_module(urlconf_module)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/resultsUI/urls.py", line 2, in <module>
+    from . import views
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 13, in <module>
+    from .task import process_batch,start_sagemaker_endpoint_task
+  File "/home/ubuntu/new_AVIPA/resultsUI/task.py", line 38, in <module>
+    database = config("DB_NAME2")
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 248, in __call__
+    return self.config(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 107, in __call__
+    return self.get(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 92, in get
+    raise UndefinedValueError('{} not found. Declare it as envvar or define a default value.'.format(option))
+decouple.UndefinedValueError: DB_NAME2 not found. Declare it as envvar or define a default value.
+2025-05-28 05:21:25,763 - ERROR - Signal handler <bound method DjangoFixup.on_import_modules of <celery.fixups.django.DjangoFixup object at 0x7f683c2291e0>> raised: UndefinedValueError('DB_NAME2 not found. Declare it as envvar or define a default value.')
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/utils/dispatch/signal.py", line 276, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 82, in on_import_modules
+    self.worker_fixup.validate_models()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 121, in validate_models
+    run_checks()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/registry.py", line 88, in run_checks
+    new_errors = check(app_configs=app_configs, databases=databases)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/urls.py", line 16, in check_url_config
+    return check_resolver(resolver)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/urls.py", line 26, in check_resolver
+    return check_method()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 531, in check
+    for pattern in self.url_patterns:
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 718, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 711, in urlconf_module
+    return import_module(self.urlconf_name)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/AIinterview/urls.py", line 22, in <module>
+    path('',include('resultsUI.urls')),
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/conf.py", line 39, in include
+    urlconf_module = import_module(urlconf_module)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/resultsUI/urls.py", line 2, in <module>
+    from . import views
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 13, in <module>
+    from .task import process_batch,start_sagemaker_endpoint_task
+  File "/home/ubuntu/new_AVIPA/resultsUI/task.py", line 38, in <module>
+    database = config("DB_NAME2")
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 248, in __call__
+    return self.config(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 107, in __call__
+    return self.get(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 92, in get
+    raise UndefinedValueError('{} not found. Declare it as envvar or define a default value.'.format(option))
+decouple.UndefinedValueError: DB_NAME2 not found. Declare it as envvar or define a default value.
+2025-05-28 05:21:46,158 - ERROR - Signal handler <bound method DjangoFixup.on_import_modules of <celery.fixups.django.DjangoFixup object at 0x7e882fa751e0>> raised: UndefinedValueError('DB_NAME2 not found. Declare it as envvar or define a default value.')
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/utils/dispatch/signal.py", line 276, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 82, in on_import_modules
+    self.worker_fixup.validate_models()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 121, in validate_models
+    run_checks()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/registry.py", line 88, in run_checks
+    new_errors = check(app_configs=app_configs, databases=databases)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/urls.py", line 136, in check_custom_error_handlers
+    handler = resolver.resolve_error_handler(status_code)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 732, in resolve_error_handler
+    callback = getattr(self.urlconf_module, "handler%s" % view_type, None)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 711, in urlconf_module
+    return import_module(self.urlconf_name)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/AIinterview/urls.py", line 22, in <module>
+    path('',include('resultsUI.urls')),
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/conf.py", line 39, in include
+    urlconf_module = import_module(urlconf_module)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/resultsUI/urls.py", line 2, in <module>
+    from . import views
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 13, in <module>
+    from .task import process_batch,start_sagemaker_endpoint_task
+  File "/home/ubuntu/new_AVIPA/resultsUI/task.py", line 38, in <module>
+    database = config("DB_NAME2")
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 248, in __call__
+    return self.config(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 107, in __call__
+    return self.get(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 92, in get
+    raise UndefinedValueError('{} not found. Declare it as envvar or define a default value.'.format(option))
+decouple.UndefinedValueError: DB_NAME2 not found. Declare it as envvar or define a default value.
+2025-05-28 05:21:55,677 - INFO - /home/ubuntu/new_AVIPA/resultsUI/task.py changed, reloading.
+2025-05-28 05:22:06,661 - ERROR - Signal handler <bound method DjangoFixup.on_import_modules of <celery.fixups.django.DjangoFixup object at 0x71dd60d791e0>> raised: UndefinedValueError('DB_NAME2 not found. Declare it as envvar or define a default value.')
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/utils/dispatch/signal.py", line 276, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 82, in on_import_modules
+    self.worker_fixup.validate_models()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/celery/fixups/django.py", line 121, in validate_models
+    run_checks()
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/registry.py", line 88, in run_checks
+    new_errors = check(app_configs=app_configs, databases=databases)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/checks/urls.py", line 136, in check_custom_error_handlers
+    handler = resolver.resolve_error_handler(status_code)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 732, in resolve_error_handler
+    callback = getattr(self.urlconf_module, "handler%s" % view_type, None)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/resolvers.py", line 711, in urlconf_module
+    return import_module(self.urlconf_name)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/AIinterview/urls.py", line 22, in <module>
+    path('',include('resultsUI.urls')),
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/urls/conf.py", line 39, in include
+    urlconf_module = import_module(urlconf_module)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/ubuntu/new_AVIPA/resultsUI/urls.py", line 2, in <module>
+    from . import views
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 13, in <module>
+    from .task import process_batch,start_sagemaker_endpoint_task
+  File "/home/ubuntu/new_AVIPA/resultsUI/task.py", line 38, in <module>
+    database = config("DB_NAME2")
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 248, in __call__
+    return self.config(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 107, in __call__
+    return self.get(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/decouple.py", line 92, in get
+    raise UndefinedValueError('{} not found. Declare it as envvar or define a default value.'.format(option))
+decouple.UndefinedValueError: DB_NAME2 not found. Declare it as envvar or define a default value.
+2025-05-28 05:22:16,409 - INFO - /home/ubuntu/new_AVIPA/resultsUI/task.py changed, reloading.
+2025-05-28 05:28:03,312 - INFO - /home/ubuntu/new_AVIPA/resultsUI/dpcv/text_mining_using_python.py changed, reloading.
+2025-05-28 05:28:38,833 - INFO - /home/ubuntu/new_AVIPA/resultsUI/dpcv/text_mining_using_python.py changed, reloading.
+2025-05-28 05:29:08,456 - INFO - /home/ubuntu/new_AVIPA/resultsUI/dpcv/text_mining_using_python.py changed, reloading.
+2025-05-28 05:31:44,424 - INFO - /home/ubuntu/new_AVIPA/resultsUI/dpcv/text_mining_using_python.py changed, reloading.
+2025-05-28 05:32:22,251 - WARNING - Not Found: /.git/HEAD
+2025-05-28 05:32:22,760 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 05:33:26,472 - WARNING - Not Found: //api/interviewTest
+2025-05-28 05:33:46,317 - WARNING - Not Found: //api/interviewTest
+2025-05-28 05:33:57,997 - WARNING - Method Not Allowed: /api/interviewTest
+2025-05-28 05:38:35,960 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 330, in _query
+    db.query(q)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/connections.py", line 261, in query
+    _mysql.connection.query(self, query)
+MySQLdb.IntegrityError: (1062, "Duplicate entry '618730bc75d44b6b8f735ca125d7e262' for key 'resultsUI_linkentry.unique_id'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 111, in post
+    link_entry = LinkEntry.objects.create(link=item["link"],unique_id=item["id"], batch=batch_entry )
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/query.py", line 679, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 891, in save
+    self.save_base(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 997, in save_base
+    updated = self._save_table(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 1160, in _save_table
+    results = self._do_insert(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 1201, in _do_insert
+    return manager._insert(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 330, in _query
+    db.query(q)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/connections.py", line 261, in query
+    _mysql.connection.query(self, query)
+django.db.utils.IntegrityError: (1062, "Duplicate entry '618730bc75d44b6b8f735ca125d7e262' for key 'resultsUI_linkentry.unique_id'")
+2025-05-28 05:40:43,189 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 330, in _query
+    db.query(q)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/connections.py", line 261, in query
+    _mysql.connection.query(self, query)
+MySQLdb.IntegrityError: (1062, "Duplicate entry '618730bc75d44b6b8f735ca125d7e262' for key 'resultsUI_linkentry.unique_id'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 111, in post
+    link_entry = LinkEntry.objects.create(link=item["link"],unique_id=item["id"], batch=batch_entry )
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/query.py", line 679, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 891, in save
+    self.save_base(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 997, in save_base
+    updated = self._save_table(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 1160, in _save_table
+    results = self._do_insert(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 1201, in _do_insert
+    return manager._insert(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 330, in _query
+    db.query(q)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/connections.py", line 261, in query
+    _mysql.connection.query(self, query)
+django.db.utils.IntegrityError: (1062, "Duplicate entry '618730bc75d44b6b8f735ca125d7e262' for key 'resultsUI_linkentry.unique_id'")
+2025-05-28 05:43:50,630 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 330, in _query
+    db.query(q)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/connections.py", line 261, in query
+    _mysql.connection.query(self, query)
+MySQLdb.IntegrityError: (1062, "Duplicate entry '618730bc75d44b6b8f735ca125d7e262' for key 'resultsUI_linkentry.unique_id'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 111, in post
+    link_entry = LinkEntry.objects.create(link=item["link"],unique_id=item["id"], batch=batch_entry )
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/query.py", line 679, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 891, in save
+    self.save_base(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 997, in save_base
+    updated = self._save_table(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 1160, in _save_table
+    results = self._do_insert(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 1201, in _do_insert
+    return manager._insert(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 330, in _query
+    db.query(q)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/connections.py", line 261, in query
+    _mysql.connection.query(self, query)
+django.db.utils.IntegrityError: (1062, "Duplicate entry '618730bc75d44b6b8f735ca125d7e262' for key 'resultsUI_linkentry.unique_id'")
+2025-05-28 05:45:56,920 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 330, in _query
+    db.query(q)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/connections.py", line 261, in query
+    _mysql.connection.query(self, query)
+MySQLdb.IntegrityError: (1062, "Duplicate entry '618730bc75d44b6b8f735ca125d7e262' for key 'resultsUI_linkentry.unique_id'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 111, in post
+    link_entry = LinkEntry.objects.create(link=item["link"],unique_id=item["id"], batch=batch_entry )
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/query.py", line 679, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 891, in save
+    self.save_base(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 997, in save_base
+    updated = self._save_table(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 1160, in _save_table
+    results = self._do_insert(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 1201, in _do_insert
+    return manager._insert(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 330, in _query
+    db.query(q)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/connections.py", line 261, in query
+    _mysql.connection.query(self, query)
+django.db.utils.IntegrityError: (1062, "Duplicate entry '618730bc75d44b6b8f735ca125d7e262' for key 'resultsUI_linkentry.unique_id'")
+2025-05-28 05:48:36,813 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 511, in dispatch
+    self.response = self.finalize_response(request, response, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 423, in finalize_response
+    assert isinstance(response, HttpResponseBase), (
+AssertionError: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`
+2025-05-28 05:48:45,997 - WARNING - Method Not Allowed: /api/interviewTest
+2025-05-28 05:49:23,458 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 330, in _query
+    db.query(q)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/connections.py", line 261, in query
+    _mysql.connection.query(self, query)
+MySQLdb.IntegrityError: (1062, "Duplicate entry '618730bc75d44b6b8f735ca125d7e262' for key 'resultsUI_linkentry.unique_id'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 111, in post
+    link_entry = LinkEntry.objects.create(link=item["link"],unique_id=item["id"], batch=batch_entry )
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/query.py", line 679, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 891, in save
+    self.save_base(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 997, in save_base
+    updated = self._save_table(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 1160, in _save_table
+    results = self._do_insert(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 1201, in _do_insert
+    return manager._insert(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 330, in _query
+    db.query(q)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/connections.py", line 261, in query
+    _mysql.connection.query(self, query)
+django.db.utils.IntegrityError: (1062, "Duplicate entry '618730bc75d44b6b8f735ca125d7e262' for key 'resultsUI_linkentry.unique_id'")
+2025-05-28 05:51:58,115 - WARNING - Not Found: /
+2025-05-28 05:58:19,989 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 330, in _query
+    db.query(q)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/connections.py", line 261, in query
+    _mysql.connection.query(self, query)
+MySQLdb.IntegrityError: (1062, "Duplicate entry '618730bc75d44b6b8f735ca125d7e262' for key 'resultsUI_linkentry.unique_id'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 111, in post
+    link_entry = LinkEntry.objects.create(link=item["link"],unique_id=item["id"], batch=batch_entry )
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/query.py", line 679, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 891, in save
+    self.save_base(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 997, in save_base
+    updated = self._save_table(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 1160, in _save_table
+    results = self._do_insert(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/base.py", line 1201, in _do_insert
+    return manager._insert(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/cursors.py", line 330, in _query
+    db.query(q)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/MySQLdb/connections.py", line 261, in query
+    _mysql.connection.query(self, query)
+django.db.utils.IntegrityError: (1062, "Duplicate entry '618730bc75d44b6b8f735ca125d7e262' for key 'resultsUI_linkentry.unique_id'")
+2025-05-28 06:01:23,593 - INFO - /home/ubuntu/new_AVIPA/resultsUI/task.py changed, reloading.
+2025-05-28 06:01:38,481 - INFO - /home/ubuntu/new_AVIPA/resultsUI/task.py changed, reloading.
+2025-05-28 06:04:02,483 - INFO - /home/ubuntu/new_AVIPA/resultsUI/task.py changed, reloading.
+2025-05-28 06:04:58,298 - INFO - /home/ubuntu/new_AVIPA/resultsUI/task.py changed, reloading.
+2025-05-28 06:05:19,368 - INFO - /home/ubuntu/new_AVIPA/resultsUI/task.py changed, reloading.
+2025-05-28 06:06:40,043 - INFO - /home/ubuntu/new_AVIPA/resultsUI/views.py changed, reloading.
+2025-05-28 06:15:34,502 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/Downlord_video_s3.py changed, reloading.
+2025-05-28 06:17:20,243 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/Downlord_video_s3.py changed, reloading.
+2025-05-28 06:18:10,110 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/Downlord_video_s3.py changed, reloading.
+2025-05-28 06:18:24,990 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/Downlord_video_s3.py changed, reloading.
+2025-05-28 06:19:38,074 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/Downlord_video_s3.py changed, reloading.
+2025-05-28 10:30:51,304 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/extract_questions_answer.py changed, reloading.
+2025-05-28 10:37:48,240 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/extract_questions_answer.py changed, reloading.
+2025-05-28 10:38:08,915 - INFO - /home/ubuntu/new_AVIPA/resultsUI/task.py changed, reloading.
+2025-05-28 10:40:39,951 - INFO - /home/ubuntu/new_AVIPA/resultsUI/task.py changed, reloading.
+2025-05-28 10:41:04,216 - INFO - /home/ubuntu/new_AVIPA/resultsUI/task.py changed, reloading.
+2025-05-28 10:41:19,043 - INFO - /home/ubuntu/new_AVIPA/resultsUI/task.py changed, reloading.
+2025-05-28 10:42:00,373 - INFO - /home/ubuntu/new_AVIPA/resultsUI/task.py changed, reloading.
+2025-05-28 10:42:15,303 - INFO - /home/ubuntu/new_AVIPA/resultsUI/task.py changed, reloading.
+2025-05-28 10:42:33,622 - INFO - /home/ubuntu/new_AVIPA/resultsUI/task.py changed, reloading.
+2025-05-28 10:47:58,507 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 10:48:13,415 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 10:49:51,587 - INFO - /home/ubuntu/new_AVIPA/resultsUI/task.py changed, reloading.
+2025-05-28 10:51:19,739 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 10:51:34,876 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 10:51:56,100 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 10:52:11,293 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 10:52:26,579 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 11:04:42,539 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 11:05:27,091 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 11:06:11,974 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 11:10:59,295 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 11:14:25,294 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/report_send.py changed, reloading.
+2025-05-28 11:15:09,912 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 11:15:42,241 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 11:19:13,668 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/report_send.py changed, reloading.
+2025-05-28 11:19:31,170 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/report_send.py changed, reloading.
+2025-05-28 11:19:46,323 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/report_send.py changed, reloading.
+2025-05-28 11:20:24,990 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/report_send.py changed, reloading.
+2025-05-28 11:21:36,536 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/report_send.py changed, reloading.
+2025-05-28 11:21:54,199 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/report_send.py changed, reloading.
+2025-05-28 11:26:19,955 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 11:26:40,871 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 11:29:05,625 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 11:29:20,763 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 11:30:02,251 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 11:32:14,717 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 11:40:12,036 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 12:19:33,960 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 511, in dispatch
+    self.response = self.finalize_response(request, response, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 423, in finalize_response
+    assert isinstance(response, HttpResponseBase), (
+AssertionError: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`
+2025-05-28 12:23:19,539 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 511, in dispatch
+    self.response = self.finalize_response(request, response, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 423, in finalize_response
+    assert isinstance(response, HttpResponseBase), (
+AssertionError: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`
+2025-05-28 12:27:10,152 - WARNING - Not Found: /
+2025-05-28 12:28:31,717 - WARNING - Not Found: /
+2025-05-28 12:29:24,601 - WARNING - Not Found: /
+2025-05-28 12:29:29,122 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 511, in dispatch
+    self.response = self.finalize_response(request, response, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 423, in finalize_response
+    assert isinstance(response, HttpResponseBase), (
+AssertionError: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`
+2025-05-28 12:31:15,505 - WARNING - Not Found: /
+2025-05-28 12:41:15,715 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 511, in dispatch
+    self.response = self.finalize_response(request, response, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 423, in finalize_response
+    assert isinstance(response, HttpResponseBase), (
+AssertionError: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`
+2025-05-28 12:53:44,150 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 79, in post
+    return Response("Hi", status=status.HTTP_200_BAD_REQUEST)
+AttributeError: module 'rest_framework.status' has no attribute 'HTTP_200_BAD_REQUEST'. Did you mean: 'HTTP_400_BAD_REQUEST'?
+2025-05-28 12:55:50,212 - INFO - /home/ubuntu/new_AVIPA/resultsUI/views.py changed, reloading.
+2025-05-28 12:56:24,995 - INFO - /home/ubuntu/new_AVIPA/resultsUI/Ai_Agent_Evaluation/video_audio_evaluator.py changed, reloading.
+2025-05-28 12:56:45,628 - INFO - /home/ubuntu/new_AVIPA/resultsUI/views.py changed, reloading.
+2025-05-28 12:57:08,555 - INFO - /home/ubuntu/new_AVIPA/resultsUI/views.py changed, reloading.
+2025-05-28 12:58:50,618 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 511, in dispatch
+    self.response = self.finalize_response(request, response, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 423, in finalize_response
+    assert isinstance(response, HttpResponseBase), (
+AssertionError: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`
+2025-05-28 13:00:07,424 - INFO - /home/ubuntu/new_AVIPA/resultsUI/views.py changed, reloading.
+2025-05-28 13:01:28,436 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 511, in dispatch
+    self.response = self.finalize_response(request, response, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 423, in finalize_response
+    assert isinstance(response, HttpResponseBase), (
+AssertionError: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`
+2025-05-28 13:03:44,413 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 86, in post
+    if request.data['is_agent']=="1":
+TypeError: string indices must be integers
+2025-05-28 13:04:01,653 - INFO - /home/ubuntu/new_AVIPA/resultsUI/views.py changed, reloading.
+2025-05-28 13:05:04,374 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 86, in post
+    if request.data['is_agent']==1:
+TypeError: string indices must be integers
+2025-05-28 13:09:56,980 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 136, in post
+    Questions.append(item["question"])
+KeyError: 'question'
+2025-05-28 13:10:16,837 - INFO - /home/ubuntu/new_AVIPA/resultsUI/views.py changed, reloading.
+2025-05-28 13:16:07,005 - INFO - /home/ubuntu/new_AVIPA/resultsUI/task.py changed, reloading.
+2025-05-28 13:21:23,143 - WARNING - Not Found: /
+2025-05-28 13:31:19,035 - WARNING - Not Found: /.env
+2025-05-28 13:46:25,591 - WARNING - Not Found: /
+2025-05-28 14:20:05,661 - WARNING - Not Found: /
+2025-05-28 14:39:31,404 - WARNING - Not Found: /
+2025-05-28 14:39:34,578 - WARNING - Not Found: /
+2025-05-28 14:39:37,716 - WARNING - Not Found: /
+2025-05-28 14:52:41,271 - WARNING - Not Found: /
+2025-05-28 16:21:16,010 - WARNING - Not Found: /
+2025-05-28 16:48:40,436 - WARNING - Not Found: /
+2025-05-28 17:01:39,986 - WARNING - Not Found: /
+2025-05-28 17:03:38,071 - WARNING - Not Found: /
+2025-05-28 17:14:37,891 - WARNING - Not Found: /
+2025-05-28 17:14:39,962 - WARNING - Not Found: /
+2025-05-28 18:38:52,585 - WARNING - Not Found: /env
+2025-05-28 18:56:09,544 - WARNING - Not Found: /
+2025-05-28 19:57:39,794 - WARNING - Not Found: /
+2025-05-28 20:36:06,221 - WARNING - Not Found: /
+2025-05-28 22:45:13,765 - WARNING - Not Found: /password.php
+2025-05-28 22:45:14,601 - WARNING - Not Found: /form.html
+2025-05-28 22:45:15,022 - WARNING - Not Found: /upl.php
+2025-05-28 22:45:15,442 - WARNING - Not Found: /t4
+2025-05-28 22:45:16,296 - WARNING - Not Found: /1.php
+2025-05-28 22:45:17,582 - WARNING - Not Found: /geoip/
+2025-05-28 22:45:18,009 - WARNING - Not Found: /systembc/password.php
+2025-05-28 22:47:05,086 - WARNING - Not Found: /developmentserver/metadatauploader
+2025-05-29 00:38:42,570 - WARNING - Not Found: /
+2025-05-29 00:52:52,218 - WARNING - Not Found: /
+2025-05-29 01:24:36,462 - WARNING - Not Found: /
+2025-05-29 01:24:36,552 - WARNING - Not Found: /env
+2025-05-29 01:24:36,638 - WARNING - Not Found: /mappings.json
+2025-05-29 01:24:36,710 - WARNING - Not Found: /info
+2025-05-29 01:24:36,780 - WARNING - Not Found: /application.properties
+2025-05-29 01:24:36,846 - WARNING - Not Found: /env.js
+2025-05-29 01:24:36,920 - WARNING - Not Found: /env.development.js
+2025-05-29 01:24:36,992 - WARNING - Not Found: /env.production.js
+2025-05-29 01:24:37,058 - WARNING - Not Found: /env.dev.js
+2025-05-29 01:24:37,129 - WARNING - Not Found: /env.prod.js
+2025-05-29 01:24:37,196 - WARNING - Not Found: /message-api/actuator/
+2025-05-29 01:24:37,272 - WARNING - Not Found: /message-api/actuator/env
+2025-05-29 01:24:37,342 - WARNING - Not Found: /env.json
+2025-05-29 01:24:37,408 - WARNING - Not Found: /js/config.js
+2025-05-29 01:24:37,477 - WARNING - Not Found: /js/base.js
+2025-05-29 01:24:37,544 - WARNING - Not Found: /js/lib/config.js
+2025-05-29 01:24:37,615 - WARNING - Not Found: /js/configuration.js
+2025-05-29 01:24:37,685 - WARNING - Not Found: /scripts/services.js
+2025-05-29 01:24:37,755 - WARNING - Not Found: /js/messages_manager.js
+2025-05-29 01:24:37,826 - WARNING - Not Found: /bundle.5.1.1.js
+2025-05-29 01:24:37,893 - WARNING - Not Found: /js/bundle.js
+2025-05-29 01:24:37,962 - WARNING - Not Found: /reports.js
+2025-05-29 01:24:38,030 - WARNING - Not Found: /actuator/
+2025-05-29 01:24:38,100 - WARNING - Not Found: /actuator/mappings
+2025-05-29 01:24:38,168 - WARNING - Not Found: /actuator/env
+2025-05-29 01:24:38,235 - WARNING - Not Found: /actuator/;/env
+2025-05-29 01:24:38,308 - WARNING - Not Found: /api/actuator/
+2025-05-29 01:24:38,383 - WARNING - Not Found: /api/actuator/env
+2025-05-29 01:24:38,450 - WARNING - Not Found: /api/actuator/;/env
+2025-05-29 01:24:38,516 - WARNING - Not Found: /management/
+2025-05-29 01:24:38,591 - WARNING - Not Found: /management/mappings
+2025-05-29 01:24:38,660 - WARNING - Not Found: /management/env
+2025-05-29 01:24:38,730 - WARNING - Not Found: /management/;/env
+2025-05-29 01:24:38,801 - WARNING - Not Found: /dev/actuator/
+2025-05-29 01:24:38,869 - WARNING - Not Found: /dev/actuator/env
+2025-05-29 01:24:38,937 - WARNING - Not Found: /app/actuator/
+2025-05-29 01:24:39,003 - WARNING - Not Found: /app/actuator/env
+2025-05-29 01:51:02,264 - WARNING - Not Found: /
+2025-05-29 02:13:53,909 - WARNING - Not Found: /.env
+2025-05-29 02:13:54,346 - WARNING - Not Found: /
+2025-05-29 02:43:56,892 - WARNING - Not Found: /
+2025-05-29 02:44:15,460 - WARNING - Not Found: /robots.txt
+2025-05-29 02:44:15,742 - WARNING - Not Found: /sitemap.xml
+2025-05-29 03:07:36,499 - WARNING - Not Found: /
+2025-05-29 03:08:22,010 - WARNING - Not Found: /
+2025-05-29 03:19:38,924 - WARNING - Not Found: /
+2025-05-29 03:22:51,823 - WARNING - Not Found: /manage/account/login
+2025-05-29 03:27:33,122 - WARNING - Not Found: /index.html
+2025-05-29 03:29:51,849 - WARNING - Not Found: /+CSCOE+/logon.html
+2025-05-29 03:32:15,779 - WARNING - Not Found: /cgi-bin/login.cgi
+2025-05-29 03:34:31,353 - WARNING - Not Found: /login.htm
+2025-05-29 03:36:45,826 - WARNING - Not Found: /login.html
+2025-05-29 03:38:59,711 - WARNING - Not Found: /login.jsp
+2025-05-29 03:41:18,151 - WARNING - Not Found: /login
+2025-05-29 03:43:29,859 - WARNING - Not Found: /doc/index.html
+2025-05-29 03:44:38,480 - WARNING - Not Found: /
+2025-05-29 03:45:43,829 - WARNING - Not Found: /remote/login
+2025-05-29 03:46:22,085 - WARNING - Not Found: /.env
+2025-05-29 03:46:22,518 - WARNING - Not Found: /
+2025-05-29 03:47:57,976 - WARNING - Not Found: //admin/login.asp
+2025-05-29 03:52:23,493 - WARNING - Not Found: //webpages/login.html
+2025-05-29 05:20:27,182 - WARNING - Not Found: /
+2025-05-29 05:21:16,574 - WARNING - Not Found: /MoHX
+2025-05-29 05:21:17,026 - WARNING - Not Found: /ITsM
+2025-05-29 05:21:17,476 - WARNING - Not Found: /aab8
+2025-05-29 05:21:20,277 - WARNING - Not Found: /jquery-3.3.1.slim.min.js
+2025-05-29 05:21:20,728 - WARNING - Not Found: /aab9
+2025-05-29 05:21:21,194 - WARNING - Not Found: /jquery-3.3.2.slim.min.js
+2025-05-29 07:07:10,117 - WARNING - Not Found: /
+2025-05-29 07:07:11,342 - WARNING - Not Found: /
+2025-05-29 07:15:50,218 - WARNING - Not Found: /.env
