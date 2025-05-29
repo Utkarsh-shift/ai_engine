@@ -104,7 +104,7 @@ class LinkEntryAPIView(APIView):
                         return Response(filtered_data1,status=status.HTTP_201_CREATED)
                 else:
                     s3_link = data["links"][0].get("link")
-                    batch_entry = BatchEntry.objects.create(batch_id=batch_id)
+                    batch_entry = BatchEntry.objects.create(batch_id=batch_id, request=data)
                     print("S3 Link:", s3_link)
                     skills=data["skill"]
                     focus_skills=data["focus_skill"]
@@ -146,7 +146,7 @@ class LinkEntryAPIView(APIView):
                         filtered_data1 = {key: value for key, value in filtered_data.items() if key != "results"}
                         return Response(filtered_data1,status=status.HTTP_201_CREATED)
                 else:
-                    batch_entry = BatchEntry.objects.create(batch_id=batch_id)
+                    batch_entry = BatchEntry.objects.create(batch_id=batch_id, request=data)
                   
                     for item  in links1["links"]:
                         link_entry = LinkEntry.objects.create(link=item["link"],unique_id=item["id"], batch=batch_entry )
