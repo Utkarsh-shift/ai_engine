@@ -73,12 +73,14 @@ def delete_files_in_folder(folder_path):
 import json
 class LinkEntryAPIView(APIView):
     def post(self, request, *args, **kwargs):
+        print( "**************** request.datarequest.datarequest.data",request.data)
         if isinstance(request.data, str):
             data = json.loads(request.data)
         else:
             data = request.data
-        print( "****************",data)
+        
         serializer = LinkSerializer(data=data)
+        print( "**************** request.datarequest.datarequest.data",data)
         # delete_files_in_folder("/home/ubuntu/new_AVIPA/resultsUI/datasets/ChaLearn/test")
         print(serializer , "**************")
         if serializer.is_valid():

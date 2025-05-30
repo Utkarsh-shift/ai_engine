@@ -248,15 +248,20 @@ def clean_audio(file_path):
         extract_audio(file_path, wav_file_path)
         file_path = wav_file_path
     
-    audio = AudioSegment.from_file(file_path, format="wav")
-    chunks = split_on_silence(
-        audio, 
-        min_silence_len=500, 
-        silence_thresh=audio.dBFS-14,  
-        keep_silence=200  
-    )
 
-    combined = AudioSegment.empty()
-    for chunk in chunks:
-        combined += chunk
-    combined.export(file_path, format="wav")
+    if  os.path.exists(file_path):   
+    
+        audio = AudioSegment.from_file(file_path, format="wav")
+        chunks = split_on_silence(
+            audio, 
+            min_silence_len=500, 
+            silence_thresh=audio.dBFS-14,  
+            keep_silence=200  
+        )
+
+        combined = AudioSegment.empty()
+        for chunk in chunks:
+            combined += chunk
+        combined.export(file_path, format="wav")
+    else : 
+        return 

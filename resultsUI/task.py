@@ -97,7 +97,6 @@ def start_evaluation(session_id,S3_fileurl,skills,focus_skills,proctoring_data,w
         traceback.print_exc()
         error_message = str(e)
         print( "There was an error generating report ", e)
-
         report = None
 
     if report:
@@ -143,6 +142,8 @@ def start_evaluation(session_id,S3_fileurl,skills,focus_skills,proctoring_data,w
 
             batch_entry.results = report
             batch_entry.save()
+            print("The signature url in process_batch",webhook_url)
+            evalute_trigger_webhook(batch_id, report, webhook_url) 
         
     else:
         batch_entry.status = 'failed'
@@ -159,8 +160,71 @@ def start_evaluation(session_id,S3_fileurl,skills,focus_skills,proctoring_data,w
     timeout = 200  
     check_interval = 30
     elapsed_time = 0
-    shutdown_process(elapsed_time , timeout , check_interval)
+    shutdown_process(elapsed_time , timeout , check_interval)    
 
+from urllib.parse import urlparse
+
+def extract_base_url(full_url):
+    parsed_url = urlparse(full_url)
+    base_url = f"{parsed_url.scheme}://{parsed_url.netloc}/"
+    return base_url  
+
+
+def get_signature_evalute(url):
+    webhook_url = extract_base_url(url)
+    print("Extractbaseurl" , webhook_url)
+    signature_url=webhook_url + "webhook/get-signature"
+    print("################The signature url is given as ################" , signature_url)
+    signature_res=requests.get(signature_url)
+    sign_json=signature_res.json()
+    real_signature=str(sign_json["data"])
+    return real_signature
+
+
+############################################################################# Updated this part of the code ##################################
+@shared_task
+def evalute_trigger_webhook(batch_id, data, webhook_url):
+    print(f"Batch ID: {batch_id}")
+    
+    try:
+        signature = get_signature_evalute(webhook_url)
+        print(f"Signature Retrieved: {signature}")
+
+        
+        webhook_endpoint = webhook_url
+        
+        headers = {
+            'Accept': 'application/json',  
+            'Signature': signature
+        }
+
+        payload = {
+            'batch_id': str(batch_id),
+            'data': data,
+            'event': 'batch_processed',
+        }
+
+        # Debug: Print webhook request details
+        print(f"Webhook URL: {webhook_endpoint}")
+        print(f"Payload: {json.dumps(payload, indent=2)}")
+        print(f"Headers: {headers}")
+
+        # Send the request
+        response = requests.post(webhook_endpoint, headers=headers, json=payload)
+
+        print(f"Webhook Response Status: {response.status_code}")
+        try:
+            response_json = response.json()
+            print(f"Webhook Response JSON: {json.dumps(response_json, indent=2)}")
+        except Exception:
+            print(f"Webhook Response (Non-JSON): {response.text}")
+
+        # Handle failed responses
+        if response.status_code != 200:
+            print(f"Webhook Failed! Status: {response.status_code}, Response: {response.text}")
+
+    except Exception as e:
+        print(f"Error in Webhook: {e}")
 
 
 def download_file_from_s3(bucket_name, object_key, local_path):

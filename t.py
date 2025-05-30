@@ -184,46 +184,58 @@
 #    print(ff)
 
 
-import mysql.connector
-from decouple import config  # pip install python-decouple
+# import mysql.connector
+# from decouple import config  # pip install python-decouple
 
-def connect_and_query(session_id):
-    try:
-        print(config("HOST_AGENT"), config("DB_USER_AGENT"),config("DB_PASS_AGENT"),config("DB_NAME_AGENT"))
-        conn = mysql.connector.connect(
-            host=config("HOST_AGENT"),
-            user=config("DB_USER_AGENT"),
-            password=config("DB_PASS_AGENT"),
-            database=config("DB_NAME_AGENT"),
-            port=config("DB_PORT", cast=int),
-            connection_timeout=5,
-            use_pure=True
-        )
-        print("printing connection")
-        cursor = conn.cursor(dictionary=True)
+# def connect_and_query(session_id):
+#     try:
+#         print(config("HOST_AGENT"), config("DB_USER_AGENT"),config("DB_PASS_AGENT"),config("DB_NAME_AGENT"))
+#         conn = mysql.connector.connect(
+#             host=config("HOST_AGENT"),
+#             user=config("DB_USER_AGENT"),
+#             password=config("DB_PASS_AGENT"),
+#             database=config("DB_NAME_AGENT"),
+#             port=config("DB_PORT", cast=int),
+#             connection_timeout=5,
+#             use_pure=True
+#         )
+#         print("printing connection")
+#         cursor = conn.cursor(dictionary=True)
 
-        query = """
-            SELECT  role, title, timestamp
-            FROM interview_transcripts
-            WHERE session_id = %s
-            ORDER BY timestamp ASC
-        """
-        cursor.execute(query, (session_id,))
-        results = cursor.fetchall()
+#         query = """
+#             SELECT  role, title, timestamp
+#             FROM interview_transcripts
+#             WHERE session_id = %s
+#             ORDER BY timestamp ASC
+#         """
+#         cursor.execute(query, (session_id,))
+#         results = cursor.fetchall()
 
-        print(f" Found {len(results)} rows for session_id = {session_id}\n")
-        for row in results:
-            print(f"[{row['timestamp']}] {row['role'].capitalize()}: {row['title']}")
+#         print(f" Found {len(results)} rows for session_id = {session_id}\n")
+#         for row in results:
+#             print(f"[{row['timestamp']}] {row['role'].capitalize()}: {row['title']}")
 
-    except mysql.connector.Error as err:
-        print(f" MySQL Error: {err}")
-    finally:
-        if cursor:
-            cursor.close()
-        if conn and conn.is_connected():
-            conn.close()
+#     except mysql.connector.Error as err:
+#         print(f" MySQL Error: {err}")
+#     finally:
+#         if cursor:
+#             cursor.close()
+#         if conn and conn.is_connected():
+#             conn.close()
 
 
-if __name__ == "__main__":
-    test_session_id = "sess_BcQt4gTNbPtjqrxSZo5Jt"
-    connect_and_query(test_session_id)
+# if __name__ == "__main__":
+#     test_session_id = "sess_BcQt4gTNbPtjqrxSZo5Jt"
+#     connect_and_query(test_session_id)
+
+def get_signature_evalute(url):
+    webhook_url = extract_base_url(url)
+    print("Extractbaseurl" , webhook_url)
+    signature_url=webhook_url + "webhook/get-signature"
+    print("################The signature url is given as ################" , signature_url)
+    signature_res=requests.get(signature_url)
+    sign_json=signature_res.json()
+    real_signature=str(sign_json["data"])
+    return real_signature
+
+get_signature_evalute("")
