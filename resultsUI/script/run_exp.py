@@ -304,7 +304,8 @@ def  show_results(skills,focus_skills,Questions,proctoring_data) :
                             {"role": "system", "content": "You are an experienced evaluator who rates interview answers based only on relevance and quality."},
                             {"role": "user", "content": prompt}
                         ],
-                        max_tokens=64 
+                        max_tokens=64 ,
+                        temperature = 0.4
                     )
                     response_text = response.choices[0].message.content.strip()
                     match = re.search(r'\d+', response_text)
@@ -335,7 +336,8 @@ def  show_results(skills,focus_skills,Questions,proctoring_data) :
                             {"role": "system", "content": "You are an experienced evaluator who rates answers to interview questions. Your task is to rate answers based on relevance and quality, provide a score from 1 to 100, and give a one-line comment specific to the skill."},
                             {"role": "user", "content": prompt}
                         ],
-                        max_tokens=64
+                        max_tokens=64,
+                        temperature = 0.4
                     )
 
                     response_text = response.choices[0].message.content.strip()
@@ -358,7 +360,8 @@ def  show_results(skills,focus_skills,Questions,proctoring_data) :
                                 {"role": "system", "content": "You are an expert evaluator who rates interview answers based on feedback given."},
                                 {"role": "user", "content": inferred_prompt}
                             ],
-                            max_tokens=64  
+                            max_tokens=64 ,
+                            temperature = 0.4 
                         )
 
                         inferred_score_text = inferred_response.choices[0].message.content.strip()
@@ -403,7 +406,8 @@ def  show_results(skills,focus_skills,Questions,proctoring_data) :
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=messages,
-                max_tokens=300
+                max_tokens=400,
+                temperature = 0.4
             )
 
             technical_comment = response.choices[0].message.content.strip()
@@ -459,8 +463,8 @@ def  show_results(skills,focus_skills,Questions,proctoring_data) :
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",  
                 messages=[prompt],
-                max_tokens=500,
-                temperature=0.5
+                max_tokens=400,
+                temperature = 0.4
             )
 
             evaluation = response.choices[0].message.content
@@ -510,8 +514,8 @@ def  show_results(skills,focus_skills,Questions,proctoring_data) :
                             "content": f"Question: {question}\nAnswer: {answer}\n\nPlease provide suggestions for this answer."
                         }
                     ],
-                    max_tokens=500,
-                    temperature=0.7
+                    max_tokens=400,
+                    temperature = 0.4
                 )
 
                 suggestion = suggestion_response.choices[0].message.content.strip()
@@ -587,7 +591,8 @@ def  show_results(skills,focus_skills,Questions,proctoring_data) :
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[message_proctoring_comment],
-                max_tokens=200
+                max_tokens=200,
+                temperature = 0.4
             )
  
             # Extract and clean comment

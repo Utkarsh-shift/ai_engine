@@ -89,6 +89,8 @@ def start_evaluation(session_id,S3_fileurl,skills,focus_skills,proctoring_data,w
 
     skills =  [skill['skill_title'] for skill in skills] 
     focus_skills = [skill['skill_title'] for skill in focus_skills]
+    print(skills,"======================3333333")
+    print(focus_skills,"==============================")
     error_message = "" 
     try:
         report=show_results_agent(questions,answers,proctoring_data,skills,focus_skills,S3_fileurl)

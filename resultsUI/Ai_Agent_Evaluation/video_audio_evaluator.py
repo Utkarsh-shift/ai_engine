@@ -62,7 +62,7 @@ The user completed a job simulation task and received the following profile:
 **Technical Feedback:** {technical_comment}
 **Transcription Output:** {transcription}
 **Final Output Summary:** {output}
- 
+ "MAKE SURE THE EVALUATION IS UNDER 150 WORDS.\n"
 Based on this profile, suggest **at least 2 and at most 5** relevant certifications (professional, technical, or communication-related) that will improve the user's employability.
  
  Return only the certification names as a **numbered list**. No descriptions or organizations.
@@ -79,6 +79,7 @@ Based on this profile, suggest **at least 2 and at most 5** relevant certificati
             model="gpt-4o",
             messages=messages,
             max_tokens=256,
+            temperature = 0.4
         )
  
         raw_output = response.choices[0].message.content.strip()
@@ -139,8 +140,8 @@ def generate_feedback_for_multiple_responses(questions, input_data):
                     "content": f"Question: {question}\nAnswer: {answer}\n\nPlease provide suggestions for this answer."
                 }
             ],
-            max_tokens=500,
-            temperature=0.7
+            max_tokens=400,
+            temperature = 0.4
         )
         suggestion = suggestion_response.choices[0].message.content.strip()
         evaluation = evaluate_student_answer(question, answer)
@@ -173,6 +174,7 @@ def generate_overall_suggestion(evaluations):
                 "You are a professional interview coach.\n"
                 "You will receive suggestions generated from multiple interview question answers.\n"
                 "Your task is to summarize these into a **single overall suggestion** for the candidate.\n\n"
+                "MAKE SURE THE EVALUATION IS UNDER 150 WORDS.\n"
                 "Focus on:\n"
                 "1. Recurring weaknesses (e.g. clarity, articulation, depth).\n"
                 "2. Overall strengths.\n"
@@ -190,8 +192,8 @@ def generate_overall_suggestion(evaluations):
                     "content": f"Here are the suggestions for individual questions:\n\n{all_suggestions_text}"
                 }
             ],
-            max_tokens=300,
-            temperature=0.6
+            max_tokens=400,
+            temperature = 0.4
         )
  
         overall_feedback = response.choices[0].message.content.strip()
@@ -238,6 +240,7 @@ def evaluate_student_answer(question, student_answer):
         **Candidate's Answer**: {student_answer}
  
         Summarize the Evaluation:
+        "MAKE SURE THE EVALUATION IS UNDER 150 WORDS.\n"
         Conclude with a brief summary in 3-4 lines
         """
     }
@@ -245,18 +248,30 @@ def evaluate_student_answer(question, student_answer):
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",  
         messages=[prompt],
-        max_tokens=500,
-        temperature=0.5
+        max_tokens=400,
+        temperature = 0.4
     )
  
     evaluation = response.choices[0].message.content
     evaluation = evaluation.replace("\n", " ")
     return evaluation
  
-def show_results_agent(Questions,answer,proctoring_data,skills,focus_skills,s3_url):
- 
-    skills =  list(set(skills + focus_skills))
-   
+def show_results_agent(Questions,answer,proctoring_data,skills_,focus_skills_,s3_url):
+    print("Her is shs h" ,skills_ , "asfasfa" ,focus_skills_ )
+
+    if skills_ != ['none'] : 
+        skills = [*skills_[0]]
+       
+    else : 
+        skills = skills_
+
+    if focus_skills_ !=  ['none'] : 
+        focus_skills = [*focus_skills_[0]]
+    else : 
+        focus_skills = focus_skills_
+        
+    print(skills)
+    print(focus_skills)
     print(Questions)
     print(answer)
     transcription = generate_feedback_for_multiple_responses(Questions, answer)
@@ -324,135 +339,135 @@ def show_results_agent(Questions,answer,proctoring_data,skills,focus_skills,s3_u
         for question, answer in question_answer_dict.items():
             questions.append(question)
             answers.append(answer)
- 
+
+        print(skills,"here are all the skills and focus skills",focus_skills,"9999999999999999999999999999999999999999999999999")
+        if skills in ("none",["none"]) and focus_skills == ("none",["none"]):
+            skills = ["there is no skills present"]
+            focus_skills = ["there is no skills present"]
+            technical_comment = "There is no skills present"
+            print("Skills:", skills)
+            print("Focus Skills:", focus_skills)
+            print("Technical Comment:", technical_comment)
+            return
+    
+        if skills in ("none",["none"]):
+            skills = []
+        if focus_skills in ("none",["none"]):
+            focus_skills = []
+        
+        skills = list(set(skills + focus_skills))
+    
+        print("Questions:", Questions)
+        print("Answers:", answer)
+        print("Skills after merge:", skills)
+    
+        skills_score = {}
+        overall_scores = {}    
+        focus_skills_score = {}
+        focus_skill_comment = {}
+    
+        question_answer_dict = {Questions[i]: answer[i] for i in range(len(Questions))}
+        print("Question-Answer Dictionary:", question_answer_dict)
+    
         for skill in skills:
-       
-            if skill not in focus_skills:
-                print("Skill not in focus skills, skipping:", skill)
-                prompt = f"""
-                    You are an expert evaluator who will assess the following answer to the interview question for the skill '{skill}'.
+            for question, ans in question_answer_dict.items():
+                if skill not in focus_skills:
+                    prompt = f"""You are an expert evaluator who will assess the following answer to the interview question for the skill '{skill}'.
                     The question asked was: '{question}'
-                    The person's response to the interview question is:
-                    '{answer}'
- 
-                    Please evaluate the answer based on the following criteria:
-                    1. Relevance: How well does the answer relate to the question asked and the skill being evaluated?
-                    2. Quality: How clear, concise, and thorough is the answer?
- 
-                    Provide a score from 20 to 100 based on these two factors:
-                    - 20 means a very poor answer
-                    - 100 means an excellent answer
- 
-                    Your response should only include the score.
-                    """
-                response = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
-                    messages=[
-                        {"role": "system", "content": "You are an experienced evaluator who rates interview answers based only on relevance and quality."},
-                        {"role": "user", "content": prompt}
-                    ],
-                    max_tokens=64
-                )
-                response_text = response.choices[0].message.content.strip()
-                match = re.search(r'\d+', response_text)
-                if match:
-                    score = int(match.group(0))
-                    focus_skills_score[skill] = score
-                    print(f"Score for non-focus skill '{skill}': {score}")
-                    skills_score[skill] = score
-                else:
-                    print(f"Warning: No score found in response for non-focus skill '{skill}'. Response: {response_text}")
-                    skills_score[skill] = 20
-            else :
-                prompt = f"""
-                You are an expert evaluator assessing the following answer to an interview question for the skill '{skill}'.
-                The person's response to the interview question is:
-                {question_answer_dict}
- 
-                Please evaluate the answer based on the skill '{skill}' only, and:
-                1. Provide a score from 1 to 100 based on the relevance and quality of the answer specific to the skill '{skill}'.
-                2. Write a single, concise comment that covers all relevant aspects of the answer related to the skill '{skill}', including strengths, weaknesses, and key takeaways. The comment should be focused solely on the skill '{skill}' and should not include any feedback or comments related to other skills (e.g., React.js comments should not include feedback on PHP or vice versa).
- 
-                Your response should include both the score (1-100) and a one-line comment specific to the skill '{skill}'.
-                """
- 
-                response = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
-                    messages=[
-                        {"role": "system", "content": "You are an experienced evaluator who rates answers to interview questions. Your task is to rate answers based on relevance and quality, provide a score from 1 to 100, and give a one-line comment specific to the skill."},
-                        {"role": "user", "content": prompt}
-                    ],
-                    max_tokens=64
-                )
- 
-                response_text = response.choices[0].message.content.strip()
-                comment = re.sub(r"Score: \d+\n+Comment: ", "", response_text).strip()
-                match = re.search(r'\d+', response_text)
- 
-                focus_skill_comment[skill] = comment
-                if match:
-                    focus_skills_score[skill] = int(match.group(0))
-                else:
-                    inferred_prompt = f"""
-                    Based on the following feedback you provided, rate the answer on a scale of 1 to 100:
-                    Feedback: {response_text}
- 
-                    Please provide a score (1 to 100) that reflects the feedback.
-                    """
-                    inferred_response = client.chat.completions.create(
+                    The person's response to the interview question is: '{ans}'
+    
+                    Provide a score from 20 to 100."""
+                    response = client.chat.completions.create(
                         model="gpt-3.5-turbo",
                         messages=[
-                            {"role": "system", "content": "You are an expert evaluator who rates interview answers based on feedback given."},
-                            {"role": "user", "content": inferred_prompt}
+                            {"role": "system", "content": "You are an experienced evaluator."},
+                            {"role": "user", "content": prompt}
                         ],
-                        max_tokens=64  
+                        max_tokens=64,
+                        temperature = 0.4
                     )
- 
-                    inferred_score_text = inferred_response.choices[0].message.content.strip()
-                    inferred_match = re.search(r'\d+', inferred_score_text)
-                    if inferred_match:
-                        inferred_score = int(inferred_match.group(0))
-                        focus_skills_score[skill] = inferred_score
-                    else:
-                        focus_skills_score[skill] = 50  
- 
- 
+                    response_text = response.choices[0].message.content.strip()
+                    match = re.search(r'\d+', response_text)
+                    score = int(match.group(0)) if match else 20
+                    skills_score[skill] = score
+                
+                else:
+                    prompt = f"""You are evaluating the answer to the question for the skill '{skill}': {question_answer_dict}
+                    Provide a score (1–100) and a one-line comment."""
+                    response = client.chat.completions.create(
+                        model="gpt-3.5-turbo",
+                        messages=[
+                            {"role": "system", "content": "You are an experienced evaluator."},
+                            {"role": "user", "content": prompt}
+                        ],
+                        max_tokens=64,
+                        temperature = 0.4
+                    )
+                    response_text = response.choices[0].message.content.strip()
+                    match = re.search(r'\d+', response_text)
+                    comment = re.sub(r"Score: \d+\n+Comment: ", "", response_text).strip()
+                    score = int(match.group(0)) if match else 50
+                    focus_skills_score[skill] = score
+                    focus_skill_comment[skill] = comment
+                
+            print(f"Score for '{skill}' (non-focus):", score)
+        overall_scores = skills_score.copy()
+        overall_scores.update(focus_skills_score)
+    
+        # If skills originally were 'none', use keys from overall_scores
+        if not skills:
+            skills = list(overall_scores.keys())
+    
+        # Final output list
         output = []
-        for skill in focus_skills:
-            skill_data = {
-                "skill_name": skill,
-                "score": focus_skills_score.get(skill, "No score available"),
-                "comment": focus_skill_comment.get(skill, "No comment available")
-            }
-            output.append(skill_data)
+        if focus_skills:  # Only populate output if focus_skills is not empty
+            for skill in focus_skills:
+                skill_data = {
+                    "skill_name": skill,
+                    "score": focus_skills_score.get(skill, "No score available"),
+                    "comment": focus_skill_comment.get(skill, "No comment available")
+                }
+                output.append(skill_data)
         print("Final Output:", output)
-                   
- 
+    
+        # Technical comment generation
         messages = [
             {
                 "role": "system",
                 "content": (
-                    "You are an AI Interview Summary Generator.\n"
-                    "You will receive detailed evaluation comments for a candidate across multiple skills.\n"
-                    "Your task is to read all the individual skill-based comments and generate one comprehensive, insightful overall evaluation paragraph summarizing the candidate’s performance.\n\n"
-                    "Your response should be long and detailed, written in a clear, professional tone.\n"
-                    "Do not repeat the skill names or list them again. Focus on synthesizing all the insights into one flowing summary that highlights strengths, communication ability, technical understanding, and overall competence."
+                    "You are an AI Interview Summary Generator. Generate an insightful summary paragraph "
+                    "based on detailed evaluation comments, excluding skill names, and focused on overall strengths and areas of improvement."
                 )
             },
             {
                 "role": "user",
-                "content": f"Here are the detailed skill-wise score is :\n\n{skill}\n\n and the score and comment for the focus skills is :\n\n{focus_skills_score}\n\n and the comment is \n\n{focus_skill_comment}\n\nGenerate a single overall evaluation paragraph based on these."
+                "content": f"Skills: {skills}\nFocus Scores: {focus_skills_score}\nComments: {focus_skill_comment}"
             }
         ]
- 
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=messages,
-            max_tokens=300
+            max_tokens=400,
+            temperature = 0.4
         )
- 
         technical_comment = response.choices[0].message.content.strip()
-        print(technical_comment)
+        print("Technical Comment:", technical_comment)
+        print("Overall Scores:", overall_scores)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
        
     ################################################# proctoring_report #################################################
        
@@ -497,7 +512,8 @@ def show_results_agent(Questions,answer,proctoring_data,skills,focus_skills,s3_u
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[message_proctoring_comment],
-                max_tokens=200
+                max_tokens=200,
+                temperature = 0.4
             )
             proctoring_comment = response.choices[0].message.content.strip().replace('"', '')
             print(" Proctoring Report Comment:")
@@ -505,10 +521,10 @@ def show_results_agent(Questions,answer,proctoring_data,skills,focus_skills,s3_u
             print(" Proctoring Suspicion Score :", proctoring_score)
         except Exception as e:
             print(" Error generating proctoring report:", e)
-        overall_scores = skills_score.copy()
-        overall_scores.update(focus_skills_score)
+        # overall_scores = skills_score.copy()
+        # overall_scores.update(focus_skills_score)
  
-        print(overall_scores)
+        # print(overall_scores)
         ################################################# evoluation , suggestions #################################################
         certifications = get_certification_names(skills, focus_skills,articulation_comment,articulation_scores,bodylang_comment,body_lang_score,transcription,etiquette_score,etiquette_comment,technical_comment,grammer_score,grammer_comment,pace_comment,pace_score,output,proctoring_score,proctoring_comment,pronounciation_comment,Pronounciation_score,self_awareness_score,self_awareness_comment)
         print(certifications)
@@ -634,7 +650,8 @@ def get_comment(prompt):
     chat_completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages = [message],
-            temperature=0.2
+            max_tokens=128,
+            temperature = 0.4
         )
     finish_reason = chat_completion.choices[0].finish_reason
     newdata = chat_completion.choices[0].message.content
@@ -836,7 +853,8 @@ def evaluate_data_from_audio(audio_file):
     try:
         chat_completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=[message_score]
+            messages=[message_score],
+            temperature = 0.4
         )
         newdata = chat_completion.choices[0].message.content
         print(newdata)
@@ -844,7 +862,8 @@ def evaluate_data_from_audio(audio_file):
         grammer_score = int(double_digit[0])
         chat_completion_comment = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=[message_comment]
+            messages=[message_comment],
+            temperature = 0.4
         )
         newdata = chat_completion_comment.choices[0].message.content
         grammer_comment = newdata
@@ -876,7 +895,7 @@ def evaluate_data_from_audio(audio_file):
     }
  
     try :
-        sentiment_analysis_response = client.chat.completions.create(model="gpt-3.5-turbo", messages=[sentiment_analysis_message])
+        sentiment_analysis_response = client.chat.completions.create(model="gpt-3.5-turbo", messages=[sentiment_analysis_message], temperature = 0.4)
         sentiment_choice = sentiment_analysis_response.choices[0].message.content
         sentiment_choice_data = json.loads(sentiment_choice)
         sentiment_score_value = sentiment_choice_data["sentiment_score"]

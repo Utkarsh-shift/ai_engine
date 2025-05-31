@@ -72,6 +72,7 @@ def analyze_body_language_with_vision(base64Frames , typeo):
                         f"Do not mention anything about frames."
                         "Do NOT mention overall or conclusion statement."
                         "ALWAYS MENTION SCORE"
+                        "MAKE SURE THE EVALUATION IS UNDER 150 WORDS.\n"
                         "Do Not write greeting message such as Certainly!, etc"
         },
         {
@@ -87,6 +88,7 @@ def analyze_body_language_with_vision(base64Frames , typeo):
         model="gpt-4o",
         messages=messages,
         max_tokens=600,
+        temperature = 0.4
     )
  
     body_language_analysis = response.choices[0].message.content
@@ -136,6 +138,7 @@ def finalcomment(final_commentList , small = False):
                     "Do Not give scores only comment"
                     "Do Not write greeting message such as Certainly!, etc"
                     "GIVE ONE LINE COMMENT ONLY "
+                    "MAKE SURE THE EVALUATION IS UNDER 150 WORDS.\n"
                 )
             },
             {
@@ -149,7 +152,8 @@ def finalcomment(final_commentList , small = False):
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=messages,
-            max_tokens = 64,
+            max_tokens = 128,
+            temperature = 0.4
         )
         final_comment = response.choices[0].message.content
         comment= final_comment.replace("*" , "")
@@ -175,6 +179,7 @@ def finalcomment(final_commentList , small = False):
                     "Make sure to retain the numbered format for clarity.But NO POINTS\n\n"
                     "Do Not give scores only comment"
                     "Do Not write greeting message such as Certainly!, etc"
+                    "MAKE SURE THE EVALUATION IS UNDER 150 WORDS.\n"
                 )
             },
             {
@@ -189,6 +194,7 @@ def finalcomment(final_commentList , small = False):
             model="gpt-4o",
             messages=messages,
             max_tokens = 300,
+            temperature = 0.4
         )
         final_comment = response.choices[0].message.content
         comment= final_comment.replace("*" , "")
@@ -232,6 +238,7 @@ def finalcomment_forselfawreness(final_commentList, small=False):
             model="gpt-4o",
             messages=messages,
             max_tokens=64,
+            temperature = 0.4
         )
         final_comment = response.choices[0].message.content
         comment = final_comment.replace("*", "")
@@ -254,6 +261,7 @@ def finalcomment_forselfawreness(final_commentList, small=False):
                     "Make sure to retain the numbered format for clarity. But NO POINTS\n\n"
                     "Do Not give scores only comment. "
                     "Do Not write greeting message such as Certainly!, etc."
+                    "MAKE SURE THE EVALUATION IS UNDER 150 WORDS.\n"
                 )
             },
             {
@@ -267,7 +275,8 @@ def finalcomment_forselfawreness(final_commentList, small=False):
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=messages,
-            max_tokens=300,
+            max_tokens=400,
+            temperature = 0.4
         )
         final_comment = response.choices[0].message.content
         comment = final_comment.replace("*", "")
@@ -295,7 +304,8 @@ def getcomment_communication(pace_comment,articulation_comment,grammar_comment):
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=messages,
-        max_tokens=300,
+        max_tokens=400,
+        temperature = 0.4
     )
     final_comment = response.choices[0].message.content
     comment= final_comment.replace("*" , "")
@@ -308,6 +318,7 @@ def getcomment_sociability(energy_comment,sentiment_comment,emotion_comment):
             "content": "The sociability is computed with the performance of candidate in sentiment and emotion "
             "What do you think how the person is in sociability  ?"
             "Do Not write greeting message such as Certainly!, etc"
+            "MAKE SURE THE EVALUATION IS UNDER 150 WORDS.\n"
             } ,
             
         {
@@ -319,7 +330,8 @@ def getcomment_sociability(energy_comment,sentiment_comment,emotion_comment):
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=messages,
-        max_tokens=300,
+        max_tokens=400,
+        temperature = 0.4
     )
     final_comment = response.choices[0].message.content
     comment= final_comment.replace("*" , "")
@@ -365,7 +377,8 @@ def getcomment_etiquette(base64Frames,prompt,transcript,typeo):
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=messages,
-        max_tokens=600,
+        max_tokens=400,
+        temperature = 0.4
     )
  
     content = response.choices[0].message.content
@@ -384,6 +397,7 @@ def getcomment_positive_attitude(energy_comment):
                 "content": "The positive attitide is computed with the performance of candidate in energy "
                 "What do you think how the person is in positive attitide ?"
                 "Do Not write greeting message such as Certainly!, etc"
+                "MAKE SURE THE EVALUATION IS UNDER 150 WORDS.\n"
                 } ,
                 
             {
@@ -396,7 +410,8 @@ def getcomment_positive_attitude(energy_comment):
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=messages,
-        max_tokens=300,
+        max_tokens=400,
+        temperature = 0.4
     )
     final_comment = response.choices[0].message.content
     comment= final_comment.replace("*" , "")
@@ -443,8 +458,8 @@ def evaluate_self_awareness(question, transcripts):
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=messages,
-            max_tokens=500,
-            temperature=0.7
+            max_tokens=400,
+            temperature = 0.4
         )
 
         evaluation = response.choices[0].message.content.strip()
@@ -501,8 +516,8 @@ def evaluate_self_awareness(question, transcripts):
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=messages,
-                max_tokens=500,
-                temperature=0.7
+                max_tokens=400,
+                temperature = 0.4
             )
 
             evaluation = response.choices[0].message.content.strip()

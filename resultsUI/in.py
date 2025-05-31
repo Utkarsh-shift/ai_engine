@@ -612,7 +612,8 @@ You are an AI system designed to provide interview feedback in JSON format. Plea
     chat_completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
         response_format={"type":"json_object"},
-        messages = message
+        messages = message,
+        temperature = 0.4
     )
     print("|\n|\n|\n|\n|\n|\n|\n|\n|v",chat_completion)
     finish_reason = chat_completion.choices[0].finish_reason

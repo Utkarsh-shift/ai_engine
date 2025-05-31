@@ -333,7 +333,7 @@
 #                     response = client.chat.completions.create(
 #                         model="gpt-4o",
 #                         messages=messages,
-#                         max_tokens=300,
+#                         max_tokens=400,
 #                     )
 #                     final_comment = response.choices[0].message.content
 #                     etiquette_score = final_comment
@@ -374,7 +374,7 @@
 #                     response = client.chat.completions.create(
 #                         model="gpt-4o",
 #                         messages=messages,
-#                         max_tokens=300,
+#                         max_tokens=400,
 #                     )
 #                     final_comment = response.choices[0].message.content
 #                     body_lang_score = final_comment

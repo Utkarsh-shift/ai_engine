@@ -198,7 +198,7 @@ def get_comment(prompt):
     chat_completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages = [message],
-            temperature=0.2
+            temperature = 0.4
         )
         # print("|\n|\n|\n|\n|\n|\n|\n|\n|v",chat_completion)
     finish_reason = chat_completion.choices[0].finish_reason
@@ -218,7 +218,7 @@ def get_score_transcipt_file(prompt):
     chat_completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages = [message],
-            temperature=0.2
+            temperature = 0.4
         )
     text = chat_completion.choices[0].message.content
     score_match = re.search(r'\bscore\s*[\w]*\s*([+-]?\d*\.\d+|\d+)', text)
@@ -260,7 +260,8 @@ def cal_uni_bi(audio_file):
     try:
         chat_completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=[message_score]
+            messages=[message_score],
+            temperature = 0.4
         )
         newdata = chat_completion.choices[0].message.content
         print(newdata)
@@ -270,7 +271,8 @@ def cal_uni_bi(audio_file):
         grammer_score = int(double_digit[0])
         chat_completion_comment = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=[message_comment]
+            messages=[message_comment],
+            temperature = 0.4
         )
         newdata = chat_completion_comment.choices[0].message.content
         grammer_comment = newdata
@@ -309,7 +311,7 @@ def cal_uni_bi(audio_file):
     }
  
     try :
-        sentiment_analysis_response = client.chat.completions.create(model="gpt-3.5-turbo", messages=[sentiment_analysis_message])
+        sentiment_analysis_response = client.chat.completions.create(model="gpt-3.5-turbo", messages=[sentiment_analysis_message],temprature = 0.4)
         sentiment_choice = sentiment_analysis_response.choices[0].message.content
         sentiment_choice_data = json.loads(sentiment_choice)
         sentiment_score_value = sentiment_choice_data["sentiment_score"]

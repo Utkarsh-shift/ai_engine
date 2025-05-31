@@ -357,6 +357,7 @@ class ExpRunner:
                                 "Give a score on the bases on analysis out of 100"
                                 "Do not mention any reasoning or expaination of the score "
                                 "Only five value sin integer format"
+                                "MAKE SURE THE EVALUATION IS UNDER 150 WORDS.\n"
                             )
                         },
                         {
@@ -371,7 +372,8 @@ class ExpRunner:
                     response = client.chat.completions.create(
                         model="gpt-4o",
                         messages=messages,
-                        max_tokens=300,
+                        max_tokens=400,
+                        temperature = 0.4
                     )
                     final_comment = response.choices[0].message.content
                     etiquette_score = final_comment
@@ -398,6 +400,7 @@ class ExpRunner:
                                 "Give a score on the bases on analysis out of 100"
                                 "Do not mention any reasoning or expaination of the score "
                                 "Only five value sin integer format"
+                                "MAKE SURE THE EVALUATION IS UNDER 150 WORDS.\n"
                             )
                         },
                         {
@@ -412,7 +415,8 @@ class ExpRunner:
                     response = client.chat.completions.create(
                         model="gpt-4o",
                         messages=messages,
-                        max_tokens=300,
+                        max_tokens=400,
+                        temperature = 0.4
                     )
                     final_comment = response.choices[0].message.content
                     body_lang_score = final_comment

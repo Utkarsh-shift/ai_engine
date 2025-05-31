@@ -1454,3 +1454,110 @@ KeyError: 'question'
 2025-05-29 07:15:50,218 - WARNING - Not Found: /.env
 2025-05-29 11:12:08,089 - WARNING - Not Found: /
 2025-05-29 11:22:02,724 - WARNING - Not Found: /
+2025-05-30 09:34:14,550 - WARNING - Not Found: /
+2025-05-30 09:38:01,025 - WARNING - Not Found: /
+2025-05-30 09:41:23,782 - WARNING - Unauthorized: /api/interviewTest
+2025-05-30 09:46:39,402 - WARNING - Not Found: /
+2025-05-30 09:47:46,911 - WARNING - Unauthorized: /api/interviewTest
+2025-05-30 09:52:23,576 - WARNING - Unauthorized: /api/interviewTest
+2025-05-30 09:52:41,793 - WARNING - Method Not Allowed: /api/interviewTest
+2025-05-30 09:52:48,173 - WARNING - Not Found: /api/access_tojken
+2025-05-30 09:52:53,268 - WARNING - Method Not Allowed: /api/access_token
+2025-05-30 09:53:11,726 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 88, in post
+    if data['is_agent']=="1":
+KeyError: 'is_agent'
+2025-05-30 10:41:15,543 - WARNING - Not Found: /druid/index.html
+2025-05-30 10:51:49,542 - WARNING - Not Found: /
+2025-05-30 12:12:39,617 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 88, in post
+    if data['is_agent']=="1":
+KeyError: 'is_agent'
+2025-05-30 13:15:01,249 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/ubuntu/new_AVIPA/resultsUI/views.py", line 88, in post
+    if data['is_agent']=="1":
+KeyError: 'is_agent'
+2025-05-31 05:09:57,295 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 511, in dispatch
+    self.response = self.finalize_response(request, response, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 423, in finalize_response
+    assert isinstance(response, HttpResponseBase), (
+AssertionError: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`
+2025-05-31 05:19:45,675 - WARNING - Not Found: /
+2025-05-31 05:46:02,013 - WARNING - Not Found: /
+2025-05-31 05:53:21,722 - WARNING - Not Found: /
+2025-05-31 06:25:00,078 - ERROR - Internal Server Error: /api/interviewTest
+Traceback (most recent call last):
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 511, in dispatch
+    self.response = self.finalize_response(request, response, *args, **kwargs)
+  File "/home/ubuntu/anaconda3/envs/s2/lib/python3.10/site-packages/rest_framework/views.py", line 423, in finalize_response
+    assert isinstance(response, HttpResponseBase), (
+AssertionError: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`

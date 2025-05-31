@@ -112,7 +112,9 @@ def articute_score_maker(power_sen, data, transcription):
     }
     chat_completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
-        messages=[message_comment]
+        messages=[message_comment],
+        max_tokens=128,
+        temperature = 0.4
     )
     newdata = chat_completion.choices[0].message.content
     return score , newdata
